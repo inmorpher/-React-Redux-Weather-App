@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"skipLibCheck": true,
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"allowSyntheticDefaultImports": true,
+		"target": "esnext",
+		"strict": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"types": ["vitest/globals"]
+	},
+	// "include": ["vite.config.ts"]
+	"include": ["src", "vite.config.ts"]
+}

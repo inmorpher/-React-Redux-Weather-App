@@ -1,0 +1,22 @@
+.mist__dynamic__icon {
+	width: 100%;
+	aspect-ratio: 1/1;
+	& .mist {
+		& circle {
+			transform-origin: center;
+			animation: linear infinite alternate mist;
+			@for $i from 1 through 8 {
+				$random: random() * 2+1;
+				&:nth-child(#{$i}) {
+					animation-duration: #{$random}s;
+				}
+			}
+		}
+	}
+}
+
+@keyframes mist {
+	to {
+		transform: scale(0.9);
+	}
+}

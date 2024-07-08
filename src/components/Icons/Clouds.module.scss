@@ -1,0 +1,22 @@
+.clouds__dynamic__icon {
+	width: 100%;
+	aspect-ratio: 1/1;
+	& .clouds {
+		& path {
+			transform-origin: center;
+			transform: translateX(3px);
+			animation: infinite linear alternate cloudsMove;
+			@for $i from 1 through 3 {
+				&:nth-child(#{$i}) {
+					animation-duration: #{$i + 10}s;
+				}
+			}
+		}
+	}
+}
+
+@keyframes cloudsMove {
+	to {
+		transform: translate(-2px);
+	}
+}

@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Precipitation */
+.precipitation_path {
+	--path: 1;
+	stroke-dasharray: var(--path);
+	stroke-dashoffset: var(--path);
+	animation: draw 3s ease forwards;
+}
+
+.precipitation_back_path {
+	fill-opacity: 0;
+	animation: opacity 3s ease forwards;
+	animation-delay: 1s;
+}
+
+@keyframes opacity {
+	to {
+		fill-opacity: 0.5;
+	}
+}
+@keyframes draw {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+@layer base {
+	body {
+		@apply bg-bg-main dark:bg-slate-500;
+		@apply text-white;
+		@apply pb-16;
+		@apply scrollbar-hidden scrollbar-hidden-webkit;
+		@apply font-sans;
+	}
+}
+
+@layer components {
+	.grid-weather-cards {
+		@apply grid grid-flow-dense auto-rows-[170px] grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4;
+	}
+
+	.bg-weather-gradient {
+		@apply bg-gradient-to-tr from-primary-color-500 to-primary-color-900 dark:from-primary-color-dark-500 dark:to-primary-color-dark-900;
+	}
+
+	.bg-weather-bg-500 {
+		@apply bg-primary-color-500 dark:bg-primary-color-dark-500;
+	}
+	.bg-weather-bg-900 {
+		@apply bg-primary-color-900 dark:bg-primary-color-dark-900;
+	}
+}

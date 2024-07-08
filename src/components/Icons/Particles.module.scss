@@ -1,0 +1,80 @@
+.precipitation__dynamic__icon {
+	width: 100%;
+	aspect-ratio: 1/1;
+	& .clouds {
+		& .spark {
+			r: 0px;
+			animation: 3s infinite linear alternate sparks;
+			@for $i from 1 through 2 {
+				&:nth-child(#{$i}) {
+					animation-delay: #{$i + 2}s;
+				}
+			}
+		}
+	}
+	& .particles {
+		& line {
+			opacity: 1;
+			animation: infinite linear rain;
+			@for $i from 1 through 15 {
+				&:nth-child(#{$i}) {
+					$random: random() * 0.3+0.3;
+					animation-delay: #{$random}s;
+				}
+			}
+		}
+		&.rain {
+			& line {
+				animation-duration: 0.6s;
+			}
+		}
+		&.shower {
+			& line {
+				animation-duration: 0.3s;
+			}
+		}
+	}
+}
+
+@keyframes sparks {
+	0% {
+		r: 0px;
+	}
+	.5% {
+		r: 11px;
+	}
+	1% {
+		r: 0px;
+	}
+	49.9% {
+		r: 0px;
+	}
+	50% {
+		r: 11px;
+	}
+	51% {
+		r: 5px;
+	}
+	52% {
+		r: 0px;
+	}
+	59.9% {
+		r: 0px;
+	}
+	60% {
+		r: 11px;
+	}
+	61% {
+		r: 0px;
+	}
+	100% {
+		r: 0px;
+	}
+}
+
+@keyframes rain {
+	to {
+		transform: translateY(20px);
+		opacity: 0;
+	}
+}

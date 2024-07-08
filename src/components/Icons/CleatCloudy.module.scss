@@ -1,0 +1,61 @@
+.clear__cloudy__dynamic__icon {
+	width: 100%;
+	aspect-ratio: 1/1;
+	& .clouds__icon {
+		& path {
+			transform-origin: center center;
+			transform: translateX(10px);
+			animation: infinite linear alternate cloudMove;
+
+			@for $i from 1 through 3 {
+				&:nth-child(#{$i}) {
+					animation-duration: #{$i * 6}s;
+				}
+			}
+		}
+	}
+	& .moon__icon {
+		&__shape {
+			height: 40px;
+			width: 40px;
+			transform-origin: center;
+			animation: 3s infinite linear alternate moonRotate;
+		}
+		&__stars {
+			@for $i from 1 through 4 {
+				& circle:nth-child(#{$i}) {
+					animation: #{$i + 1}s infinite linear alternate starGlow;
+				}
+			}
+		}
+	}
+	& .sun {
+		&__disk {
+			r: 17px;
+		}
+		&__shine {
+			animation: 3s infinite linear alternate sunGlow;
+			r: 22px;
+		}
+	}
+}
+@keyframes sunGlow {
+	to {
+		r: 20px;
+	}
+}
+@keyframes cloudMove {
+}
+to {
+	transform: translateX(-10%);
+}
+@keyframes starGlow {
+	to {
+		r: 1px;
+	}
+}
+@keyframes moonRotate {
+	to {
+		transform: rotate(-15deg);
+	}
+}

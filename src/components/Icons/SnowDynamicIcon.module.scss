@@ -1,0 +1,30 @@
+.snow__dynamic__icon {
+	width: 100%;
+	aspect-ratio: 1/1;
+	& .snow__flakes {
+		& circle {
+			animation: 2s linear infinite snowFall;
+			@for $i from 1 through 30 {
+				&:nth-child(#{$i}) {
+					$isEven: $i%2==0;
+					$random: random() * 2+2;
+					animation-duration: #{$random}s;
+					animation-delay: #{$i * random()}s;
+					animation-name: if($i % 2==0, snowFall, snowFallReverse);
+				}
+			}
+		}
+	}
+}
+@keyframes snowFall {
+	to {
+		transform: translateX(-15px) translateY(50px);
+		opacity: 0;
+	}
+}
+@keyframes snowFallReverse {
+	to {
+		transform: translateX(15px) translateY(50px);
+		opacity: 0;
+	}
+}
