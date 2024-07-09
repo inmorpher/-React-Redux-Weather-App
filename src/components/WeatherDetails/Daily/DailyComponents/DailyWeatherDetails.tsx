@@ -1,13 +1,29 @@
 import { useDaily } from '../../../../hooks/useDaily';
-import { useAppSelector } from '../../../../store/hooks.type';
-import { selectPopupDailyDetails } from '../../../../store/slices/weatherSlice';
+import { useFetchState } from '../../../../hooks/useFetchState';
+import { selectDailyPopupDetails } from '../../../../store/slices/weatherApiSlice';
+import Skeleton from '../../../UI/SkeletonLoader/Skeleton';
 
-const WeatherDetails = () => {
+const DailyWeatherDetails = () => {
 	const { dailyState } = useDaily();
 
-	const { uvi, humidity, pressure, precipitation, clouds, summary, wind } = useAppSelector(
-		selectPopupDailyDetails(dailyState.item),
-	);
+	const {
+		status: { isLoading, isError, isSuccess },
+		data,
+	} = useFetchState(selectDailyPopupDetails, dailyState.item);
+
+	if (isLoading) return <Skeleton />;
+
+	if (isError || !isSuccess || !data) return null;
+
+	const {
+		uvi,
+		humidity,
+		precipitation,
+		wind: { gust, speed },
+		pressure,
+		clouds,
+		summary,
+	} = data;
 
 	return (
 		<div className='flex flex-col justify-center divide-y px-5'>
@@ -35,15 +51,13 @@ const WeatherDetails = () => {
 				<p className='w-1/2'>
 					wind:
 					<span className='block px-3 text-center'>
-						{wind.speed.value}
-						{wind.speed.units}
+						{speed.value}
+						{speed.units}
 					</span>
 				</p>
 				<p className='w-1/2'>
 					wind gust:
-					<span className='block px-3 text-center'>
-						{wind.gust ? wind.gust.value + wind.gust.units : 'N/A'}
-					</span>
+					<span className='block px-3 text-center'>{gust ? gust.value + gust.units : 'N/A'}</span>
 				</p>
 			</div>
 			<div className='flex w-full items-center justify-between'>
@@ -59,13 +73,11 @@ const WeatherDetails = () => {
 			<div className='flex w-full items-center justify-between'>
 				<p className='w-full'>
 					summary:
-					<span className='block h-11 w-full whitespace-break-spaces break-words'>
-						{summary}
-					</span>
+					<span className='block h-11 w-full whitespace-break-spaces break-words'>{summary}</span>
 				</p>
 			</div>
 		</div>
 	);
 };
 
-export default WeatherDetails;
+export default DailyWeatherDetails;

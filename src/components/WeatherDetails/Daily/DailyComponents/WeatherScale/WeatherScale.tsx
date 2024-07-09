@@ -1,21 +1,36 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useDaily } from '../../../../../hooks/useDaily';
 import { useFetchState } from '../../../../../hooks/useFetchState';
+
+import React from 'react';
 import { selectDailyPopupScale } from '../../../../../store/slices/weatherApiSlice';
+import Skeleton from '../../../../UI/SkeletonLoader/Skeleton';
+import DailyWeatherScale from './DailyWeatherScale';
 import WeatherScalePointer from './WeatherScalePointer';
 
 const WeatherScale = () => {
 	const { dailyState } = useDaily();
-	const daily = useFetchState(() => selectDailyPopupScale(dailyState.item));
+	const {
+		status: { isError, isLoading, isSuccess },
+		data: data2,
+	} = useFetchState(selectDailyPopupScale, dailyState.item);
 
+	if (isLoading) return <Skeleton />;
+
+	if (isError || !isSuccess || !data2) return null;
+
+	const { scale, curve, desc, data, hoverRect } = data2;
 	const curveRef = useRef<SVGPathElement>(null);
 
 	return (
-		<div className='mt-2 flex justify-center'>
-			<svg viewBox='0 0 320 160' className='bg-weather-gradient w-[90%] rounded-lg'>
+		<DailyWeatherScale>
+			<DailyWeatherScale.SVGWrapper
+				viewBox='0 0 320 160'
+				className='bg-weather-gradient w-[90%] rounded-lg'
+			>
 				{scale.map((item, index) => (
 					<React.Fragment key={'PopupLayout' + index}>
-						<line
+						<DailyWeatherScale.Line
 							key={'PopupScaleLine' + index}
 							x1={15}
 							y1={item.pY - 2.5}
@@ -27,7 +42,7 @@ const WeatherScale = () => {
 							strokeWidth={0.1}
 						/>
 
-						<text
+						<DailyWeatherScale.Text
 							key={'popupDesc' + index}
 							x={10}
 							y={item.pY}
@@ -39,8 +54,9 @@ const WeatherScale = () => {
 						>
 							{item.value}
 							{item.units}
-						</text>
-						<text
+						</DailyWeatherScale.Text>
+
+						<DailyWeatherScale.Text
 							key={'PopupText' + index}
 							x={desc[index].x}
 							y={desc[index].y}
@@ -51,8 +67,8 @@ const WeatherScale = () => {
 							textAnchor='middle'
 						>
 							{desc[index].value}
-						</text>
-						<line
+						</DailyWeatherScale.Text>
+						<DailyWeatherScale.Line
 							key={'popupHorizontalLine' + index}
 							x1={desc[index].x}
 							y1={30}
@@ -64,7 +80,7 @@ const WeatherScale = () => {
 					</React.Fragment>
 				))}
 
-				<path
+				<DailyWeatherScale.Curve
 					ref={curveRef}
 					d={curve.mainCurve}
 					stroke='#fff'
@@ -74,8 +90,8 @@ const WeatherScale = () => {
 					strokeLinejoin='round'
 				/>
 				<WeatherScalePointer curve={curveRef} data={data} />
-			</svg>
-		</div>
+			</DailyWeatherScale.SVGWrapper>
+		</DailyWeatherScale>
 	);
 };
 

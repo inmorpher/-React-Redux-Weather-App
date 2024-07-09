@@ -1,19 +1,15 @@
 import { useDailyContext } from '../../../hooks/useDailyContext';
-import { useAppSelector } from '../../../store/hooks.type';
-import { testSelect } from '../../../store/slices/weatherApiSlice';
 import Button from '../../UI/Button';
 import Calendar from './DailyComponents/DailyCalendar';
 import WeatherCondition from './DailyComponents/DailyWeatherCondition';
+import DailyWeatherDetails from './DailyComponents/DailyWeatherDetails';
+import WeatherScale from './DailyComponents/WeatherScale/WeatherScale';
 
 export const DailyDetails: React.FC = () => {
 	const {
 		onCloseDetails,
 		dailyState: { isOpen },
 	} = useDailyContext();
-
-	const testData = useAppSelector(testSelect);
-
-	console.log(testData);
 
 	return (
 		<div className='relative inline-block w-full px-1'>
@@ -27,8 +23,9 @@ export const DailyDetails: React.FC = () => {
 			<div className='mt-[-40px] h-full w-full'>
 				<Calendar />
 				<WeatherCondition />
-				{/* <WeatherScale /> */}
-				{/* <WeatherDetails /> */}
+				<WeatherScale />
+
+				<DailyWeatherDetails />
 			</div>
 		</div>
 	);

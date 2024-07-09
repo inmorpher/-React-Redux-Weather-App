@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { MetricConverter, MetricReturnType } from '../../utils/services/converter/metric.converter';
+import { PopupWeatherScaleService } from '../../utils/services/curves/popup.weather.service';
 import { getTempritureScale } from '../../utils/services/definitions/daily.temp.definition';
 import { getDailyScaleCoords } from '../../utils/services/definitions/daily.temp.scale';
 import { pressureDefinition } from '../../utils/services/definitions/pressure.definition';
@@ -93,7 +94,7 @@ export const selectMainWeather = (queryArg: IGetWeatherArgs) =>
 					clouds,
 				},
 			};
-		},
+		}
 	);
 
 /**
@@ -108,8 +109,7 @@ export const selectWeatherIconId = (queryArg: IGetWeatherArgs) =>
 		error: weatherData.error,
 		data: {
 			iconCode: weatherData.data?.current.weather[0].icon.slice(0, 2) || '',
-			timeOfDay:
-				weatherData.data?.current.weather[0].icon.charAt(2) === 'd' ? 'day' : 'night',
+			timeOfDay: weatherData.data?.current.weather[0].icon.charAt(2) === 'd' ? 'day' : 'night',
 		},
 	}));
 
@@ -140,7 +140,7 @@ export const selectWind = (queryArg: IGetWeatherArgs) =>
 					literal,
 				},
 			};
-		},
+		}
 	);
 /**
  * Creates a selector for extracting humidity-related information from the weather data.
@@ -161,11 +161,11 @@ export const selectHumidity = (queryArg: IGetWeatherArgs) =>
 				dew_point: MetricConverter.getTemp(
 					weatherData.data?.current?.dew_point || 0,
 					userMetrics,
-					'short',
+					'short'
 				),
 				humidity: weatherData.data?.current?.humidity || 0,
 			},
-		}),
+		})
 	);
 
 /**
@@ -185,7 +185,7 @@ export const selectSunPosition = (queryArg: IGetWeatherArgs) =>
 		const { cycleDuration, timeSinceCycleStart, isDay } = sunDefinition(
 			sunrise || 0,
 			sunset || 0,
-			dt || 0,
+			dt || 0
 		);
 
 		return {
@@ -354,7 +354,7 @@ export const selectFeeling = (queryArg: IGetWeatherArgs) =>
 								: temp === feels_like && 'feels same',
 				},
 			};
-		},
+		}
 	);
 
 /**
@@ -391,7 +391,7 @@ export const selectHourly = (queryArg: IGetWeatherArgs) =>
 				timezone: weatherData.data?.timezone,
 				userMetrics,
 			},
-		}),
+		})
 	);
 
 /**
@@ -439,11 +439,11 @@ export const selectDailyMain = (queryArg: IGetWeatherArgs) =>
 			// Find the minimum and maximum daily temperatures from the daily weather data
 			const minDailyTemp = daily.reduce(
 				(min, obj) => (obj.temp.min < min ? obj.temp.min : min),
-				daily[0].temp.min,
+				daily[0].temp.min
 			);
 			const maxDailyTemp = daily.reduce(
 				(max, obj) => (obj.temp.max > max ? obj.temp.max : max),
-				daily[0].temp.max,
+				daily[0].temp.max
 			);
 
 			// Convert the minimum and maximum daily temperatures to the user's preferred units
@@ -471,13 +471,13 @@ export const selectDailyMain = (queryArg: IGetWeatherArgs) =>
 						MIN_MAX_TEMP_LINE_LENGTH,
 						minTempConverted.value,
 						maxTempConverted.value,
-						dayMinTemp.value,
+						dayMinTemp.value
 					),
 					x2: getDailyScaleCoords(
 						MIN_MAX_TEMP_LINE_LENGTH,
 						minTempConverted.value,
 						maxTempConverted.value,
-						dayMaxTemp.value,
+						dayMaxTemp.value
 					),
 				});
 
@@ -503,7 +503,7 @@ export const selectDailyMain = (queryArg: IGetWeatherArgs) =>
 					colors,
 				},
 			};
-		},
+		}
 	);
 
 // export const selectDailyDetails = (queryArg: IGetWeatherArgs) =>
@@ -587,22 +587,104 @@ export const selectDailyCondition = (queryArg: IGetWeatherArgs, selected: number
 					condition: selectedDay.weather[0].main,
 				},
 			};
-		},
+		}
 	);
 
-export const selectDailyPopupScale = (queryArg: IGetWeatherArgs, index: number) =>
+/**
+ * Creates a selector for extracting and formatting daily weather condition information from the weather data.
+ * This function processes the daily weather data to return an object containing an array of objects, each representing
+ * a day's weather conditions including the maximum and minimum temperatures, weather icon, and general weather condition.
+ * The temperatures are converted to the user's preferred units of measurement.
+ *
+ * @param {IGetWeatherArgs} queryArg - The argument to query the weather data. It can be a string representing a city name or an object containing latitude and longitude.
+ * @param {number} selected - The index of the day for which the weather scale should be calculated.
+ *
+ * @returns {Function} A selector function that takes the Redux state and returns an object. If weather data is available, it returns an object containing an array with each element representing a day's weather conditions including `max` and `min` temperatures, `icon`, and `condition`. Temperatures are presented in the user's preferred units.
+ */
+export const selectDailyPopupScale = (queryArg: IGetWeatherArgs, selected: number) =>
+	createSelector(
+		selectCurrentWeather(queryArg),
+		(state: RootState) => state.user.data.userMetrics,
+
+		(weatherData, userMetrics) => {
+			if (!weatherData.data) {
+				return {
+					...weatherData,
+					data: undefined,
+				};
+			}
+
+			const dailyList = weatherData.data.daily;
+
+			const dailyTempArray = dailyList.map((day, index) => {
+				return {
+					night: day.temp.night,
+					day: day.temp.day,
+					eve: day.temp.eve,
+					morn: day.temp.morn,
+					nextNight: dailyList[index + 1] ? dailyList[index + 1].temp.night : day.temp.night,
+				};
+			});
+
+			const popupWeatherScale = new PopupWeatherScaleService(dailyTempArray, userMetrics, selected);
+
+			return {
+				...weatherData,
+				data: {
+					curve: popupWeatherScale.drawCurve(),
+					scale: popupWeatherScale.getScale(),
+					desc: popupWeatherScale.getDescription(),
+					data: popupWeatherScale.getExpandedValues(),
+					hoverRect: popupWeatherScale.getHoverRect(),
+				},
+			};
+		}
+	);
+
+/**
+ * Creates a selector for extracting detailed daily weather information from the weather data.
+ * This selector processes the daily weather data to return an object containing various weather details
+ * for a specific day, including UV index, wind information, pressure, precipitation, humidity, clouds, and summary.
+ *
+ * @param {IGetWeatherArgs} queryArg - The argument to query the weather data. It can be a string representing a city name or an object containing latitude and longitude.
+ * @param {number} selected - The index of the day for which the detailed weather information should be extracted.
+ * @returns {Function} A selector function that takes the Redux state and returns an object containing detailed weather information for the selected day. If the weather data is not available, it returns an object with the data property set to undefined.
+ */
+export const selectDailyPopupDetails = (queryArg: IGetWeatherArgs, selected: number) =>
 	createSelector(
 		selectCurrentWeather(queryArg),
 		(state: RootState) => state.user.data.userMetrics,
 		(weatherData, userMetrics) => {
-			console.log(index);
-			return;
-		},
+			if (!weatherData.data) {
+				return {
+					...weatherData,
+					data: undefined,
+				};
+			}
+			const dailyData = weatherData.data.daily[selected];
+			return {
+				...weatherData,
+				data: {
+					uvi: dailyData.uvi,
+					wind: {
+						direction: getWindDirection(dailyData.wind_deg, 'full'),
+						speed: MetricConverter.getSpeed(dailyData.wind_speed, userMetrics, true),
+						gust: dailyData.wind_gust
+							? MetricConverter.getSpeed(dailyData.wind_gust, userMetrics, true)
+							: undefined,
+					},
+					pressure: dailyData.pressure,
+					precipitation: {
+						pop: dailyData.pop * 100,
+						snow: dailyData.snow,
+						rain: dailyData.rain,
+					},
+					humidity: dailyData.humidity,
+					clouds: dailyData.clouds,
+					summary: dailyData.summary,
+				},
+			};
+		}
 	);
-
-const selectAPi = (state: RootState) => state.weatherApi;
-const selectTestQuery = (state: RootState) => selectAPi(state).queries['getWeather'];
-
-export const testSelect = createSelector(selectTestQuery, (selectedQuery) => selectedQuery?.data);
 
 export const { useGetWeatherQuery } = weatherApiSlice;
