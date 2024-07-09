@@ -22,9 +22,7 @@ export interface IGeocodingResponse {
 
 export const fetchWeather = createAsyncThunk(
 	'/weather/fetchWeather',
-	async (
-		query: string | { latitude: number; longitude: number },
-	): Promise<IWeatherData | null> => {
+	async (query: string | { latitude: number; longitude: number }): Promise<IWeatherData | null> => {
 		console.log(typeof query, 'query');
 
 		let url = '';
@@ -49,14 +47,14 @@ export const fetchWeather = createAsyncThunk(
 				throw new Error(`Unknown API request error: ${error}`);
 			}
 		}
-	},
+	}
 );
 
 export const autocompleteSearch = async (query: string): Promise<IGeocodingResponse[] | []> => {
 	if (!query || query.length < 3) return [];
 	try {
 		const response: AxiosResponse<IGeocodingResponse[]> = await axios.get(
-			`${SERVER}:${PORT}/search/autocomplete?q=${query}`,
+			`${SERVER}/search/autocomplete?q=${query}`
 		);
 
 		return response.data;

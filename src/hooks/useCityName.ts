@@ -32,15 +32,14 @@ export const useCityName = () => {
 					country: data.country,
 					lat: data.lat,
 					lon: data.lon,
-				}),
+				})
 			);
 		}
 		return;
 	};
 
 	// Construct a string representation of the city name, including state and country if available
-	const nameString =
-		`${data?.city}${data?.state ? ', ' + data.state : ''}, ${data?.country}` || '';
+	const nameString = `${data?.city}${data?.state ? ', ' + data.state : ''}, ${data?.country}` || '';
 
 	return {
 		status,

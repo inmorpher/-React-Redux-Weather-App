@@ -12,8 +12,7 @@ import HeaderWrapper from './HeaderWrapper';
 
 /**
  * Header component for displaying the top section of the weather application.
- * It dynamically shows a loader or content based on the loading status.
- * Also, it includes a mobile button to toggle the sidebar and a search component.
+ * It dynamically shows a loader or content based on the loading status.P
  */
 const Header = () => {
 	const url = useGetURLParams(); // Retrieves URL parameters to determine the current location for weather data.

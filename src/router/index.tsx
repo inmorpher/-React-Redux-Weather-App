@@ -14,4 +14,9 @@ export const router = createBrowserRouter([
 		element: <WeatherPage />,
 		errorElement: <div>Error</div>,
 	},
+	// {
+	// 	path: `/${ROUTES.WEATHER_BY_LOCATION}/`,
+	// 	element: <WeatherPage />,
+	// 	errorElement: <div>Error</div>,
+	// },
 ]);

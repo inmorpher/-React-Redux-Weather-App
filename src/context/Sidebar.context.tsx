@@ -47,7 +47,8 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 		const diff = currentTouch - touchStart;
 
 		if (diff > 35) {
-			setIsOpenMobile(false);
+			// setIsOpenMobile(false);
+			toggleSideBar();
 		}
 		setTouchStart(currentTouch);
 	};
@@ -59,12 +60,19 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 	 * @param isOpenMobile - Boolean indicating if the sidebar should be open on mobile.
 	 * @param force - Optional boolean to force the visibility change.
 	 */
-	const setSidebarVisibility = useCallback((isOpenMobile: boolean, force = false) => {
-		if (force || window.innerWidth < 768) {
-			setIsOpenMobile(isOpenMobile);
-			document.body.classList.toggle('overflow-hidden', isOpenMobile);
-		}
-	}, []);
+	const setSidebarVisibility = useCallback(
+		(isOpenMobile: boolean, force = false) => {
+			if (force || window.innerWidth < 768) {
+				setIsOpenMobile(isOpenMobile);
+				if (isOpenMobile) {
+					document.body.classList.add('overflow-hidden');
+				} else {
+					document.body.classList.remove('overflow-hidden');
+				}
+			}
+		},
+		[isOpenMobile]
+	);
 
 	/**
 	 * Toggles the visibility of the sidebar.

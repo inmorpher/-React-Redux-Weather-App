@@ -20,14 +20,15 @@ export const useFetchData = () => {
 	// Combine URL parameters into a single string.
 	const urlParams = Object.values(params).join(',');
 	// Extract latitude and longitude from search parameters.
-	const [lat, lon] = searchParams.get('coord')?.split(',') || [];
+	const [lat, lon] = searchParams.get('location')?.split(',') || [];
 
 	// Access the error state from the weather slice of the Redux store.
 	// const error = useAppSelector((state) => state.weather.error);
 
 	const error = useAppSelector((state: RootState) => state.weather.error);
+	const query = urlParams || { lat: lat, lon: lon };
 
-	useGetWeatherQuery(urlParams);
+	useGetWeatherQuery(query);
 
 	// Log any existing error to the console.
 
@@ -43,7 +44,8 @@ export const useFetchData = () => {
 			console.log('that an error happened');
 			return;
 		}
-		dispatch(setQuery(urlParams));
+
+		dispatch(setQuery(query));
 
 		// Dispatch fetchWeather action with URL parameters or latitude and longitude.
 	}, [dispatch, error, lat, lon, navigate, urlParams]);

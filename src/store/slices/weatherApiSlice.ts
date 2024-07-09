@@ -12,7 +12,7 @@ import { TimeService } from '../../utils/services/time/time.service';
 import { RootState } from '../store';
 import { IWeatherData } from '../weather.type';
 
-const url = `${import.meta.env.VITE_SERVER_URL}:${import.meta.env.VITE_SERVER_PORT}`;
+const url = `${import.meta.env.VITE_SERVER_URL}`;
 
 export type IGetWeatherArgs = string | { lat: number | string; lon: number | string };
 
@@ -27,6 +27,17 @@ export const weatherApiSlice = createApi({
 				url: `search/byName?q=${args}`,
 				method: 'GET',
 			}),
+		}),
+		getByGeo: builder.query<IWeatherData, IGetWeatherArgs>({
+			query: (args: IGetWeatherArgs) => {
+				if (typeof args === 'string') {
+					throw new Error('Invalid arguments: expected an object with lat and lon properties');
+				}
+				return {
+					url: `search/byGeo?lat=${args.lat}&lon=${args.lon}`,
+					method: 'GET',
+				};
+			},
 		}),
 	}),
 });
@@ -687,4 +698,4 @@ export const selectDailyPopupDetails = (queryArg: IGetWeatherArgs, selected: num
 		}
 	);
 
-export const { useGetWeatherQuery } = weatherApiSlice;
+export const { useGetWeatherQuery, useGetByGeoQuery } = weatherApiSlice;

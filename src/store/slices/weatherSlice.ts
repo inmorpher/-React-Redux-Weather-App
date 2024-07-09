@@ -4,8 +4,6 @@ import { MetricConverter, MetricReturnType } from '../../utils/services/converte
 import { PopupWeatherScaleService } from '../../utils/services/curves/popup.weather.service';
 import { getTempritureScale } from '../../utils/services/definitions/daily.temp.definition';
 import { getDailyScaleCoords } from '../../utils/services/definitions/daily.temp.scale';
-import { pressureDefinition } from '../../utils/services/definitions/pressure.definition';
-import { sunDefinition } from '../../utils/services/definitions/sunDefinition';
 import { ScaleType, getSvgScale } from '../../utils/services/definitions/svgScale.definition';
 import { getWindDirection } from '../../utils/services/definitions/wind.direction';
 import { TimeService } from '../../utils/services/time/time.service';
@@ -43,17 +41,14 @@ const weatherSlice = createSlice({
 			state.error = true;
 			state.loading = false;
 		});
-		builder.addCase(
-			fetchWeather.fulfilled,
-			(state, action: PayloadAction<IWeatherData | null>) => {
-				if (action.payload) {
-					state.data = action.payload;
-					state.error = false;
-					state.loading = false;
-					state.firstLaunch = false;
-				}
-			},
-		);
+		builder.addCase(fetchWeather.fulfilled, (state, action: PayloadAction<IWeatherData | null>) => {
+			if (action.payload) {
+				state.data = action.payload;
+				state.error = false;
+				state.loading = false;
+				state.firstLaunch = false;
+			}
+		});
 	},
 });
 
@@ -75,20 +70,19 @@ export const selectLocation = createSelector(
 			lon,
 			time: dt ? new TimeService(dt, timezone).getTime('hoursAndMinutes').result() : '',
 		};
-	},
+	}
 );
 
 export const selectLoadingStatus = createSelector(
 	(state: RootState) => state.weather.loading,
 	(state: RootState) => state.weather.data,
 	(loading, data) => {
-		console.log(loading, loading);
 		if (Object.keys(data).length > 0 && !loading) {
 			return true;
 		} else {
 			return false;
 		}
-	},
+	}
 );
 
 export const selectHourlyWeather = createSelector(
@@ -101,7 +95,7 @@ export const selectHourlyWeather = createSelector(
 			timezone,
 			userMetrics,
 		};
-	},
+	}
 );
 
 export const selectMainWeatherDescription = createSelector(
@@ -116,7 +110,7 @@ export const selectMainWeatherDescription = createSelector(
 			min: MetricConverter.getTemp(daily.min, userMetrics, 'short'),
 			clouds: current.clouds,
 		};
-	},
+	}
 );
 
 export const selectWeatherIconId = createSelector(
@@ -129,7 +123,7 @@ export const selectWeatherIconId = createSelector(
 			iconCode: weatherIdDigit,
 			timeOfDay: weatherIdLetter === 'd' ? 'day' : 'night',
 		};
-	},
+	}
 );
 
 export const selectWind = createSelector(
@@ -144,7 +138,7 @@ export const selectWind = createSelector(
 			gust: wind_gust ? MetricConverter.getSpeed(wind_gust, userMetric, true) : null,
 			literal: getWindDirection(wind_deg),
 		};
-	},
+	}
 );
 
 export const selectHumidity = createSelector(
@@ -156,7 +150,7 @@ export const selectHumidity = createSelector(
 			dew_point: MetricConverter.getTemp(dew_point ? dew_point : 0, userMetrics, 'short'),
 			humidity,
 		};
-	},
+	}
 );
 
 export const selectFeelsLike = createSelector(
@@ -173,41 +167,17 @@ export const selectFeelsLike = createSelector(
 						? 'feels wormer'
 						: temp === feels_like && 'feels same',
 		};
-	},
+	}
 );
 
 export const selectUvi = createSelector(
 	(state: RootState) => state.weather.data.current.uvi,
-	(uvi) => getSvgScale(ScaleType.uvi, uvi),
+	(uvi) => getSvgScale(ScaleType.uvi, uvi)
 );
 
 export const selectAqi = createSelector(
 	(state: RootState) => state.weather.data.current.air_pollution,
-	(air_pollution) => getSvgScale(ScaleType.aqi, air_pollution),
-);
-
-export const selectSunPosition = createSelector(
-	(state: RootState) => state.weather.data.current.sunrise,
-	(state: RootState) => state.weather.data.current.sunset,
-	(state: RootState) => state.weather.data.current.dt,
-	(state: RootState) => state.weather.data.timezone,
-	(sunrise, sunset, dt, timezone) => {
-		const { range, value, isDay } = sunDefinition(sunrise, sunset, dt);
-		return {
-			sunset: new TimeService(sunset, timezone).getTime('hoursAndMinutes').result(),
-			sunrise: new TimeService(sunrise, timezone).getTime('hoursAndMinutes').result(),
-			range,
-			value,
-			isDay,
-		};
-	},
-);
-
-export const selectPressure = createSelector(
-	(state: RootState) => state.weather.data.current.pressure,
-	(pressure) => {
-		return pressureDefinition(pressure);
-	},
+	(air_pollution) => getSvgScale(ScaleType.aqi, air_pollution)
 );
 
 export const selectMoonPosition = createSelector(
@@ -237,7 +207,7 @@ export const selectMoonPosition = createSelector(
 			moonSet: new TimeService(moonset, timezone).getTime('hoursAndMinutes').result(),
 			desc: description,
 		};
-	},
+	}
 );
 
 export const selectPrecipitation = createSelector(
@@ -246,7 +216,7 @@ export const selectPrecipitation = createSelector(
 	(precipitation, timezone) => ({
 		precipitation,
 		timezone,
-	}),
+	})
 );
 
 export const selectDaily = createSelector(
@@ -256,11 +226,11 @@ export const selectDaily = createSelector(
 	(daily, timezone, userMetric) => {
 		const minTemp = daily.reduce(
 			(min, obj) => (obj.temp.min < min ? obj.temp.min : min),
-			daily[0].temp.min,
+			daily[0].temp.min
 		);
 		const maxTemp = daily.reduce(
 			(max, obj) => (obj.temp.max > max ? obj.temp.max : max),
-			daily[0].temp.max,
+			daily[0].temp.max
 		);
 
 		const convertedMinTemp = MetricConverter.getTemp(minTemp, userMetric, 'short');
@@ -277,13 +247,13 @@ export const selectDaily = createSelector(
 					135,
 					convertedMinTemp.value,
 					convertedMaxTemp.value,
-					dailyMin.value,
+					dailyMin.value
 				),
 				x2: getDailyScaleCoords(
 					135,
 					convertedMinTemp.value,
 					convertedMaxTemp.value,
-					dailyMax.value,
+					dailyMax.value
 				),
 			});
 			return {
@@ -301,7 +271,7 @@ export const selectDaily = createSelector(
 			dailyValues,
 			colors,
 		};
-	},
+	}
 );
 
 export const selectDailyPopup = (index: number) =>
@@ -312,7 +282,7 @@ export const selectDailyPopup = (index: number) =>
 		(daily, userMetric, timezone) => {
 			const day = daily[index];
 			const calendar = daily.map((item) =>
-				new TimeService(item.dt, timezone).getDay('2-digit').result(),
+				new TimeService(item.dt, timezone).getDay('2-digit').result()
 			);
 			return {
 				calendar,
@@ -334,7 +304,7 @@ export const selectDailyPopup = (index: number) =>
 					morn: MetricConverter.getTemp(day.temp.morn, userMetric, 'short'),
 				},
 			};
-		},
+		}
 	);
 
 export const selectPopupCalendar = createSelector(
@@ -359,7 +329,7 @@ export const selectPopupCalendar = createSelector(
 			};
 		});
 		return calendarItems;
-	},
+	}
 );
 
 export const selectPopupMainWeather = (value: number) =>
@@ -368,7 +338,7 @@ export const selectPopupMainWeather = (value: number) =>
 		(state: RootState) => state.user.data.userMetrics,
 		(
 			daily,
-			userMetric,
+			userMetric
 		): {
 			max: MetricReturnType;
 			min: MetricReturnType;
@@ -381,7 +351,7 @@ export const selectPopupMainWeather = (value: number) =>
 				condition: daily[value].weather[0].main,
 				icon: daily[value].weather[0].icon,
 			};
-		},
+		}
 	);
 
 export const selectPopupScale = (value: number) =>
@@ -396,17 +366,11 @@ export const selectPopupScale = (value: number) =>
 					morn: item.temp.morn,
 					day: item.temp.day,
 					eve: item.temp.eve,
-					nextNight: dailyTemp[index + 1]
-						? dailyTemp[index + 1].temp.night
-						: item.temp.night,
+					nextNight: dailyTemp[index + 1] ? dailyTemp[index + 1].temp.night : item.temp.night,
 				};
 			});
 
-			const popupWeatherScale = new PopupWeatherScaleService(
-				dailyTempArray,
-				userMetrics,
-				value,
-			);
+			const popupWeatherScale = new PopupWeatherScaleService(dailyTempArray, userMetrics, value);
 
 			return {
 				curve: popupWeatherScale.drawCurve(),
@@ -415,7 +379,7 @@ export const selectPopupScale = (value: number) =>
 				data: popupWeatherScale.getExpandedValues(),
 				hoverRect: popupWeatherScale.getHoverRect(),
 			};
-		},
+		}
 	);
 
 export const selectPopupDailyDetails = (value: number) =>
@@ -443,7 +407,7 @@ export const selectPopupDailyDetails = (value: number) =>
 				clouds: dayDetails.clouds,
 				summary: dayDetails.summary,
 			};
-		},
+		}
 	);
 
 export default weatherSlice.reducer;

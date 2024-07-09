@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
 	build: {
-		outDir: '../client/build',
+		outDir: 'dist',
 	},
 	plugins: [
 		react(),
@@ -31,9 +31,5 @@ export default defineConfig({
 			],
 			from: undefined,
 		},
-	},
-	test: {
-		globals: true,
-		environment: 'jsdom',
 	},
 });

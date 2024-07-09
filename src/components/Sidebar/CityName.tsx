@@ -21,11 +21,10 @@ const CityName = memo(() => {
 		onAddCityHandler, // Function to handle adding the city to a list.
 	} = useCityName();
 
-	// Renders nothing if there's an error or if the data fetching hasn't been successful.
-	if (isError || !isSuccess) return null;
-
 	// Renders a skeleton loader if the data is still loading.
 	if (isLoading) return <Skeleton />;
+	// Renders nothing if there's an error or if the data fetching hasn't been successful.
+	if (isError || !isSuccess) return null;
 
 	// Renders the city name, time, and an "Add" button on successful data fetching.
 	return (
