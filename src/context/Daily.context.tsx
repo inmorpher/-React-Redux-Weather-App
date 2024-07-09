@@ -40,8 +40,8 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 		isOpen: false,
 		item: 0,
 	});
-	const [isDailyOpen, setIsDailyOpen] = useState(false);
-	const [activeDay, setActiveDay] = useState<number>(0);
+	const [isDailyOpen] = useState(false);
+	const [activeDay] = useState<number>(0);
 
 	const [isActiveListener, setIsActiveListener] = useState(false);
 
@@ -94,7 +94,7 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 			showDetails(index);
 			scrollToggler();
 		},
-		[showDetails, scrollToggler],
+		[showDetails, scrollToggler]
 	);
 
 	useWindowResize(() => {
@@ -132,7 +132,7 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 				console.log('close');
 			}
 		},
-		[dailyState.isOpen, onCloseDetails, onOpenPopup],
+		[dailyState.isOpen, onCloseDetails, onOpenPopup]
 	);
 	return (
 		<DailyContext.Provider

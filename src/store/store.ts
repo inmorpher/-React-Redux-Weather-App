@@ -15,8 +15,7 @@ export const RootReducer = combineReducers({
 export const setupStore = () => {
 	return configureStore({
 		reducer: RootReducer,
-		middleware: (getDefaultMiddleware) =>
-			getDefaultMiddleware().concat(weatherApiSlice.middleware),
+		middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(weatherApiSlice.middleware),
 	});
 };
 

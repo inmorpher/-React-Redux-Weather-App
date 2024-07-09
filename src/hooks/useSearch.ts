@@ -1,7 +1,8 @@
-import { ChangeEvent, FormEvent, useCallback, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { autocompleteSearch } from '../api';
 import { ROUTES } from '../router/routes.const';
+import { useGetByGeoQuery } from '../store/slices/weatherApiSlice';
 import { constructUrl } from '../utils/constructUrl';
 import { debounce } from '../utils/debounce';
 
@@ -14,7 +15,7 @@ type UseSearchReturn = {
 	onTypeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
 	onListItemClickHandler: (
 		event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-		listItem: IGeocodingResponse,
+		listItem: IGeocodingResponse
 	) => void;
 	testKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 	onGeolocationSearchHandler: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -45,6 +46,7 @@ export const useSearch = (): UseSearchReturn => {
 	const navigate = useNavigate();
 	const [searchState, setSearchState] = useState<SearchState>({ list: [], activeItem: 0 });
 
+	const [geoCoords, setGeoCoords] = useState<{ lat: number; lon: number } | null>(null);
 	const autocomplete = useCallback(async (query: string) => {
 		const response = await autocompleteSearch(query);
 		setSearchState({
@@ -61,7 +63,7 @@ export const useSearch = (): UseSearchReturn => {
 
 	const onListItemClickHandler = (
 		event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-		listItem: IGeocodingResponse,
+		listItem: IGeocodingResponse
 	) => {
 		event?.preventDefault();
 		const { city, state, countryCode } = listItem;
@@ -69,7 +71,7 @@ export const useSearch = (): UseSearchReturn => {
 			{ location: ROUTES.WEATHER, city, state, countryCode },
 			undefined,
 			undefined,
-			true,
+			true
 		);
 		if (ref.current) {
 			ref.current.value = '';
@@ -93,13 +95,22 @@ export const useSearch = (): UseSearchReturn => {
 			const position = await getGeolocation();
 			const { latitude, longitude } = position.coords;
 
-			const url = `/${ROUTES.WEATHER}?coord=${latitude},${longitude}`;
-			navigate(url);
-			console.log(url);
+			setGeoCoords({ lat: latitude, lon: longitude });
+			console.log(geoCoords);
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	// const { data, error, isLoading } = useGetByGeoQuery(geoCoords ?? { lat: 0, lon: 0 }, {
+	// 	skip: !geoCoords,
+	// });
+
+	useEffect(() => {
+		if (geoCoords) {
+			useGetByGeoQuery(geoCoords);
+		}
+	}, [geoCoords]);
 
 	const onTypeHandler = async (event: ChangeEvent<HTMLInputElement>) => {
 		if (!event.target.value || event.target.value.length < 3) {
@@ -117,8 +128,7 @@ export const useSearch = (): UseSearchReturn => {
 			newIndex =
 				event.key === 'ArrowDown'
 					? (searchState.activeItem + 1) % searchState.list.length
-					: (searchState.activeItem - 1 + searchState.list.length) %
-						searchState.list.length;
+					: (searchState.activeItem - 1 + searchState.list.length) % searchState.list.length;
 		} else if (event.key === 'Enter') {
 			setSearchState({ list: [], activeItem: 0 });
 			onListItemClickHandler(null, searchState.list[searchState.activeItem]);

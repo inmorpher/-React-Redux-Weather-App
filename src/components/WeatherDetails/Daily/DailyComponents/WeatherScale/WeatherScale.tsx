@@ -19,7 +19,7 @@ const WeatherScale = () => {
 
 	if (isError || !isSuccess || !data2) return null;
 
-	const { scale, curve, desc, data, hoverRect } = data2;
+	const { scale, curve, desc, data } = data2;
 	const curveRef = useRef<SVGPathElement>(null);
 
 	return (
