@@ -4,9 +4,9 @@ import Header from './header/Header';
 
 const AsyncWeatherDetails = lazy(() => import('../../components/WeatherDetails/WeatherDetails'));
 
-console.log('rendering WeatherPage...');
-
 const WeatherPage = () => {
+	console.log('hegg');
+
 	return (
 		<>
 			<Header />

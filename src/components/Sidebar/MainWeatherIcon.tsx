@@ -1,7 +1,7 @@
-import React, { Suspense, memo } from 'react';
-import { useFetchState } from '../../hooks/useFetchState';
-import { selectWeatherIconId } from '../../store/slices/weatherApiSlice';
-import Skeleton from '../UI/SkeletonLoader/Skeleton';
+import React, { Suspense } from 'react';
+import { useGetWeatherIconInfo } from '../../context/WeatherData.context';
+import { IWeatherIcon } from '../../context/WeatherData.types';
+import withLoading from '../UI/WithLoading';
 
 const SnowDynamicIcon = React.lazy(() => import('../Icons/SnowDynamicIcon'));
 const ClearCloudyDynamicIcon = React.lazy(() => import('../Icons/ClearCloudyDynamicIcon'));
@@ -14,26 +14,20 @@ export type MainWeatherIcon = {
 };
 
 /**
- * MainWeatherIcon component
+ * Renders a weather icon component based on the provided weather data.
  *
- * This component fetches the weather icon data and displays the appropriate weather icon
- * based on the fetched data. It uses React's lazy loading and suspense to load the icons
- * dynamically.
+ * This component dynamically selects and renders the appropriate weather icon
+ * based on the icon code and time of day. It uses React.lazy for code splitting
+ * and Suspense for loading handling.
  *
- * @returns {JSX.Element | null} The weather icon component or null if there is an error or no data.
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - The weather data object.
+ * @param {string} props.data.iconCode - The weather icon code (e.g., '01', '02', etc.).
+ * @param {'day' | 'night'} props.data.timeOfDay - The time of day, either 'day' or 'night'.
+ *
+ * @returns {React.ReactElement} A div containing the appropriate weather icon component.
  */
-const MainWeatherIcon = memo(() => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useFetchState(selectWeatherIconId);
-
-	// Show a skeleton loader while the data is loading
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there is an error or no data
-	if (isError || !isSuccess || !data) return null;
-
+const MainWeatherIcon = ({ data }: { data: IWeatherIcon }) => {
 	const { iconCode, timeOfDay } = data;
 
 	// Map of weather icon codes to their respective components
@@ -50,7 +44,7 @@ const MainWeatherIcon = memo(() => {
 		default: 'N/A',
 	};
 
-	// Select the appropriate weather icon component based on the icon code
+	// Get the appropriate weather icon component based on the icon code and time of day
 	const WeatherIconElement = iconComponents[iconCode] || iconComponents['default'];
 
 	return (
@@ -58,6 +52,6 @@ const MainWeatherIcon = memo(() => {
 			<Suspense fallback={'loading'}>{WeatherIconElement}</Suspense>
 		</div>
 	);
-});
+};
 
-export default MainWeatherIcon;
+export default withLoading<{}, IWeatherIcon>(MainWeatherIcon, useGetWeatherIconInfo);

@@ -1,7 +1,7 @@
 // Imports the CityName component from the Sidebar component collection.
 import CityName from '../../../components/Sidebar/CityName';
-// Imports the MainWeather component from the Sidebar component collection.
 import MainWeather from '../../../components/Sidebar/MainWeather';
+// Imports the MainWeather component from the Sidebar component collection.
 
 /**
  * HeaderWeatherContent is a functional component that renders the city name and main weather information
@@ -10,6 +10,7 @@ import MainWeather from '../../../components/Sidebar/MainWeather';
  *
  * @returns A React fragment that contains the CityName and MainWeather components.
  */
+
 const HeaderWeatherContent = () => {
 	return (
 		<>

@@ -47,6 +47,8 @@ export const useFetchData = () => {
 
 		dispatch(setQuery(query));
 
+		// dispatch(fetchWeatherQuery(urlParams));
+
 		// Dispatch fetchWeather action with URL parameters or latitude and longitude.
 	}, [dispatch, error, lat, lon, navigate, urlParams]);
 };

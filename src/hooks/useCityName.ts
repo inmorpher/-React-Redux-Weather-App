@@ -1,50 +1,39 @@
 import { useDispatch } from 'react-redux';
+import { useUser } from '../context/User.context';
+import { useGetCityName } from '../context/WeatherData.context';
 import { addCity } from '../store/slices/userSlice';
-import { selectCityName } from '../store/slices/weatherApiSlice';
-import { useFetchState } from './useFetchState';
 
-/**
- * Custom hook to manage and provide city name information.
- * It utilizes the URL parameters to fetch city name details and provides
- * a method to add the city to the user's list.
- *
- * @returns An object containing the city name string, loading state, error state,
- * success state, current time, and a handler function to add the city.
- */
 export const useCityName = () => {
-	// Retrieve URL parameters
-	const { status, data } = useFetchState(selectCityName); // Select city name data from Redux store
-	const dispatch = useDispatch(); // Dispatch function from Redux
+	const cityInfo = useGetCityName();
+	const reduxDispatch = useDispatch();
+	const { dispatch: contextDispatch } = useUser();
 
-	/**
-	 * Handler for adding a city to the user's list.
-	 * Dispatches an action to add the city with its details to the Redux store.
-	 *
-	 * @param event The mouse event triggered by clicking the add city button.
-	 */
-	const onAddCityHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		event.preventDefault(); // Prevent default button click behavior
-		if (data) {
-			dispatch(
-				addCity({
-					city: data.city,
-					state: data.state,
-					country: data.country,
-					lat: data.lat,
-					lon: data.lon,
-				})
-			);
-		}
-		return;
+	const handleAddCity = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		if (!cityInfo) return;
+
+		const cityData = {
+			city: cityInfo.cityName,
+			state: cityInfo.stateName,
+			country: cityInfo.countryName,
+			lat: cityInfo.latitude,
+			lon: cityInfo.longitude,
+		};
+
+		reduxDispatch(addCity(cityData));
+		contextDispatch({
+			type: 'ADD_CITY',
+			payload: cityData,
+		});
 	};
 
-	// Construct a string representation of the city name, including state and country if available
-	const nameString = `${data?.city}${data?.state ? ', ' + data.state : ''}, ${data?.country}` || '';
+	const formattedCityName = cityInfo
+		? `${cityInfo.cityName}${cityInfo.stateName ? ', ' + cityInfo.stateName : ''}, ${cityInfo.countryName}`
+		: '';
 
 	return {
-		status,
-		nameString,
-		time: data?.time || '', // Current time data from the city information
-		onAddCityHandler,
+		formattedCityName,
+		localTime: cityInfo?.localTime || '',
+		handleAddCity,
 	};
 };

@@ -10,6 +10,7 @@ export const RootReducer = combineReducers({
 	user: userReducer,
 	weatherApi: weatherApiSlice.reducer,
 	userQuery: querySlice,
+	weatherQuery: weatherApiSlice.reducer,
 });
 
 export const setupStore = () => {

@@ -1,15 +1,17 @@
 import { useParams } from 'react-router-dom';
 import { fetchWeather } from '../api';
+import { useUser } from '../context/User.context';
 import { useAppDispatch, useAppSelector } from '../store/hooks.type';
-import { selectControls, toggleMetrics, toggleTheme } from '../store/slices/userSlice';
+import { selectControls, toggleTheme } from '../store/slices/userSlice';
 
 export const useControls = () => {
 	const dispatch = useAppDispatch();
+	const { dispatch: dispatch2 } = useUser();
 	const { city, country } = useParams();
 	const { theme, units, timeLastUpdate } = useAppSelector(selectControls);
 
 	const toggleMetricHandler = () => {
-		dispatch(toggleMetrics());
+		dispatch2({ type: 'TOGGLE_METRICS' });
 	};
 
 	const toggleThemeHandler = () => {
