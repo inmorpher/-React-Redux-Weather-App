@@ -29,7 +29,7 @@
 
 @layer base {
 	body {
-		@apply bg-bg-main dark:bg-slate-500;
+		@apply bg-bg-main dark:bg-primary-color-dark-500/90;
 		@apply text-white;
 		@apply pb-16;
 		@apply scrollbar-hidden scrollbar-hidden-webkit;
