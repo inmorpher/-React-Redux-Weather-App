@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { useCityName } from '../../hooks/useCityName';
 import Button from '../UI/Button';
 import withLoading from '../UI/WithLoading';
@@ -9,7 +8,7 @@ import withLoading from '../UI/WithLoading';
  *
  * @returns {JSX.Element} A React component that renders the city name, time, and an add button.
  */
-const CityName = memo(() => {
+const CityName = () => {
 	const { formattedCityName, localTime, handleAddCity } = useCityName();
 
 	return (
@@ -28,6 +27,6 @@ const CityName = memo(() => {
 			</div>
 		</div>
 	);
-});
+};
 
 export default withLoading(CityName);

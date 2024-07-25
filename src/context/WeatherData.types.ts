@@ -50,3 +50,10 @@ export interface IWeatherIcon {
 	iconCode: string;
 	timeOfDay: 'day' | 'night';
 }
+
+export interface IWindInfo {
+	degree: number;
+	speed: MetricReturnType;
+	gust: MetricReturnType | null;
+	direction: string;
+}

@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import Button from '../../../components/UI/Button';
 import Search from '../../../components/WeatherDetails/Search/Search';
-import { useGetURLParams } from '../../../hooks/useGetURLParams';
 import { useSidebarContext } from '../../../hooks/useSidebarContext';
 import HeaderContainer from './HeaderContainer';
 import HeaderLoader from './HeaderLoader';
@@ -13,9 +12,6 @@ import HeaderWrapper from './HeaderWrapper';
  * It dynamically shows a loader or content based on the loading status.P
  */
 const Header = () => {
-	const url = useGetURLParams(); // Retrieves URL parameters to determine the current location for weather data.
-	// Determines the loading status based on the current URL.
-
 	const { toggleSideBar } = useSidebarContext(); // Provides a method to toggle the sidebar visibility.
 
 	const handleToggleSidebar = useCallback(() => {

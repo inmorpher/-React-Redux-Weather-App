@@ -8,9 +8,15 @@ import {
 	MetricReturnType,
 	MetricValue,
 } from '../utils/services/converter/metric.converter';
+import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
-import { IWeatherIcon, UseGetCityInfoReturn, UseGetMainWeatherReturn } from './WeatherData.types';
+import {
+	IWeatherIcon,
+	IWindInfo,
+	UseGetCityInfoReturn,
+	UseGetMainWeatherReturn,
+} from './WeatherData.types';
 
 interface WeatherContextProps {
 	status: import('@tanstack/react-query').QueryStatus;
@@ -102,7 +108,13 @@ export const useGetCityName = (): UseGetCityInfoReturn => {
 			longitude: lon,
 			localTime: currentTime,
 		};
-	}, [weatherData]);
+	}, [
+		weatherData?.city,
+		weatherData?.countryCode,
+		weatherData?.country,
+		weatherData?.state,
+		weatherData?.lat,
+	]);
 };
 
 const TEMP_FORMAT = 'short' as const;
@@ -168,4 +180,36 @@ export const useGetWeatherIconInfo = (): IWeatherIcon | undefined => {
 
 		return { iconCode, timeOfDay };
 	}, [weatherData?.current?.weather[0]?.icon]);
+};
+
+export const useGetWindInfo = (): IWindInfo | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.wind_deg || !weatherData?.current?.wind_speed) return undefined;
+		const {
+			wind_deg: windDirection,
+			wind_gust: windGust,
+			wind_speed: windSpeed,
+		} = weatherData.current;
+
+		const formattedWindSpeed = MetricConverter.getSpeed(windSpeed, userPreferredMetrics, true);
+		const formattedGustSpeed = windGust
+			? MetricConverter.getSpeed(windGust, userPreferredMetrics, true)
+			: null;
+		const windDirectionLiteral = getWindDirection(windDirection);
+
+		return {
+			degree: windDirection,
+			speed: formattedWindSpeed,
+			gust: formattedGustSpeed,
+			direction: windDirectionLiteral,
+		};
+	}, [
+		weatherData?.current?.wind_deg,
+		weatherData?.current?.wind_gust,
+		weatherData?.current?.wind_speed,
+		userPreferredMetrics,
+	]);
 };
