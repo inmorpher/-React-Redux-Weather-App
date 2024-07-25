@@ -79,3 +79,19 @@ export interface IHumidityInfo {
 	/** The dew point temperature */
 	dewPoint: MetricReturnType;
 }
+
+/**
+ * Represents information about the sun's position and day/night cycle.
+ */
+export interface ISunPosition {
+	/** The time of sunset in the local timezone */
+	sunset: string;
+	/** The time of sunrise in the local timezone */
+	sunrise: string;
+	/** The duration of the complete day/night cycle in minutes */
+	cycleDuration: number;
+	/** The time elapsed since the start of the current cycle in minutes */
+	timeSinceCycleStart: number;
+	/** Indicates whether it is currently daytime (true) or nighttime (false) */
+	isDay: boolean;
+}

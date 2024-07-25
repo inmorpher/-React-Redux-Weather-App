@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
-import { selectSunPosition } from '../store/slices/weatherApiSlice';
-import { useFetchState } from './useFetchState';
+import { ISunPosition } from '../context/WeatherData.types';
 
 /**
  * Custom hook to manage and calculate the sun's position on an SVG path.
@@ -14,33 +13,23 @@ import { useFetchState } from './useFetchState';
  * - `status`: The status of the fetch operation.
  * - `data`: An object containing sun-related data such as sunrise, sunset, cycle duration, and whether it is day or night.
  */
-export const useSunPosition = () => {
-	const { status, data: sunData } = useFetchState(selectSunPosition);
+export const useSunPosition = (data: ISunPosition) => {
 	const pathRef = useRef<SVGPathElement>(null);
 	const indicatorRef = useRef<SVGCircleElement>(null);
 
 	useLayoutEffect(() => {
-		if (!pathRef.current || !indicatorRef.current || !sunData || status.isLoading) return;
-		const { cycleDuration, timeSinceCycleStart } = sunData;
+		if (!pathRef.current || !indicatorRef.current || !data) return;
+		const { cycleDuration, timeSinceCycleStart } = data;
 		const length = pathRef.current.getTotalLength();
-		const point = pathRef.current.getPointAtLength(
-			(length * timeSinceCycleStart) / cycleDuration,
-		);
+		const point = pathRef.current.getPointAtLength((length * timeSinceCycleStart) / cycleDuration);
 
 		indicatorRef.current.setAttribute('cx', point.x + 'px');
 		indicatorRef.current.setAttribute('cy', point.y + 'px');
-	}, [status.isLoading, sunData]);
+	}, [data.cycleDuration, data.timeSinceCycleStart]);
 
 	return {
+		data,
 		pathRef,
 		indicatorRef,
-		status,
-		data:
-			{
-				sunrise: sunData?.sunrise,
-				sunset: sunData?.sunset,
-				range: sunData?.cycleDuration || 0,
-				isDay: sunData?.isDay,
-			} || undefined,
 	};
 };

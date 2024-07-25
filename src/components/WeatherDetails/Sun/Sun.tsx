@@ -1,40 +1,32 @@
+import { useGetSunPosition } from '../../../context/WeatherData.context';
+import { ISunPosition } from '../../../context/WeatherData.types';
 import { useSunPosition } from '../../../hooks/useSunPosition';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import SunPositionIcon from './SunPostionIcon';
 import SunTimings from './SunTimings';
 
 /**
- * Sun component that displays the sun's position and timings.
- * It uses the `useSunPosition` hook to fetch the sun's data.
+ * Renders a component displaying sun position and timings.
  *
- * @returns {JSX.Element | null} The rendered component or null if there's an error or data is missing.
+ * @param {Object} props - The component props.
+ * @param {ISunPosition} props.data - The sun position data.
+ * @returns {JSX.Element} A React component displaying sun position and timings.
  */
-const Sun = () => {
-	const {
-		status: { isError, isLoading, isSuccess },
-		data,
-		pathRef,
-		indicatorRef,
-	} = useSunPosition();
-
-	// Show a loading skeleton while data is being fetched
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there's an error or required data is missing
-	if (isError || !data.sunset || !data.sunrise || !isSuccess) return null;
-
+const Sun = ({ data }: { data: ISunPosition }) => {
+	const { pathRef, indicatorRef } = useSunPosition(data);
 	const { isDay, sunrise, sunset } = data;
 
 	return (
-		<div className='relative flex min-w-full flex-1 flex-col'>
+		<Sun.Wrapper className='relative flex min-w-full flex-1 flex-col'>
 			<Sun.PositionIcon isDay={!!isDay} pathRef={pathRef} indicatorRef={indicatorRef} />
 			<Sun.Timings sunrise={sunrise} sunset={sunset} isDay={!!isDay} />
-		</div>
+		</Sun.Wrapper>
 	);
 };
 
-// Assigning subcomponents to the Sun component
+Sun.Wrapper = Wrapper;
 Sun.PositionIcon = SunPositionIcon;
 Sun.Timings = SunTimings;
 
-export default Sun;
+export default withLoading(Sun, useGetSunPosition);

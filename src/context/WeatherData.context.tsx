@@ -8,11 +8,13 @@ import {
 	MetricReturnType,
 	MetricValue,
 } from '../utils/services/converter/metric.converter';
+import { sunDefinition } from '../utils/services/definitions/sunDefinition';
 import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
 	IHumidityInfo,
+	ISunPosition,
 	IWeatherIcon,
 	IWindInfo,
 	UseGetCityInfoReturn,
@@ -255,4 +257,41 @@ export const useGetHumidityInfo = (): IHumidityInfo | undefined => {
 			dewPoint: MetricConverter.getTemp(dew_point || 0, userPreferredMetrics, 'short'),
 		};
 	}, [weatherData?.current?.humidity, weatherData?.current?.dew_point]);
+};
+
+/**
+ * A custom hook that calculates and returns information about the sun's position and day/night cycle.
+ *
+ * This hook uses the weather data to extract sunrise and sunset times, and calculates
+ * various properties related to the sun's position and the day/night cycle.
+ *
+ * @returns {Object | undefined} An object containing sun position information:
+ *   - sunset: {string} Formatted time of sunset (HH:MM)
+ *   - sunrise: {string} Formatted time of sunrise (HH:MM)
+ *   - cycleDuration: {number} Duration of the day/night cycle in seconds
+ *   - timeSinceCycleStart: {number} Time elapsed since the start of the current cycle in seconds
+ *   - isDay: {boolean} Whether it's currently daytime (true) or nighttime (false)
+ *
+ * Returns undefined if sunrise or sunset data is not available in the weather data.
+ */
+export const useGetSunPosition = (): ISunPosition | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.sunrise || !weatherData?.current?.sunset) return undefined;
+		const { timezone, current } = weatherData;
+		const { sunrise, sunset, dt } = current;
+		const { cycleDuration, timeSinceCycleStart, isDay } = sunDefinition(sunrise, sunset, dt);
+
+		const formatTime = (timestamp: number) =>
+			new TimeService(timestamp, timezone).getTime('hoursAndMinutes').result();
+
+		return {
+			sunset: formatTime(sunset),
+			sunrise: formatTime(sunrise),
+			cycleDuration,
+			timeSinceCycleStart,
+			isDay,
+		};
+	}, [weatherData?.current?.sunrise, weatherData?.current?.sunset, weatherData?.timezone]);
 };
