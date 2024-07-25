@@ -1,3 +1,4 @@
+import { MinutelyWeather } from '../store/weather.type';
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
 
 /**
@@ -94,4 +95,16 @@ export interface ISunPosition {
 	timeSinceCycleStart: number;
 	/** Indicates whether it is currently daytime (true) or nighttime (false) */
 	isDay: boolean;
+}
+
+/**
+ * Represents information about precipitation forecasts and conditions.
+ */
+export interface IPrecipitationInfo {
+	/** An array of minute-by-minute weather forecasts */
+	minutelyForecast: MinutelyWeather[];
+	/** The timezone of the location for which the forecast is provided */
+	locationTimezone: string;
+	/** Indicates whether precipitation is currently occurring or expected */
+	hasPrecipitation: boolean;
 }

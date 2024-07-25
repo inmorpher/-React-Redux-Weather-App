@@ -1,8 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { selectPrecipitation } from '../store/slices/weatherApiSlice';
+import { IPrecipitationInfo } from '../context/WeatherData.types';
 import { PrecipitationService } from '../utils/services/curves/precipitation.service';
 import { getPrecipitationColors } from '../utils/services/definitions/precipitation.definition';
-import { useFetchState } from './useFetchState';
 import { useWindowResize } from './useWindowResize';
 
 export interface IWindowSize {
@@ -15,11 +14,8 @@ export interface IWindowSize {
  *
  * @returns {object} An object containing various states and methods related to precipitation data.
  */
-export const usePrecipitation = () => {
-	const {
-		status: { isError, isLoading, isSuccess },
-		data: precipitation,
-	} = useFetchState(selectPrecipitation);
+export const usePrecipitation = (data: IPrecipitationInfo) => {
+	const { minutelyForecast, locationTimezone, hasPrecipitation } = data;
 
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [isWrapper, setIsWrapper] = useState<boolean>(false);
@@ -27,12 +23,6 @@ export const usePrecipitation = () => {
 		width: 521,
 		height: 149,
 	});
-
-	const status = {
-		isLoading,
-		isSuccess,
-		isError,
-	};
 
 	/**
 	 * Custom hook to handle window resize events.
@@ -60,31 +50,23 @@ export const usePrecipitation = () => {
 		}
 	}, []);
 
-	if (!precipitation || !precipitation.minutely) {
-		return {
-			status,
-			wrapperRef,
-		};
-	}
-
 	const precipitationService = new PrecipitationService(
-		precipitation.minutely,
-		precipitation?.timezone || 'UTC',
+		minutelyForecast,
+		locationTimezone || 'UTC',
 		{
 			width: windowSize.width || 0,
 			height: windowSize.height || 0,
-		},
+		}
 	);
 	const curve = precipitationService.drawCurve(true);
 	const timeLine = precipitationService.getTimeLine();
 	const axis = precipitationService.getAxis();
 
 	const gradientColors = getPrecipitationColors(
-		Math.max(...precipitation.minutely.map((color) => color.precipitation)),
+		Math.max(...minutelyForecast.map((color) => color.precipitation))
 	);
 
 	return {
-		status,
 		isWrapper,
 		wrapperRef,
 		curve,
@@ -92,6 +74,6 @@ export const usePrecipitation = () => {
 		timeLine,
 		axis,
 		dimension: { width: windowSize.width, height: windowSize.height },
-		isPrecipitation: precipitation.isPrecipitation,
+		hasPrecipitation,
 	};
 };

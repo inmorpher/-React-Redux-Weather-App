@@ -14,6 +14,7 @@ import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
 	IHumidityInfo,
+	IPrecipitationInfo,
 	ISunPosition,
 	IWeatherIcon,
 	IWindInfo,
@@ -294,4 +295,29 @@ export const useGetSunPosition = (): ISunPosition | undefined => {
 			isDay,
 		};
 	}, [weatherData?.current?.sunrise, weatherData?.current?.sunset, weatherData?.timezone]);
+};
+
+/**
+ * Custom hook to retrieve precipitation information from weather data.
+ * @returns {Object | undefined} Precipitation info or undefined if data is not available.
+ */
+export const useGetPrecipitationInfo = (): IPrecipitationInfo | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.daily) return undefined;
+
+		const { minutely, timezone, isPrecipitation } = weatherData;
+
+		return {
+			minutelyForecast: minutely,
+			locationTimezone: timezone,
+			hasPrecipitation: isPrecipitation,
+		};
+	}, [
+		weatherData?.daily,
+		weatherData?.minutely,
+		weatherData?.timezone,
+		weatherData?.isPrecipitation,
+	]);
 };
