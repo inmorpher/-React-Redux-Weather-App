@@ -12,6 +12,7 @@ import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
+	IHumidityInfo,
 	IWeatherIcon,
 	IWindInfo,
 	UseGetCityInfoReturn,
@@ -182,6 +183,20 @@ export const useGetWeatherIconInfo = (): IWeatherIcon | undefined => {
 	}, [weatherData?.current?.weather[0]?.icon]);
 };
 
+/**
+ * A custom hook that retrieves and formats wind information from the weather data.
+ *
+ * This hook uses the weather data context and user metrics to extract and format
+ * relevant wind information, including wind speed, direction, and gust speed.
+ *
+ * @returns {IWindInfo | undefined} An object containing formatted wind information:
+ *   - degree: The wind direction in degrees
+ *   - speed: The wind speed, formatted according to user preferences
+ *   - gust: The gust speed, formatted according to user preferences (or null if not available)
+ *   - direction: The wind direction as a literal string (e.g., "N", "NE", "E", etc.)
+ *
+ * If wind data is not available in the weather data, the hook returns undefined.
+ */
 export const useGetWindInfo = (): IWindInfo | undefined => {
 	const { weatherData } = useWeatherData();
 	const userPreferredMetrics = useUserMetrics();
@@ -212,4 +227,32 @@ export const useGetWindInfo = (): IWindInfo | undefined => {
 		weatherData?.current?.wind_speed,
 		userPreferredMetrics,
 	]);
+};
+
+/**
+ * A custom hook that retrieves and formats humidity information from the weather data.
+ *
+ * This hook uses the weather data context and user metrics to extract and format
+ * relevant humidity information, including the humidity percentage and dew point.
+ *
+ * @returns {IHumidityInfo | undefined} An object containing formatted humidity information:
+ *   - humidity: The current humidity percentage
+ *   - dewPoint: The dew point temperature, formatted according to user preferences
+ *
+ * If humidity data is not available in the weather data, the hook returns undefined.
+ */
+export const useGetHumidityInfo = (): IHumidityInfo | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.humidity) return undefined;
+
+		const { humidity, dew_point } = weatherData.current;
+
+		return {
+			humidity,
+			dewPoint: MetricConverter.getTemp(dew_point || 0, userPreferredMetrics, 'short'),
+		};
+	}, [weatherData?.current?.humidity, weatherData?.current?.dew_point]);
 };

@@ -1,6 +1,8 @@
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectHumidity } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import { useGetHumidityInfo } from '../../../context/WeatherData.context';
+import { IHumidityInfo } from '../../../context/WeatherData.types';
+import SpanText from '../../UI/Global/SpanText';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import HumidityIcon from './HumidityIcon';
 
 /**
@@ -11,42 +13,26 @@ import HumidityIcon from './HumidityIcon';
  * @component
  * @returns {JSX.Element | null} The rendered component or null if there is an error or no data.
  */
-const Humidity = () => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useFetchState(selectHumidity);
-
-	// Return null if there is an error or the data fetching was not successful
-
-	// Display a loading skeleton while the data is being fetched
-	if (isLoading) {
-		return <Skeleton />;
-	}
-	if (isError || !isSuccess || !data) return null;
-
-	const { humidity, dew_point } = data;
-
+const Humidity = ({ data: { humidity, dewPoint } }: { data: IHumidityInfo }) => {
 	return (
-		<div className='relative flex flex-1 flex-col'>
-			<div className='flex flex-1 items-end gap-4 px-3'>
+		<Humidity.Wrapper className='relative flex flex-1 flex-col'>
+			<Humidity.Wrapper className='flex flex-1 items-end gap-4 px-3'>
 				<Humidity.Icon />
-
-				<span className='text-[2.5rem] leading-[2.5rem]'>{humidity + '%'}</span>
-			</div>
-			<div className='flex flex-1 flex-col justify-end text-center text-sm'>
-				{dew_point && (
-					<span>
-						dew point: {dew_point.value}
-						{dew_point.units}
-					</span>
+				<Humidity.Text className='text-[2.5rem] leading-[2.5rem]'>{humidity + '%'}</Humidity.Text>
+			</Humidity.Wrapper>
+			<Humidity.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
+				{dewPoint && (
+					<Humidity.Text>
+						dew point: {dewPoint.value}
+						{dewPoint.units}
+					</Humidity.Text>
 				)}
-			</div>
-		</div>
+			</Humidity.Wrapper>
+		</Humidity.Wrapper>
 	);
 };
-
-// Assign the HumidityIcon component to the Humidity component's Icon property
+Humidity.Wrapper = Wrapper;
 Humidity.Icon = HumidityIcon;
+Humidity.Text = SpanText;
 
-export default Humidity;
+export default withLoading(Humidity, useGetHumidityInfo);
