@@ -1,8 +1,8 @@
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectUVI } from '../../../store/slices/weatherApiSlice';
+import { useGetUvi } from '../../../context/WeatherData.context';
 import { ScaleType, getSvgScale } from '../../../utils/services/definitions/svgScale.definition';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import Wrapper from '../../UI/Global/Wrapper';
 import SvgScale from '../../UI/SvgScale/SvgScale';
+import withLoading from '../../UI/WithLoading';
 import UVContent from './UVContent';
 
 /**
@@ -12,36 +12,24 @@ import UVContent from './UVContent';
  *
  * @returns {JSX.Element | null} The rendered component or null if there's an error or no data.
  */
-const Uv = () => {
-	const {
-		status: { isError, isLoading, isSuccess },
-		data: { uvi } = { uvi: undefined },
-	} = useFetchState(selectUVI);
-
-	// Return null if there's an error or the fetch was not successful or there's no data
-
-	// Show loading skeleton while data is being fetched
-	if (isLoading) {
-		return <Skeleton />;
-	}
-
-	if (isError || !isSuccess || uvi === undefined) return null;
-	// Get the UV index scale data
+const Uv = ({ data: uvi }: { data: number }) => {
+	console.log('UV data:', uvi);
 	const uviTransformed = getSvgScale(ScaleType.uvi, uvi);
 
 	return (
-		<div className='relative flex flex-1 flex-col'>
-			<div className='flex flex-1 items-end gap-4 px-3'>
+		<Uv.Wrapper className='relative flex flex-1 flex-col'>
+			<Uv.Wrapper className='flex flex-1 items-end gap-4 px-3'>
 				<Uv.Content uvi={uviTransformed} />
-			</div>
-			<div className='flex flex-1 items-end'>
+			</Uv.Wrapper>
+			<Uv.Wrapper className='flex flex-1 items-end'>
 				<SvgScale data={uviTransformed} type={ScaleType.uvi} />
-			</div>
-		</div>
+			</Uv.Wrapper>
+		</Uv.Wrapper>
 	);
 };
 
 // Assign UVContent component to Uv.Content
+Uv.Wrapper = Wrapper;
 Uv.Content = UVContent;
 
-export default Uv;
+export default withLoading(Uv, useGetUvi);

@@ -321,3 +321,38 @@ export const useGetPrecipitationInfo = (): IPrecipitationInfo | undefined => {
 		weatherData?.isPrecipitation,
 	]);
 };
+
+/**
+ * Custom hook to retrieve the current UV index from weather data.
+ *
+ * This hook uses the weather data context to extract the UV index information.
+ * It memoizes the result to optimize performance.
+ *
+ * @returns {number | undefined} The current UV index value, or undefined if not available.
+ */
+export const useGetUvi = (): number | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.uvi) return undefined;
+		return weatherData.current.uvi;
+	}, [weatherData?.current?.uvi]);
+};
+
+/**
+ * Custom hook to retrieve the current Air Quality Index (AQI) from weather data.
+ *
+ * This hook uses the weather data context to extract the air pollution information.
+ * It memoizes the result to optimize performance.
+ *
+ * @returns {Object | undefined} The current air pollution data, or undefined if not available.
+ */
+export const useGetAqi = (): number | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.air_pollution) return undefined;
+
+		return weatherData.current.air_pollution;
+	}, [weatherData?.current?.air_pollution]);
+};
