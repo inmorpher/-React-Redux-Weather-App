@@ -10,10 +10,10 @@ type VisibilityRange = {
 /**
  * Represents the return structure for visibility information, including the range description and distance.
  */
-type ReturnVisibility = {
+export interface IVisibilityReturn {
 	range: string; // The descriptive range of visibility.
 	distance: string; // The distance, formatted as a string with appropriate units (meters or kilometers).
-};
+}
 
 /**
  * An array of `VisibilityRange` objects defining various visibility conditions by distance.
@@ -35,7 +35,7 @@ const visibilityRanges: Array<VisibilityRange> = [
  * @param value The distance value to evaluate, in meters.
  * @returns An object of type `ReturnVisibility` containing the visibility range and formatted distance.
  */
-export const getVisibilityValue = (value: number): ReturnVisibility => {
+export const getVisibilityValue = (value: number): IVisibilityReturn => {
 	const range = visibilityRanges.find((range) => value >= range.min && value <= range.max);
 	const distance = value >= 1000 ? parseFloat((value / 1000).toFixed(1)) + 'km' : value + 'm';
 	return {

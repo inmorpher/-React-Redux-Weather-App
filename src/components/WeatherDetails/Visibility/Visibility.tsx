@@ -1,30 +1,35 @@
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectVisibility } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import { useGetVisibilityInfo } from '../../../context/WeatherData.context';
+import { IVisibilityReturn } from '../../../utils/services/definitions/visibility.definition';
+import SpanText from '../../UI/Global/SpanText';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import VisibilityIcon from './VisibilityIcon';
 
-const Visibility = () => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data: visibility,
-	} = useFetchState(selectVisibility);
-
-	if (isLoading) return <Skeleton />;
-
-	if (isError || !visibility || !isSuccess) return null;
-
-	const { distance, range } = visibility;
-
+/**
+ * Renders a component displaying visibility information.
+ *
+ * @param {Object} props - The component props.
+ * @param {IVisibilityReturn} props.data - The visibility data to display.
+ * @param {string} props.data.distance - The visibility distance.
+ * @param {string} props.data.range - The visibility range description.
+ * @returns {JSX.Element} A React component displaying the visibility information.
+ */
+const Visibility = ({ data: { distance, range } }: { data: IVisibilityReturn }) => {
 	return (
-		<div className='relative flex flex-1 flex-col'>
-			<div className='flex flex-1 items-end gap-4'>
+		<Visibility.Wrapper className='relative flex flex-1 flex-col'>
+			<Visibility.Wrapper className='flex flex-1 items-end gap-4'>
 				<Visibility.Icon />
-				<span className='text-[2rem] leading-[2.5rem]'>{distance}</span>
-			</div>
-			<div className='flex flex-1 flex-col justify-end text-center text-sm'>{range}</div>
-		</div>
+				<Visibility.Text className='text-[2rem] leading-[2.5rem]'>{distance}</Visibility.Text>
+			</Visibility.Wrapper>
+			<Visibility.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
+				{range}
+			</Visibility.Wrapper>
+		</Visibility.Wrapper>
 	);
 };
 
+Visibility.Wrapper = Wrapper;
+Visibility.Text = SpanText;
 Visibility.Icon = VisibilityIcon;
-export default Visibility;
+
+export default withLoading(Visibility, useGetVisibilityInfo);

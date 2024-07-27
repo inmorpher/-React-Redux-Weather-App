@@ -13,6 +13,10 @@ import {
 	pressureDefinition,
 } from '../utils/services/definitions/pressure.definition';
 import { sunDefinition } from '../utils/services/definitions/sunDefinition';
+import {
+	getVisibilityValue,
+	IVisibilityReturn,
+} from '../utils/services/definitions/visibility.definition';
 import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
@@ -457,4 +461,26 @@ export const useGetFeelsLikeInfo = (): IFeelsLikeInfo | undefined => {
 						: 'feels about the same',
 		};
 	}, [weatherData?.current?.feels_like, weatherData?.current?.temp, userPreferredMetrics]);
+};
+
+/**
+ * A custom hook that retrieves and formats visibility information from the weather data.
+ *
+ * This hook uses the weather data context to extract the current visibility value
+ * and then applies the getVisibilityValue function to interpret and format the visibility.
+ *
+ * @returns {IVisibilityReturn | undefined} An object containing formatted visibility information,
+ * or undefined if visibility data is not available in the weather data.
+ * The IVisibilityReturn object typically includes:
+ *   - visibility: The visibility distance value.
+ *   - unit: The unit of measurement for visibility (e.g., 'km', 'mi').
+ *   - description: A textual description of the visibility conditions.
+ */
+export const useGetVisibilityInfo = (): IVisibilityReturn | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.visibility) return undefined;
+		return getVisibilityValue(weatherData.current.visibility);
+	}, [weatherData?.current?.visibility]);
 };
