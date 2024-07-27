@@ -1,6 +1,8 @@
-import { MinutelyWeather } from '../store/weather.type';
+import { IDailyType } from '../store/slices/weatherApiSlice';
+import { DailyWeather, MinutelyWeather } from '../store/weather.type';
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
 import { HourlyWeatherData } from '../utils/services/curves/types';
+import { TempColorsDefinition } from '../utils/services/definitions/daily.temp.definition';
 import { UserUnits } from './User.context';
 
 /**
@@ -144,4 +146,17 @@ export interface IHourlyForecast {
 	hourlyForecast: HourlyWeatherData[];
 	timezone: string;
 	userPreferredMetrics: UserUnits;
+}
+
+/**
+ * Represents the daily weather forecast information.
+ * @interface IDailyForecast
+ * @property {DailyWeather[]} daily - An array of daily weather data objects containing detailed weather information for each day.
+ * @property {IDailyType[]} dailyValues - An array of daily weather values, possibly in a simplified or processed format.
+ * @property {TempColorsDefinition[]} colors - An array of temperature color definitions, likely used for visual representation of temperature ranges.
+ */
+export interface IDailyForecast {
+	daily: DailyWeather[];
+	dailyValues: IDailyType[];
+	colors: TempColorsDefinition[];
 }

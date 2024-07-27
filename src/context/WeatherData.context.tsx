@@ -2,12 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchWeather } from '../api/weatherApi';
+import { IDailyTempCoords, IDailyType } from '../store/slices/weatherApiSlice';
 import { IWeatherData } from '../store/weather.type';
 import {
 	MetricConverter,
 	MetricReturnType,
 	MetricValue,
 } from '../utils/services/converter/metric.converter';
+import { getTempritureScale } from '../utils/services/definitions/daily.temp.definition';
+import { getDailyScaleCoords } from '../utils/services/definitions/daily.temp.scale';
 import {
 	IPressureDefinition,
 	pressureDefinition,
@@ -21,6 +24,7 @@ import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
+	IDailyForecast,
 	IFeelsLikeInfo,
 	IHourlyForecast,
 	IHumidityInfo,
@@ -512,4 +516,90 @@ export const useGetHourlyForecast = (): IHourlyForecast | undefined => {
 			userPreferredMetrics,
 		};
 	}, [weatherData?.hourly]);
+};
+
+/**
+ * A custom hook that retrieves and processes daily forecast information from weather data.
+ *
+ * This hook calculates and formats daily temperature data, including minimum and maximum
+ * temperatures, weekday information, weather icons, and temperature coordinates for charting.
+ * It also generates a color scale based on the temperature range.
+ *
+ * @returns {IDailyForecast | undefined} An object containing processed daily forecast information:
+ *   - daily: Raw daily forecast data from the weather API
+ *   - dailyValues: Processed daily weather data including min/max temperatures, weekday, weather icon, and temperature coordinates
+ *   - colors: Color scale generated based on the temperature range
+ *
+ * Returns undefined if daily forecast data is not available in the weather data.
+ */
+export const useGetDailyForecast = (): IDailyForecast | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.daily) return undefined;
+
+		const MIN_MAX_TEMP_LINE_LENGTH = 135;
+
+		const { daily, timezone } = weatherData;
+
+		const minDailyTemp = daily.reduce(
+			(min, obj) => (obj.temp.min < min ? obj.temp.min : min),
+			daily[0].temp.min
+		);
+		const maxDailyTemp = daily.reduce(
+			(max, obj) => (obj.temp.max > max ? obj.temp.max : max),
+			daily[0].temp.max
+		);
+
+		const minTempConverted = MetricConverter.getTemp(minDailyTemp, userPreferredMetrics, 'short');
+		const maxTempConverted = MetricConverter.getTemp(maxDailyTemp, userPreferredMetrics, 'short');
+
+		const dailyTempCoords: IDailyTempCoords[] = [];
+
+		const dailyValues: IDailyType[] = daily.map((day) => {
+			// Convert the minimum and maximum temperatures of the day to the user's preferred units
+			const dayMinTemp = MetricConverter.getTemp(day.temp.min, userPreferredMetrics, 'short');
+			const dayMaxTemp = MetricConverter.getTemp(day.temp.max, userPreferredMetrics, 'short');
+
+			// Get the weekday abbreviation for the current day
+			const weekDay = new TimeService(day.dt, timezone).getWeekday('short').result();
+
+			// Get the weather icon code for the current day
+			const dayWeatherIcon = day.weather[0].icon;
+
+			// Calculate and store the temperature coordinates for charting
+			dailyTempCoords.push({
+				x1: getDailyScaleCoords(
+					MIN_MAX_TEMP_LINE_LENGTH,
+					minTempConverted.value,
+					maxTempConverted.value,
+					dayMinTemp.value
+				),
+				x2: getDailyScaleCoords(
+					MIN_MAX_TEMP_LINE_LENGTH,
+					minTempConverted.value,
+					maxTempConverted.value,
+					dayMaxTemp.value
+				),
+			});
+
+			// Return an object containing the processed daily weather data
+			return {
+				dayMinTemp,
+				dayMaxTemp,
+				weekDay,
+				dayWeatherIcon,
+				dailyTempCoords,
+			};
+		});
+
+		const colors = getTempritureScale(minDailyTemp, maxDailyTemp);
+
+		return {
+			daily,
+			dailyValues,
+			colors,
+		};
+	}, [weatherData?.daily, userPreferredMetrics]);
 };

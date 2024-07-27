@@ -1,25 +1,24 @@
+import { useGetDailyForecast } from '../../../context/WeatherData.context';
+import { IDailyForecast } from '../../../context/WeatherData.types';
 import { useDailyContext } from '../../../hooks/useDailyContext';
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectDailyMain } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import withLoading from '../../UI/WithLoading';
 import DailyColors from './DailyColors';
 import DailyContainer from './DailyContainer';
 import DailyDetails from './DailyDetails';
 import DailyList from './DailyList/DailyList';
 
-const Daily = () => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useFetchState(selectDailyMain);
-
+/**
+ * Renders the daily weather forecast component.
+ * This component displays the daily weather colors, list of daily values, and detailed daily weather information.
+ *
+ * @param {Object} props - The component props.
+ * @param {IDailyForecast} props.data - The daily forecast data.
+ * @param {Array} props.data.dailyValues - An array of daily weather values.
+ * @param {Array} props.data.colors - An array of colors associated with the weather conditions.
+ * @returns {JSX.Element} A React component that displays the daily weather forecast.
+ */
+const Daily = ({ data: { dailyValues, colors } }: { data: IDailyForecast }) => {
 	const { containerRef, dailyDetailsRef, dailyListRef } = useDailyContext();
-
-	if (isLoading) return <Skeleton />;
-
-	if (!data || !isSuccess || isError) return null;
-
-	const { dailyValues, colors } = data;
 
 	return (
 		<DailyContainer containerRef={containerRef}>
@@ -37,4 +36,4 @@ const Daily = () => {
 	);
 };
 
-export default Daily;
+export default withLoading(Daily, useGetDailyForecast);
