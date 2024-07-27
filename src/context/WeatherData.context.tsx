@@ -17,6 +17,7 @@ import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
+	IFeelsLikeInfo,
 	IHumidityInfo,
 	IMoonPosition,
 	IPrecipitationInfo,
@@ -414,7 +415,7 @@ export const useGetMoonPosition = (): IMoonPosition | undefined => {
  *  - pressure: The atmospheric pressure value.
  *  - angle: The calculated angle for the gauge's needle, based on the pressure value.
  *  - coords: An array of coordinate pairs representing the lines of the gauge.
- *   Returns undefined if pressure data is not available in the weather data.
+ *  Returns undefined if pressure data is not available in the weather data.
  */
 export const useGetPressureInfo = (): IPressureDefinition | undefined => {
 	const { weatherData } = useWeatherData();
@@ -423,4 +424,37 @@ export const useGetPressureInfo = (): IPressureDefinition | undefined => {
 		if (!weatherData?.current?.pressure) return undefined;
 		return pressureDefinition(weatherData.current.pressure);
 	}, [weatherData?.current?.pressure]);
+};
+
+/**
+ * A custom hook that retrieves and formats "feels like" temperature information from the weather data.
+ *
+ * This hook uses the weather data context and user metrics to extract and format
+ * the "feels like" temperature and compare it to the actual temperature.
+ *
+ * @returns {IFeelsLikeInfo | undefined} An object containing formatted "feels like" information:
+ *   - temperature: The "feels like" temperature, formatted according to user preferences
+ *   - feelsLike: A string describing how the "feels like" temperature compares to the actual temperature
+ *     (e.g., "feels colder", "feels warmer", or "feels about the same")
+ *
+ * Returns undefined if "feels like" data is not available in the weather data.
+ */
+export const useGetFeelsLikeInfo = (): IFeelsLikeInfo | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.feels_like) return undefined;
+
+		const { feels_like, temp } = weatherData.current;
+		return {
+			temperature: MetricConverter.getTemp(feels_like, userPreferredMetrics, 'short'),
+			feelsLike:
+				temp > feels_like
+					? 'feels colder'
+					: temp < feels_like
+						? 'feels warmer'
+						: 'feels about the same',
+		};
+	}, [weatherData?.current?.feels_like, weatherData?.current?.temp, userPreferredMetrics]);
 };

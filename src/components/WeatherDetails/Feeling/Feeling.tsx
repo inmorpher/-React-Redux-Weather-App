@@ -1,45 +1,37 @@
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectFeeling } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import { useGetFeelsLikeInfo } from '../../../context/WeatherData.context';
+import { IFeelsLikeInfo } from '../../../context/WeatherData.types';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import FeelingContent from './FeelingContent';
 import FeelingIcon from './FeelingIcon';
 
 /**
- * Represents the Feeling component that displays the current weather feeling.
- * It utilizes the `useFetchState` hook to fetch the weather feeling data and
- * conditionally renders different components based on the fetch status.
+ * Renders a component displaying weather feeling information.
  *
- * @returns {JSX.Element | null} The Feeling component UI if data is available and fetch is successful,
- * a Skeleton loader during loading, or null if an error occurs or data is not available.
+ * @component
+ * @param {Object} props - The component props.
+ * @param {IFeelsLikeInfo} props.data - The weather feeling data object.
+ * @param {number} props.data.temperature - The actual temperature value.
+ * @param {string} props.data.feelsLike - Description of how the temperature feels.
+ * @returns {JSX.Element} A React component that displays the weather feeling information,
+ * including an icon, temperature content, and a description of how it feels.
  */
-const Feeling = () => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useFetchState(selectFeeling);
-
-	// Display a skeleton loader while the data is loading
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there's an error or data is not successfully fetched
-	if (!data || !isSuccess || isError) return null;
-
-	const { temp, condition } = data;
-
-	// Render the weather feeling UI with temperature and condition
+const Feeling = ({ data: { temperature, feelsLike } }: { data: IFeelsLikeInfo }) => {
 	return (
-		<div className='relative flex flex-1 flex-col'>
-			<div className='flex flex-1 items-end gap-4'>
+		<Feeling.Wrapper className='relative flex flex-1 flex-col'>
+			<Feeling.Wrapper className='flex flex-1 items-end gap-4'>
 				<Feeling.Icon />
-				<Feeling.Content temp={temp} />
-			</div>
-			<div className='flex flex-1 flex-col justify-end text-center text-sm'>{condition}</div>
-		</div>
+				<Feeling.Content temp={temperature} />
+			</Feeling.Wrapper>
+			<Feeling.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
+				{feelsLike}
+			</Feeling.Wrapper>
+		</Feeling.Wrapper>
 	);
 };
 
-// Assigning subcomponents to the Feeling component for better encapsulation and usage
+Feeling.Wrapper = Wrapper;
 Feeling.Icon = FeelingIcon;
 Feeling.Content = FeelingContent;
 
-export default Feeling;
+export default withLoading(Feeling, useGetFeelsLikeInfo);

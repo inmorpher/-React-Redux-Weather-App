@@ -120,3 +120,14 @@ export interface IMoonPosition {
 	formattedMoonRise: string;
 	formattedMoonSet: string;
 }
+
+/**
+ * Represents information about the perceived temperature and how it feels.
+ * @interface IFeelsLikeInfo
+ * @property {MetricReturnType} temperature - The actual temperature measurement,
+ * @property {string} feelsLike - A description of how the temperature feels, e.g., "Warmer", "Colder", "About the same"
+ */
+export interface IFeelsLikeInfo {
+	temperature: MetricReturnType;
+	feelsLike: string;
+}
