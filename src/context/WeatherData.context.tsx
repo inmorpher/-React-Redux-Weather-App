@@ -22,6 +22,7 @@ import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
 	IFeelsLikeInfo,
+	IHourlyForecast,
 	IHumidityInfo,
 	IMoonPosition,
 	IPrecipitationInfo,
@@ -483,4 +484,32 @@ export const useGetVisibilityInfo = (): IVisibilityReturn | undefined => {
 		if (!weatherData?.current?.visibility) return undefined;
 		return getVisibilityValue(weatherData.current.visibility);
 	}, [weatherData?.current?.visibility]);
+};
+
+/**
+ * A custom hook that retrieves hourly forecast information from the weather data.
+ *
+ * This hook uses the weather data context and user metrics to extract and format
+ * relevant hourly forecast information, including the forecast data, timezone,
+ * and user's preferred metrics.
+ *
+ * @returns {IHourlyForecast | undefined} An object containing hourly forecast information:
+ *   - hourlyForecast: An array of hourly weather forecast data
+ *   - timezone: The timezone of the location for which the forecast is provided
+ *   - userPreferredMetrics: The user's preferred metric system for temperature and other measurements
+ *
+ * Returns undefined if hourly forecast data is not available in the weather data.
+ */
+export const useGetHourlyForecast = (): IHourlyForecast | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.hourly) return undefined;
+		return {
+			hourlyForecast: weatherData.hourly,
+			timezone: weatherData.timezone,
+			userPreferredMetrics,
+		};
+	}, [weatherData?.hourly]);
 };

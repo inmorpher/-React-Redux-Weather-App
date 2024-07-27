@@ -1,5 +1,8 @@
+import { useGetHourlyForecast } from '../../../context/WeatherData.context';
+import { IHourlyForecast } from '../../../context/WeatherData.types';
 import { useHourly } from '../../../hooks/useHourly';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 
 import HourlySVGContainer from './HourlySVGContainer';
 import HourlySVGDefs from './HourlySVGDefs';
@@ -13,55 +16,36 @@ import HourlyUnderline from './MainCurve/HourlyUnderline';
 import HourlyWeatherDescription from './MainCurve/HourlyWeatherDescription';
 
 /**
- * Hourly component that displays hourly weather data.
- * It fetches data using the useHourly hook and displays different parts of the hourly weather chart.
+ * Renders the hourly weather forecast component.
+ * This component displays various weather data in a chart format, including precipitation, temperature curve, and timeline.
  *
- * @returns {JSX.Element | null} The rendered component or null if there is an error.
+ * @param {Object} props - The properties passed to the component.
+ * @param {IHourlyForecast} props.data - The hourly forecast data to be displayed.
+ * @returns {JSX.Element} A React component that renders the hourly weather forecast chart.
  */
-const Hourly = () => {
-	// Destructure the status and data from the useHourly hook
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useHourly();
+const Hourly = ({ data: hourlyData }: { data: IHourlyForecast }) => {
+	const { scale, precipitationRects, curve, precipitationDesc, timeLine, weatherDesc, wrapperRef } =
+		useHourly(hourlyData);
 
-	// Show a skeleton loader while data is loading
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there is an error or the data fetch was not successful
-	if (isError || !isSuccess) return null;
-
-	// Destructure the necessary data for rendering the chart
-	const {
-		scale,
-		precipitationRects,
-		curve,
-		precipitationDesc,
-		timeLine,
-		weatherDesc,
-		wrapperRef,
-	} = data;
-
-	// Render the hourly weather chart
 	return (
-		<div className='relative flex h-full w-full items-center' ref={wrapperRef}>
+		<Hourly.Wrapper className='relative flex h-full w-full items-center' ref={wrapperRef}>
 			<Hourly.Scale scaleMarks={scale} />
-			<div className=' overflow-x-scroll scrollbar-hidden scrollbar-hidden-webkit'>
+			<Hourly.Wrapper className=' overflow-x-scroll scrollbar-hidden scrollbar-hidden-webkit'>
 				<Hourly.SVGContainer>
 					<Hourly.SVGDefs />
 					<Hourly.PrecipitationRects precipitationRectangles={precipitationRects} />
-					<Hourly.ChartCurve curvePath={curve?.mainCurve} />
+					<Hourly.ChartCurve curvePath={curve.mainCurve} />
 					<Hourly.PrecipitationDescription precipitationDescription={precipitationDesc} />
 					<Hourly.ChartTimeLine data={timeLine} />
 					<Hourly.WeatherDescription weatherDescription={weatherDesc} />
 					<Hourly.Underline />
 				</Hourly.SVGContainer>
-			</div>
-		</div>
+			</Hourly.Wrapper>
+		</Hourly.Wrapper>
 	);
 };
 
-// Assigning components to Hourly for easier access
+Hourly.Wrapper = Wrapper;
 Hourly.Scale = Scale;
 Hourly.SVGContainer = HourlySVGContainer;
 Hourly.SVGDefs = HourlySVGDefs;
@@ -72,4 +56,4 @@ Hourly.ChartTimeLine = HourlyChartTimeLine;
 Hourly.WeatherDescription = HourlyWeatherDescription;
 Hourly.Underline = HourlyUnderline;
 
-export default Hourly;
+export default withLoading(Hourly, useGetHourlyForecast);

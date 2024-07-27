@@ -1,5 +1,7 @@
 import { MinutelyWeather } from '../store/weather.type';
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
+import { HourlyWeatherData } from '../utils/services/curves/types';
+import { UserUnits } from './User.context';
 
 /**
  * Represents information about a city.
@@ -130,4 +132,16 @@ export interface IMoonPosition {
 export interface IFeelsLikeInfo {
 	temperature: MetricReturnType;
 	feelsLike: string;
+}
+/**
+ * Represents hourly weather forecast information along with user preferences.
+ * @interface IHourlyForecast
+ * @property {HourlyWeatherData[]} hourlyForecast - An array of hourly weather data objects
+ * @property {string} timezone - The timezone for which the forecast is provided
+ * @property {UserUnits} userPreferredMetrics - The user's preferred units for weather measurements
+ */
+export interface IHourlyForecast {
+	hourlyForecast: HourlyWeatherData[];
+	timezone: string;
+	userPreferredMetrics: UserUnits;
 }
