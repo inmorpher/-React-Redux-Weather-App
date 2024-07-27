@@ -14,6 +14,7 @@ import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
 	IHumidityInfo,
+	IMoonPosition,
 	IPrecipitationInfo,
 	ISunPosition,
 	IWeatherIcon,
@@ -355,4 +356,46 @@ export const useGetAqi = (): number | undefined => {
 
 		return weatherData.current.air_pollution;
 	}, [weatherData?.current?.air_pollution]);
+};
+
+/**
+ * A custom hook that retrieves and formats moon position information from the weather data.
+ *
+ * This hook uses the weather data context to extract relevant moon information,
+ * including moon phase, moonrise, and moonset times. It also formats the moonrise
+ * and moonset times according to the location's timezone.
+ *
+ * @returns {IMoonPosition | undefined} An object containing moon position information:
+ *   - moonPhase: The current phase of the moon
+ *   - formattedMoonRise: The formatted time of moonrise (HH:MM)
+ *   - formattedMoonSet: The formatted time of moonset (HH:MM)
+ *
+ * Returns undefined if moon data is not available in the weather data.
+ */
+export const useGetMoonPosition = (): IMoonPosition | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (
+			!weatherData?.daily[0].moon_phase ||
+			!weatherData?.daily[0].moonrise ||
+			!weatherData?.daily[0].moonset
+		)
+			return undefined;
+
+		return {
+			moonPhase: weatherData.daily[0].moon_phase,
+			formattedMoonRise: new TimeService(weatherData.daily[0].moonrise, weatherData.timezone)
+				.getTime('hoursAndMinutes')
+				.result(),
+			formattedMoonSet: new TimeService(weatherData.daily[0].moonset, weatherData.timezone)
+				.getTime('hoursAndMinutes')
+				.result(),
+		};
+	}, [
+		weatherData?.daily[0].moon_phase,
+		weatherData?.daily[0].moonrise,
+		weatherData?.daily[0].moonset,
+		weatherData?.timezone,
+	]);
 };

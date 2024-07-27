@@ -1,48 +1,37 @@
-import { useFetchState } from '../../../hooks/useFetchState';
-import { selectMoonPosition } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import { useGetMoonPosition } from '../../../context/WeatherData.context';
+import { IMoonPosition } from '../../../context/WeatherData.types';
+import { useMoon } from '../../../hooks/useMoon';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import MoonContent from './MoonContent';
 import MoonIcon from './MoonIcon';
 
 /**
- * Moon component that displays the current moon phase, description, moonrise, and moonset times.
- * It uses the `useFetchState` hook to fetch the moon position data from a weather API slice.
+ * Moon component for displaying moon phase and related information.
  *
- * The component conditionally renders:
- * - A loading state using the `Skeleton` component while the data is being fetched.
- * - Null if there's an error or no data is available after fetching.
- * - The moon phase icon, description, and moonrise/moonset times upon successful data fetching.
+ * This component renders the moon phase icon, description, and moon rise/set times.
+ * It uses the useMoon hook to process the moon data and withLoading HOC to handle loading state.
+ *
+ * @param {Object} props - The component props.
+ * @param {IMoonPosition} props.data - The moon position data.
+ * @returns {JSX.Element} A React component displaying moon information.
  */
-const Moon = () => {
-	const {
-		status: { isError, isLoading, isSuccess },
-		data,
-	} = useFetchState(selectMoonPosition);
+const Moon = ({ data: moon }: { data: IMoonPosition }) => {
+	const { description, moonPhase, moonRise, moonSet } = useMoon(moon);
 
-	// Display the loading state while fetching data
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there's an error or no data is available
-	if (!data || !isSuccess || isError) return null;
-
-	// Destructure the necessary data for display
-	const { moon_phase, moonrise, moonset, description } = data;
-
-	// Render the moon information
 	return (
-		<div className='relative flex min-w-full flex-1 flex-col'>
-			<div className='flex  flex-1 items-center gap-4 pb-3'>
-				<Moon.Icon moon_phase={moon_phase} />
-				<div className='text-center text-sm'>{description}</div>
-			</div>
-			<Moon.Content moonrise={moonrise} moonset={moonset} />
-		</div>
+		<Moon.Wrapper className='relative flex min-w-full flex-1 flex-col'>
+			<Moon.Wrapper className='flex  flex-1 items-center gap-4 pb-3'>
+				<Moon.Icon moonPhase={moonPhase} />
+				<Moon.Wrapper className='text-center text-sm'>{description}</Moon.Wrapper>
+			</Moon.Wrapper>
+			<Moon.Content moonRise={moonRise} moonSet={moonSet} />
+		</Moon.Wrapper>
 	);
 };
 
-// Assigning the MoonIcon component to Moon.Icon for a structured approach
+Moon.Wrapper = Wrapper;
 Moon.Icon = MoonIcon;
-// Assigning the MoonContent component to Moon.Content for displaying detailed moon information
 Moon.Content = MoonContent;
 
-export default Moon;
+export default withLoading(Moon, useGetMoonPosition);

@@ -108,3 +108,18 @@ export interface IPrecipitationInfo {
 	/** Indicates whether precipitation is currently occurring or expected */
 	hasPrecipitation: boolean;
 }
+
+/**
+ * Represents information about the moon's position and phases for a specific location.
+ */
+export interface IMoonPosition {
+	/**
+	 * The current phase of the moon, represented as a number between 0 and 1.
+	 * 0 represents a new moon, 0.25 a first quarter moon, 0.5 a full moon, and 0.75 a last quarter moon.
+	 */
+	moonPhase: number;
+	/** The formatted time of moonrise as a string, typically in the local time of the specified timezone */
+	formattedMoonRise: string;
+	/** The formatted time of moonset as a string, typically in the local time of the specified timezone */
+	formattedMoonSet: string;
+}
