@@ -1,4 +1,36 @@
 /**
+ * Represents the structure of a pressure definition used in a gauge visualization.
+ *  - pressure: The atmospheric pressure value.
+ *  - angle: The calculated angle for the gauge's needle, based on the pressure value.
+ *  - coords: An array of coordinate pairs representing the lines of the gauge.
+ */
+export interface IPressureDefinition {
+	/**
+	 * The atmospheric pressure value.
+	 */
+	pressure: number;
+
+	/**
+	 * The calculated angle for the gauge's needle, based on the pressure value.
+	 */
+	angle: number;
+
+	/**
+	 * An array of coordinate pairs representing the lines of the gauge.
+	 * Each object in the array contains the start and end points of a line.
+	 */
+	coords: Array<{
+		/** The x-coordinate of the start point of the line. */
+		x1: number;
+		/** The y-coordinate of the start point of the line. */
+		y1: number;
+		/** The x-coordinate of the end point of the line. */
+		x2: number;
+		/** The y-coordinate of the end point of the line. */
+		y2: number;
+	}>;
+}
+/**
  * Calculates the pressure definition for a given pressure value and generates coordinates for a graphical representation.
  * This function is designed to work with a gauge that visualizes pressure levels.
  *

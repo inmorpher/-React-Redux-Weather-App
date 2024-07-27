@@ -3,19 +3,19 @@ import { MetricReturnType } from '../utils/services/converter/metric.converter';
 
 /**
  * Represents information about a city.
+ * @property {string} cityName - The name of the city
+ * @property {string} countryName - The name of the country where the city is located
+ * @property {string} stateName - The name of the state or region where the city is located
+ * @property {number} latitude - The latitude coordinate of the city
+ * @property {number} longitude - The longitude coordinate of the city (may be undefined)
+ * @property {string} localTime - The local time in the city
  */
 export interface ICityInfo {
-	/** The name of the city */
 	cityName: string;
-	/** The name of the country where the city is located */
 	countryName: string;
-	/** The name of the state or region where the city is located */
 	stateName: string;
-	/** The latitude coordinate of the city */
 	latitude: number;
-	/** The longitude coordinate of the city (may be undefined) */
 	longitude: number;
-	/** The local time in the city */
 	localTime: string;
 }
 
@@ -27,17 +27,17 @@ export type UseGetCityInfoReturn = ICityInfo | undefined;
 
 /**
  * Represents the main weather information for a location.
+ * @property {MetricReturnType} temperature - The current temperature
+ * @property {string} condition - The current weather condition description
+ * @property {MetricReturnType} minTemperature - The minimum temperature for the day
+ * @property {MetricReturnType} maxTemperature - The maximum temperature for the day
+ * @property {number} cloudCoverage - The percentage of cloud coverage
  */
 export interface IMainWeather {
-	/** The current temperature */
 	temperature: MetricReturnType;
-	/** The current weather condition description */
 	condition: string;
-	/** The minimum temperature for the day */
 	minTemperature: MetricReturnType;
-	/** The maximum temperature for the day */
 	maxTemperature: MetricReturnType;
-	/** The percentage of cloud coverage */
 	cloudCoverage: number;
 }
 
@@ -49,77 +49,74 @@ export type UseGetMainWeatherReturn = IMainWeather | undefined;
 
 /**
  * Represents an icon for displaying weather conditions.
+ * @property {string} iconCode - The code representing the specific weather icon
+ * @property {'day' | 'night'} timeOfDay - Indicates whether the icon represents day or night conditions
  */
 export interface IWeatherIcon {
-	/** The code representing the specific weather icon */
 	iconCode: string;
-	/** Indicates whether the icon represents day or night conditions */
 	timeOfDay: 'day' | 'night';
 }
 
 /**
  * Represents information about wind conditions.
+ * @property {number} degree - The wind direction in degrees
+ * @property {MetricReturnType} speed - The wind speed
+ * @property {MetricReturnType | null} gust - The wind gust speed, if available
+ * @property {string} direction - The cardinal direction of the wind (e.g., "N", "SE", etc.)
  */
 export interface IWindInfo {
-	/** The wind direction in degrees */
 	degree: number;
-	/** The wind speed */
 	speed: MetricReturnType;
-	/** The wind gust speed, if available */
 	gust: MetricReturnType | null;
-	/** The cardinal direction of the wind (e.g., "N", "SE", etc.) */
 	direction: string;
 }
 
 /**
  * Represents humidity-related weather information.
+ * @property {number} humidity - The relative humidity percentage
+ * @property {MetricReturnType} dewPoint - The dew point temperature
  */
 export interface IHumidityInfo {
-	/** The relative humidity percentage */
 	humidity: number;
-	/** The dew point temperature */
 	dewPoint: MetricReturnType;
 }
 
 /**
  * Represents information about the sun's position and day/night cycle.
+ * @property {string} sunset - The time of sunset in the local timezone
+ * @property {string} sunrise - The time of sunrise in the local timezone
+ * @property {number} cycleDuration - The duration of the complete day/night cycle in minutes
+ * @property {number} timeSinceCycleStart - The time elapsed since the start of the current cycle in minutes
+ * @property {boolean} isDay - Indicates whether it is currently daytime (true) or nighttime (false)
  */
 export interface ISunPosition {
-	/** The time of sunset in the local timezone */
 	sunset: string;
-	/** The time of sunrise in the local timezone */
 	sunrise: string;
-	/** The duration of the complete day/night cycle in minutes */
 	cycleDuration: number;
-	/** The time elapsed since the start of the current cycle in minutes */
 	timeSinceCycleStart: number;
-	/** Indicates whether it is currently daytime (true) or nighttime (false) */
 	isDay: boolean;
 }
 
 /**
  * Represents information about precipitation forecasts and conditions.
+ * @property {MinutelyWeather[]} minutelyForecast - An array of minute-by-minute weather forecasts
+ * @property {string} locationTimezone - The timezone of the location for which the forecast is provided
+ * @property {boolean} hasPrecipitation - Indicates whether precipitation is currently occurring or expected
  */
 export interface IPrecipitationInfo {
-	/** An array of minute-by-minute weather forecasts */
 	minutelyForecast: MinutelyWeather[];
-	/** The timezone of the location for which the forecast is provided */
 	locationTimezone: string;
-	/** Indicates whether precipitation is currently occurring or expected */
 	hasPrecipitation: boolean;
 }
 
 /**
  * Represents information about the moon's position and phases for a specific location.
+ * @property {number} moonPhase - The current moon phase, represented as a number between 0 and 1
+ * @property {string} formattedMoonRise - The formatted time of moonrise in the local timezone
+ * @property {string} formattedMoonSet - The formatted time of moonset in the local timezone
  */
 export interface IMoonPosition {
-	/**
-	 * The current phase of the moon, represented as a number between 0 and 1.
-	 * 0 represents a new moon, 0.25 a first quarter moon, 0.5 a full moon, and 0.75 a last quarter moon.
-	 */
 	moonPhase: number;
-	/** The formatted time of moonrise as a string, typically in the local time of the specified timezone */
 	formattedMoonRise: string;
-	/** The formatted time of moonset as a string, typically in the local time of the specified timezone */
 	formattedMoonSet: string;
 }

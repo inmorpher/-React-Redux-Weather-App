@@ -8,6 +8,10 @@ import {
 	MetricReturnType,
 	MetricValue,
 } from '../utils/services/converter/metric.converter';
+import {
+	IPressureDefinition,
+	pressureDefinition,
+} from '../utils/services/definitions/pressure.definition';
 import { sunDefinition } from '../utils/services/definitions/sunDefinition';
 import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
@@ -398,4 +402,25 @@ export const useGetMoonPosition = (): IMoonPosition | undefined => {
 		weatherData?.daily[0].moonset,
 		weatherData?.timezone,
 	]);
+};
+
+/**
+ * A custom hook that retrieves and formats pressure information from the weather data.
+ *
+ * This hook uses the weather data context to extract the current pressure value
+ * and then applies the pressureDefinition function to interpret the pressure reading.
+ *
+ * @returns {IPressureDefinition | undefined} An object containing formatted pressure information:
+ *  - pressure: The atmospheric pressure value.
+ *  - angle: The calculated angle for the gauge's needle, based on the pressure value.
+ *  - coords: An array of coordinate pairs representing the lines of the gauge.
+ *   Returns undefined if pressure data is not available in the weather data.
+ */
+export const useGetPressureInfo = (): IPressureDefinition | undefined => {
+	const { weatherData } = useWeatherData();
+
+	return useMemo(() => {
+		if (!weatherData?.current?.pressure) return undefined;
+		return pressureDefinition(weatherData.current.pressure);
+	}, [weatherData?.current?.pressure]);
 };

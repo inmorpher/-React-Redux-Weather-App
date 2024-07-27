@@ -1,44 +1,33 @@
-import { useFetchState } from '../../../hooks/useFetchState';
+import { useGetPressureInfo } from '../../../context/WeatherData.context';
 
-import { selectPressure } from '../../../store/slices/weatherApiSlice';
-import Skeleton from '../../UI/SkeletonLoader/Skeleton';
+import { IPressureDefinition } from '../../../utils/services/definitions/pressure.definition';
+import Wrapper from '../../UI/Global/Wrapper';
+import withLoading from '../../UI/WithLoading';
 import PressureIndicator from './PressureIndicator';
-
 /**
- * Renders the Pressure component which displays the current pressure data.
- * It utilizes the `useFetchState` hook to retrieve pressure data from the store,
- * and conditionally renders different UI elements based on the data's loading state.
+ * Renders a component that displays pressure information.
  *
- * @returns {JSX.Element | null} The Pressure component UI or null if data is not available or an error occurred.
+ * @param {Object} props - The component props.
+ * @param {IPressureDefinition} props.data - The pressure data object.
+ * @param {Object} props.data.coords - The coordinates for the pressure indicator.
+ * @param {number} props.data.angle - The angle for the pressure indicator.
+ * @param {number} props.data.pressure - The pressure value in hPa.
+ * @returns {JSX.Element} A React component that displays the pressure information.
  */
-const Pressure = () => {
-	const {
-		status: { isLoading, isError, isSuccess },
-		data,
-	} = useFetchState(selectPressure);
-
-	// Display a skeleton loader while the data is loading
-	if (isLoading) return <Skeleton />;
-
-	// Return null if there is no data, the fetch was not successful, or an error occurred
-	if (!data || !isSuccess || isError) return null;
-
-	const { coords, angle, pressure } = data;
-
-	// Render the pressure information using the PressureIndicator component and display the pressure value
+const Pressure = ({ data: { coords, angle, pressure } }: { data: IPressureDefinition }) => {
 	return (
-		<div className='relative flex flex-1 flex-col'>
-			<div className='flex items-center justify-center'>
+		<Pressure.Wrapper className='relative flex flex-1 flex-col'>
+			<Pressure.Wrapper className='flex items-center justify-center'>
 				<Pressure.Indicator coords={coords} angle={angle} />
-			</div>
-			<div className='flex flex-1 flex-col justify-end text-center text-sm'>
+			</Pressure.Wrapper>
+			<Pressure.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
 				{pressure}hpa
-			</div>
-		</div>
+			</Pressure.Wrapper>
+		</Pressure.Wrapper>
 	);
 };
 
-// Assign the PressureIndicator component to the Pressure component for easy access
+Pressure.Wrapper = Wrapper;
 Pressure.Indicator = PressureIndicator;
 
-export default Pressure;
+export default withLoading(Pressure, useGetPressureInfo);
