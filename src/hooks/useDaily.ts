@@ -40,7 +40,7 @@ export const useDaily = () => {
 			showDetails(index);
 			scrollToggler();
 		},
-		[showDetails, scrollToggler],
+		[showDetails, scrollToggler]
 	);
 
 	/**
@@ -73,7 +73,7 @@ export const useDaily = () => {
 				console.log('close');
 			}
 		},
-		[dailyState.isOpen, onCloseDetails, onOpenPopup],
+		[dailyState.isOpen, onCloseDetails, onOpenPopup]
 	);
 
 	return {
@@ -85,4 +85,15 @@ export const useDaily = () => {
 		dailyState,
 		onCloseDetails,
 	};
+};
+/**
+ * Custom hook that retrieves the index of the currently selected day.
+ *
+ * @returns {number} The index of the selected day from the dailyState.
+ */
+export const useSelectedDayIndex = (): number => {
+	const { dailyState } = useDaily();
+	const selectedDayIndex = dailyState.item;
+
+	return selectedDayIndex;
 };

@@ -26,6 +26,7 @@ import { useUserMetrics } from './User.context';
 import {
 	IDailyCalendar,
 	IDailyForecast,
+	IDailyForecastForDay,
 	IFeelsLikeInfo,
 	IHourlyForecast,
 	IHumidityInfo,
@@ -398,9 +399,9 @@ export const useGetMoonPosition = (): IMoonPosition | undefined => {
 
 	return useMemo(() => {
 		if (
-			!weatherData?.daily[0].moon_phase ||
-			!weatherData?.daily[0].moonrise ||
-			!weatherData?.daily[0].moonset
+			weatherData?.daily[0].moon_phase === undefined ||
+			weatherData?.daily[0].moonrise === undefined ||
+			weatherData?.daily[0].moonset === undefined
 		)
 			return undefined;
 
@@ -653,5 +654,41 @@ export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
 		weatherData?.daily?.[0]?.humidity,
 		weatherData?.timezone,
 		userPreferredMetrics,
+	]);
+};
+
+/**
+ * Custom hook to retrieve daily weather forecast for a specific day.
+ *
+ * This hook fetches and formats weather data for a given day index from the available daily forecast.
+ * It uses the user's preferred metrics for temperature conversion.
+ *
+ * @param {number} dayIndex - The index of the day for which to retrieve the forecast (0 is today, 1 is tomorrow, etc.)
+ * @returns {IDailyForecastForDay | undefined} An object containing the formatted daily forecast data, or undefined if data is not available
+ *   The returned object includes:
+ *   - tempMax: Maximum temperature for the day (formatted according to user metrics)
+ *   - tempMin: Minimum temperature for the day (formatted according to user metrics)
+ *   - weatherIcon: Icon code representing the weather condition
+ *   - weatherCondition: Main weather condition description
+ */
+export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay | undefined => {
+	const { weatherData } = useWeatherData();
+	const userMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.daily) return undefined;
+		const dayForecast = weatherData.daily[dayIndex];
+		return {
+			tempMax: MetricConverter.getTemp(dayForecast.temp.max, userMetrics, 'full'),
+			tempMin: MetricConverter.getTemp(dayForecast.temp.min, userMetrics, 'full'),
+			weatherIcon: dayForecast.weather[0].icon,
+			weatherCondition: dayForecast.weather[0].main,
+		};
+	}, [
+		dayIndex,
+		weatherData?.daily?.[dayIndex]?.temp?.max,
+		weatherData?.daily?.[dayIndex]?.temp?.min,
+		weatherData?.daily?.[dayIndex]?.weather[0]?.main,
+		userMetrics,
 	]);
 };

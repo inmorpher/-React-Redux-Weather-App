@@ -171,3 +171,18 @@ export interface IDailyCalendar {
 	dayOfMonth: string;
 	fullDateString: string;
 }
+
+/**
+ * Represents the daily weather forecast for a specific day.
+ * @interface IDailyForecastForDay
+ * @property {MetricReturnType} tempMax - The maximum temperature for the day.
+ * @property {MetricReturnType} tempMin - The minimum temperature for the day.
+ * @property {string} weatherIcon - The icon code representing the weather condition for the day.
+ * @property {string} weatherCondition - A brief description of the weather condition for the day.
+ */
+export interface IDailyForecastForDay {
+	tempMax: MetricReturnType;
+	tempMin: MetricReturnType;
+	weatherIcon: string;
+	weatherCondition: string;
+}

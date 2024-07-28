@@ -22,6 +22,7 @@ export const withLoading = <P extends object, T = never>(
 		if (status === 'error') return null;
 		if (useDataHook && data === undefined) return null;
 		const safeData = data as NonNullable<T>;
+
 		return React.createElement(WrappedComponent, {
 			...props,
 			...(useDataHook ? { data: safeData as T } : {}),
