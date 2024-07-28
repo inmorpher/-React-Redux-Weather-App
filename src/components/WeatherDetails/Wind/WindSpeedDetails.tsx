@@ -25,11 +25,14 @@ export interface IWindSpeedDetailsProps {
 const WindSpeedDetails = ({ speed, gust }: IWindSpeedDetailsProps) => {
 	return (
 		<div className='flex flex-1 flex-col justify-end text-center text-sm'>
-			<span>
-				speed: {speed.value}
-				{speed.units}
-			</span>
-
+			{speed.value > 0 ? (
+				<span>
+					speed: {speed.value}
+					{speed.units}
+				</span>
+			) : (
+				<span>Calm condition</span>
+			)}
 			{gust && gust.value > 0 && (
 				<span>
 					gust: {gust.value}

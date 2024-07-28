@@ -160,3 +160,14 @@ export interface IDailyForecast {
 	dailyValues: IDailyType[];
 	colors: TempColorsDefinition[];
 }
+
+/**
+ * Represents a daily calendar entry with basic date information.
+ * @interface IDailyCalendar
+ * @property {string} dayOfMonth - The day of the month, typically represented as a number (e.g., "1", "15", "31").
+ * @property {string} fullDateString - The complete date string, usually in a standard format (e.g., "2023-05-15" or "May 15, 2023").
+ */
+export interface IDailyCalendar {
+	dayOfMonth: string;
+	fullDateString: string;
+}

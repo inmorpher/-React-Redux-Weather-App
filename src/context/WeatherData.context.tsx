@@ -24,6 +24,7 @@ import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
 import { useUserMetrics } from './User.context';
 import {
+	IDailyCalendar,
 	IDailyForecast,
 	IFeelsLikeInfo,
 	IHourlyForecast,
@@ -220,7 +221,11 @@ export const useGetWindInfo = (): IWindInfo | undefined => {
 	const userPreferredMetrics = useUserMetrics();
 
 	return useMemo(() => {
-		if (!weatherData?.current?.wind_deg || !weatherData?.current?.wind_speed) return undefined;
+		if (
+			weatherData?.current?.wind_deg === undefined ||
+			weatherData?.current?.wind_speed === undefined
+		)
+			return undefined;
 		const {
 			wind_deg: windDirection,
 			wind_gust: windGust,
@@ -349,8 +354,10 @@ export const useGetUvi = (): number | undefined => {
 	const { weatherData } = useWeatherData();
 
 	return useMemo(() => {
-		if (!weatherData?.current?.uvi) return undefined;
-		return weatherData.current.uvi;
+		if (weatherData?.current && 'uvi' in weatherData.current) {
+			return weatherData.current.uvi;
+		}
+		return undefined;
 	}, [weatherData?.current?.uvi]);
 };
 
@@ -602,4 +609,49 @@ export const useGetDailyForecast = (): IDailyForecast | undefined => {
 			colors,
 		};
 	}, [weatherData?.daily, userPreferredMetrics]);
+};
+
+/**
+ * A custom hook that generates a daily calendar based on weather data.
+ *
+ * This hook processes the daily weather data to create a calendar-like structure,
+ * including the day of the month and a full date string for each day in the forecast.
+ *
+ * @returns {IDailyCalendar[] | undefined} An array of IDailyCalendar objects, each containing:
+ *   - dayOfMonth: A string representing the day of the month (01-31)
+ *   - fullDateString: A formatted string of the full date (e.g., "Mon 01, Jan 2023")
+ *   Returns undefined if daily weather data is not available.
+ */
+export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
+	const { weatherData } = useWeatherData();
+	const userPreferredMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.daily) return undefined;
+
+		const { daily, timezone } = weatherData;
+
+		return daily.map((day) => {
+			const timeService = new TimeService(day.dt, timezone);
+			return {
+				dayOfMonth: timeService.getDay('2-digit').result(),
+				fullDateString: timeService
+					.getWeekday('short')
+					.addDivider('space')
+					.getDay('2-digit')
+					.addDivider('coma')
+					.getMonth('short')
+					.addDivider('space')
+					.getYear('numeric')
+					.result(),
+			};
+		});
+	}, [
+		weatherData?.daily?.[0]?.dt,
+		weatherData?.daily?.[0]?.weather?.[0]?.icon,
+		weatherData?.daily?.[0]?.temp?.day,
+		weatherData?.daily?.[0]?.humidity,
+		weatherData?.timezone,
+		userPreferredMetrics,
+	]);
 };
