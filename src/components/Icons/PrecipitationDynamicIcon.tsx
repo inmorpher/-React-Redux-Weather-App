@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useAnimateAppearance } from '../../hooks/useAnimateAppearance';
 import globalStyles from '../../utils.module.scss';
 import styles from './Particles.module.scss';
 
@@ -14,8 +13,6 @@ interface IParticles {
 }
 
 const PrecipitationDynamicIcon = ({ iconCode }: ICloudsParticlesProps) => {
-	const visible = useAnimateAppearance();
-
 	const particlesCount = 15;
 	const particleLength = iconCode == '10' ? 2 : 4;
 	const particles: IParticles[] = [];
@@ -32,11 +29,7 @@ const PrecipitationDynamicIcon = ({ iconCode }: ICloudsParticlesProps) => {
 
 	return (
 		<svg
-			className={classNames(
-				styles.precipitation__dynamic__icon,
-				globalStyles.transition,
-				visible ? globalStyles.v : globalStyles.u
-			)}
+			className={classNames(styles.precipitation__dynamic__icon, globalStyles.transition)}
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
 		>

@@ -1,5 +1,5 @@
 import { useDailyContext } from './useDailyContext';
-
+//TODO: add documentation for the returned object
 export const useDailyCalendar = () => {
 	const { dailyState, showDetails } = useDailyContext();
 
@@ -13,7 +13,6 @@ export const useDailyCalendar = () => {
 			showDetails(dailyState.item - 1);
 			return;
 		}
-		console.log('There no more days BEFORE');
 	};
 	const selectNextDay = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
@@ -21,7 +20,6 @@ export const useDailyCalendar = () => {
 			showDetails(dailyState.item + 1);
 			return;
 		}
-		console.log('There no more days AFTER');
 	};
 
 	return {

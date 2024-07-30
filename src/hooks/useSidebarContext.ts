@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SidebarContext } from '../context/Sidebar.context';
-
+//TODO: add documentation
 export const useSidebarContext = () => {
 	const context = useContext(SidebarContext);
 	if (!context) {

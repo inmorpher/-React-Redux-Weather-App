@@ -4,7 +4,7 @@ import { autocompleteSearch } from '../api';
 import { ROUTES } from '../router/routes.const';
 import { constructUrl } from '../utils/constructUrl';
 import { debounce } from '../utils/debounce';
-
+//TODO: add documentation
 type UseSearchReturn = {
 	ref: React.MutableRefObject<HTMLInputElement | null>;
 

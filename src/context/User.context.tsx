@@ -29,33 +29,6 @@ export interface IUserState {
 	query: string;
 }
 
-// const initialState: IUserState = {
-// 	data: {
-// 		userTheme: 'light',
-// 		userCityList: {
-// 			showDelete: false,
-// 			list: [],
-// 		},
-// 		userMetrics: 'imperial',
-// 	} as IUserData,
-// 	error: '',
-// 	query: '',
-// };
-
-interface UserContextProviderProps {
-	children: React.ReactNode;
-	initialData: IUserState;
-}
-
-const initialState: IUserData = {
-	userTheme: 'light',
-	userCityList: {
-		showDelete: false,
-		list: [],
-	},
-	userMetrics: 'imperial',
-};
-
 type UserAction =
 	| { type: 'TOGGLE_THEME' }
 	| { type: 'TOGGLE_DELETE' }
@@ -68,10 +41,14 @@ type UserAction =
 const userReducer = (state: IUserData, action: UserAction): IUserData => {
 	switch (action.type) {
 		case 'TOGGLE_THEME':
-			return {
+			const newTheme = state.userTheme === 'dark' ? 'light' : 'dark';
+			const updatedThemeState = {
 				...state,
-				userTheme: state.userTheme === 'dark' ? 'light' : 'dark',
+				userTheme: newTheme,
 			};
+			document.body.setAttribute('data-theme', newTheme);
+			localStorage.setItem('userData', JSON.stringify(updatedThemeState));
+			return { ...updatedThemeState } as IUserData;
 		case 'TOGGLE_DELETE':
 			return {
 				...state,
@@ -81,11 +58,24 @@ const userReducer = (state: IUserData, action: UserAction): IUserData => {
 				},
 			};
 		case 'TOGGLE_METRICS':
-			return {
+			const newMetrics = state.userMetrics === 'metric' ? 'imperial' : 'metric';
+			const updatedMetricsState = {
 				...state,
-				userMetrics: state.userMetrics === 'metric' ? 'imperial' : 'metric',
+				userMetrics: newMetrics,
 			};
+
+			const currentUserData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+			const updatedUserData = {
+				...currentUserData,
+				userMetrics: newMetrics,
+			};
+
+			// Сохраняем обновленные данные в localStorage
+			localStorage.setItem('userData', JSON.stringify(updatedUserData));
+			return { ...updatedMetricsState } as IUserData;
 		case 'DELETE_CITY':
+			console.log('currect city list', state.userCityList.list);
 			return {
 				...state,
 				userCityList: {
@@ -97,13 +87,22 @@ const userReducer = (state: IUserData, action: UserAction): IUserData => {
 				},
 			};
 		case 'ADD_CITY':
-			return {
+			const newCity = action.payload;
+			const uptatedCityList = {
 				...state,
 				userCityList: {
 					...state.userCityList,
-					list: [...state.userCityList.list, action.payload],
+					list: [...state.userCityList.list, newCity],
 				},
 			};
+			return { ...uptatedCityList } as IUserData;
+		// return {
+		// 	...state,
+		// 	userCityList: {
+		// 		...state.userCityList,
+		// 		list: [...state.userCityList.list, action.payload],
+		// 	},
+		// };
 		case 'SET_USER_DATA':
 			return action.payload;
 		default:
@@ -119,7 +118,8 @@ const UserContext = createContext<
 	| undefined
 >(undefined);
 
-const themeDefine = (): UserTheme => {
+const themeDefine = (value?: string): UserTheme => {
+	console.log('User theme detected:', value);
 	const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 	let userTheme: UserTheme;
 	if (isDarkTheme) {
@@ -133,31 +133,38 @@ const themeDefine = (): UserTheme => {
 	}
 };
 
+const initialState: IUserData = {
+	userTheme: themeDefine(),
+	userCityList: {
+		showDelete: false,
+		list: [],
+	},
+	userMetrics: 'metric',
+};
+
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-	const [state, dispatch] = useReducer(userReducer, { ...initialState, userTheme: themeDefine() });
+	const [state, dispatch] = useReducer(userReducer, {
+		...initialState,
+	});
 
 	useEffect(() => {
-		const loadUserData = async () => {
+		const loadUserData = () => {
 			try {
 				const userData = localStorage.getItem('userData');
-
+				console.log('useEffect');
 				if (userData) {
 					let user = JSON.parse(userData);
-					document.body.setAttribute('data-theme', user.userTheme);
+
 					user = { ...user, userCityList: { ...user.userCityList, showDelete: false } };
 					localStorage.setItem('userData', JSON.stringify(user));
+					document.body.setAttribute('data-theme', user.userTheme);
+					dispatch({ type: 'SET_USER_DATA', payload: user });
 					return user;
 				}
+				console.log('No user data found, initializing with default values');
+				localStorage.setItem('userData', JSON.stringify(initialState));
 
-				const localState: IUserData = {
-					userTheme: themeDefine(),
-					userMetrics: 'metric',
-					userCityList: { showDelete: false, list: [] } as IWeatherList,
-				};
-				localStorage.setItem('userData', JSON.stringify(localState));
-				console.log(userData, 'Local state:', localState);
-
-				dispatch({ type: 'SET_USER_DATA', payload: localState });
+				dispatch({ type: 'SET_USER_DATA', payload: initialState });
 			} catch (error) {
 				console.error('Failed to load user data', error);
 			}
@@ -192,7 +199,5 @@ export const useUserControls = () => {
 
 export const useUserMetrics = () => {
 	const { state } = useUser();
-	console.log('called useUserMetrics');
-
 	return state.userMetrics;
 };

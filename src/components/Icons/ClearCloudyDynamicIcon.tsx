@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useAnimateAppearance } from '../../hooks/useAnimateAppearance';
 import globalStyles from '../../utils.module.scss';
 import styles from './CleatCloudy.module.scss';
 
@@ -9,8 +8,6 @@ interface IWeatherIconsProps {
 }
 
 const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => {
-	const visible = useAnimateAppearance();
-
 	const sunShape = (
 		<>
 			<defs>
@@ -62,11 +59,7 @@ const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => 
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
-			className={classNames(
-				styles.clear__cloudy__dynamic__icon,
-				globalStyles.transition,
-				visible ? globalStyles.v : globalStyles.u
-			)}
+			className={classNames(styles.clear__cloudy__dynamic__icon, globalStyles.transition)}
 		>
 			{timeOfDay == 'night' ? moonShape : sunShape}
 			{iconCode == '02' && cloudsShape}

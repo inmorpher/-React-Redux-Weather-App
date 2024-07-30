@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+//TODO: add documentation
 export const useScroll = () => {
 	const [scroll, setScroll] = useState(false);
 

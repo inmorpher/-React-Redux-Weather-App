@@ -27,7 +27,7 @@ export type MainWeatherIcon = {
  *
  * @returns {React.ReactElement} A div containing the appropriate weather icon component.
  */
-const MainWeatherIcon = ({ data }: { data: IWeatherIcon }) => {
+export const MainWeatherIcon = ({ data }: { data: IWeatherIcon }) => {
 	const { iconCode, timeOfDay } = data;
 
 	// Map of weather icon codes to their respective components

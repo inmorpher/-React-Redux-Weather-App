@@ -5,6 +5,9 @@ import UserCityListItem from './UserCityListItem';
 
 const UserCityList = () => {
 	const { userList, setDelete, showDelete, isUserList } = useUserList();
+
+	console.log(userList, 'isUserList:', isUserList, 'userList.length:', userList.length);
+
 	return (
 		<div className='relative flex flex-col items-center justify-center'>
 			{isUserList && (

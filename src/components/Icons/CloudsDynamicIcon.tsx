@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useAnimateAppearance } from '../../hooks/useAnimateAppearance';
 import globalStyles from '../../utils.module.scss';
 import styles from './Clouds.module.scss';
 
@@ -8,15 +7,9 @@ interface ICloudsParticlesProps {
 }
 
 const CloudsDynamicIcon = ({ iconCode }: ICloudsParticlesProps) => {
-	const visible = useAnimateAppearance();
-
 	return (
 		<svg
-			className={classNames(
-				styles.clouds__dynamic__icon,
-				globalStyles.transition,
-				visible ? globalStyles.v : globalStyles.u
-			)}
+			className={classNames(styles.clouds__dynamic__icon, globalStyles.transition)}
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
 		>

@@ -132,10 +132,7 @@ const userSlice = createSlice({
 		 */
 		deleteCity: (state, action) => {
 			const cityList = state.data.userCityList.list.filter((location) => {
-				return (
-					action.payload.city !== location.city ||
-					action.payload.country !== location.country
-				);
+				return action.payload.city !== location.city || action.payload.country !== location.country;
 			});
 
 			state.data.userCityList.list = cityList;
@@ -149,7 +146,7 @@ const userSlice = createSlice({
 		addCity: (state, action) => {
 			const city: ICityList = action.payload;
 			const isExist = state.data.userCityList?.list.find(
-				(location) => location.lat === city.lat && location.lon === city.lon,
+				(location) => location.lat === city.lat && location.lon === city.lon
 			);
 			if (isExist === undefined) {
 				state.data.userCityList.list.push(city);
@@ -186,7 +183,7 @@ export const selectUserCityList = createSelector(
 	(state: RootState) => state.user.data.userCityList,
 	(userCityList) => {
 		return userCityList;
-	},
+	}
 );
 /**
  * Returns the user's theme and units preferences.
@@ -202,12 +199,12 @@ export const selectControls = createSelector(
 			units: userMetric,
 			timeLastUpdate: new TimeService().getTime('hoursAndMinutes').result(),
 		};
-	},
+	}
 );
 
 export const selectUserMetrics = createSelector(
 	(state: RootState) => state.user.data.userMetrics,
-	(userMetric) => userMetric,
+	(userMetric) => userMetric
 );
 
 export const { toggleTheme, toggleMetrics, deleteCity, addCity, toggleDelete, setQuery } =

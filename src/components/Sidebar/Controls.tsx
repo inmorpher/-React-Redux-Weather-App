@@ -1,33 +1,34 @@
-import { useControls } from '../../hooks/useControls';
-import Button from '../UI/Button';
+import { useMetric } from '../../context/Metric.context';
+import { useTheme } from '../../context/Theme.context';
 import ControlToggler from '../UI/ControlToggler';
+import Wrapper from '../UI/Global/Wrapper';
 
+/**
+ * Controls component for managing theme and metric toggles.
+ *
+ * This component renders two control togglers:
+ * 1. A metric toggler to switch between different metric types.
+ * 2. A theme toggler to switch between different theme modes.
+ *
+ * It uses the useMetric and useTheme hooks to access and modify the metric and theme states.
+ *
+ * @returns {JSX.Element} A React component that displays metric and theme togglers.
+ */
 const Controls = () => {
-	const {
-		theme,
-		units,
-		timeLastUpdate,
-		toggleMetricHandler,
-		toggleThemeHandler,
-		onUpdateHandler,
-	} = useControls();
+	const { toggleTheme, mode } = useTheme();
+	const { toggleMetric, metricType } = useMetric();
 
 	return (
-		<div className='text-sm'>
-			<Button
-				variant='default'
-				className='w-full text-center'
-				size='text'
-				onClick={onUpdateHandler}
-			>
-				updated at {timeLastUpdate}
-			</Button>
-			<div className='flex justify-center gap-10'>
-				<ControlToggler variant={'metric'} onClick={toggleMetricHandler} units={units} />
-				<ControlToggler variant={'theme'} onClick={toggleThemeHandler} theme={theme} />
-			</div>
-		</div>
+		<Controls.Wrapper className='text-sm'>
+			<Controls.Wrapper className='flex justify-center gap-10'>
+				<Controls.Toggler variant={'metric'} onClick={toggleMetric} units={metricType} />
+				<Controls.Toggler variant={'theme'} onClick={toggleTheme} theme={mode} />
+			</Controls.Wrapper>
+		</Controls.Wrapper>
 	);
 };
+
+Controls.Wrapper = Wrapper;
+Controls.Toggler = ControlToggler;
 
 export default Controls;

@@ -1,12 +1,15 @@
-import { useAppDispatch, useAppSelector } from '../store/hooks.type';
-import { selectUserCityList, toggleDelete } from '../store/slices/userSlice';
+import { useUser, useUserCityList } from '../context/User.context';
 
 export const useUserList = () => {
-	const userList = useAppSelector(selectUserCityList);
-	const dispatch = useAppDispatch();
+	// const userList = useAppSelector(selectUserCityList);
+	const { dispatch } = useUser();
+	const userList = useUserCityList();
 
-	const setDelete = () => {
-		dispatch(toggleDelete());
+	console.log(userList);
+	//TODO: Implement toggleDelete function here
+	const setDelete = (city: string) => {
+		// dispatch({ type: 'TOGGLE_DELETE', action: '' });
+		console.log('delete');
 	};
 
 	return {

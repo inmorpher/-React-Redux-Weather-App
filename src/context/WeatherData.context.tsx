@@ -23,7 +23,7 @@ import {
 } from '../utils/services/definitions/visibility.definition';
 import { getWindDirection } from '../utils/services/definitions/wind.direction';
 import { TimeService } from '../utils/services/time/time.service';
-import { useUserMetrics } from './User.context';
+import { useMetric } from './Metric.context';
 import {
 	IDailyCalendar,
 	IDailyForecast,
@@ -167,24 +167,24 @@ const formatTemperature = (temp: number, metrics: MetricValue): MetricReturnType
  */
 export const useGetMainWeather = (): UseGetMainWeatherReturn => {
 	const { weatherData } = useWeatherData();
-	const userMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.current || !weatherData?.daily?.[0]) return undefined;
-		console.log(userMetrics);
+		console.log(metricType);
 
 		const { current, daily } = weatherData;
 		const { temp: currentTemperature, weather: currentWeather, clouds } = current;
 		const todayForecast = daily[0];
 		console.log('Today forecast:');
 		return {
-			temperature: formatTemperature(currentTemperature, userMetrics),
+			temperature: formatTemperature(currentTemperature, metricType),
 			condition: currentWeather[0]?.main ?? 'Unknown',
-			minTemperature: formatTemperature(todayForecast.temp.min, userMetrics),
-			maxTemperature: formatTemperature(todayForecast.temp.max, userMetrics),
+			minTemperature: formatTemperature(todayForecast.temp.min, metricType),
+			maxTemperature: formatTemperature(todayForecast.temp.max, metricType),
 			cloudCoverage: clouds,
 		};
-	}, [weatherData, userMetrics]);
+	}, [weatherData, metricType]);
 };
 
 /**
@@ -225,7 +225,7 @@ export const useGetWeatherIconInfo = (): IWeatherIcon | undefined => {
  */
 export const useGetWindInfo = (): IWindInfo | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (
@@ -239,9 +239,9 @@ export const useGetWindInfo = (): IWindInfo | undefined => {
 			wind_speed: windSpeed,
 		} = weatherData.current;
 
-		const formattedWindSpeed = MetricConverter.getSpeed(windSpeed, userPreferredMetrics, true);
+		const formattedWindSpeed = MetricConverter.getSpeed(windSpeed, metricType, true);
 		const formattedGustSpeed = windGust
-			? MetricConverter.getSpeed(windGust, userPreferredMetrics, true)
+			? MetricConverter.getSpeed(windGust, metricType, true)
 			: null;
 		const windDirectionLiteral = getWindDirection(windDirection);
 
@@ -255,7 +255,7 @@ export const useGetWindInfo = (): IWindInfo | undefined => {
 		weatherData?.current?.wind_deg,
 		weatherData?.current?.wind_gust,
 		weatherData?.current?.wind_speed,
-		userPreferredMetrics,
+		metricType,
 	]);
 };
 
@@ -273,7 +273,7 @@ export const useGetWindInfo = (): IWindInfo | undefined => {
  */
 export const useGetHumidityInfo = (): IHumidityInfo | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.current?.humidity) return undefined;
@@ -282,7 +282,7 @@ export const useGetHumidityInfo = (): IHumidityInfo | undefined => {
 
 		return {
 			humidity,
-			dewPoint: MetricConverter.getTemp(dew_point || 0, userPreferredMetrics, 'short'),
+			dewPoint: MetricConverter.getTemp(dew_point || 0, metricType, 'short'),
 		};
 	}, [weatherData?.current?.humidity, weatherData?.current?.dew_point]);
 };
@@ -464,14 +464,14 @@ export const useGetPressureInfo = (): IPressureDefinition | undefined => {
  */
 export const useGetFeelsLikeInfo = (): IFeelsLikeInfo | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.current?.feels_like) return undefined;
 
 		const { feels_like, temp } = weatherData.current;
 		return {
-			temperature: MetricConverter.getTemp(feels_like, userPreferredMetrics, 'short'),
+			temperature: MetricConverter.getTemp(feels_like, metricType, 'short'),
 			feelsLike:
 				temp > feels_like
 					? 'feels colder'
@@ -479,7 +479,7 @@ export const useGetFeelsLikeInfo = (): IFeelsLikeInfo | undefined => {
 						? 'feels warmer'
 						: 'feels about the same',
 		};
-	}, [weatherData?.current?.feels_like, weatherData?.current?.temp, userPreferredMetrics]);
+	}, [weatherData?.current?.feels_like, weatherData?.current?.temp, metricType]);
 };
 
 /**
@@ -520,14 +520,14 @@ export const useGetVisibilityInfo = (): IVisibilityReturn | undefined => {
  */
 export const useGetHourlyForecast = (): IHourlyForecast | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.hourly) return undefined;
 		return {
 			hourlyForecast: weatherData.hourly,
 			timezone: weatherData.timezone,
-			userPreferredMetrics,
+			userPreferredMetrics: metricType,
 		};
 	}, [weatherData?.hourly]);
 };
@@ -548,7 +548,7 @@ export const useGetHourlyForecast = (): IHourlyForecast | undefined => {
  */
 export const useGetDailyForecast = (): IDailyForecast | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.daily) return undefined;
@@ -566,15 +566,15 @@ export const useGetDailyForecast = (): IDailyForecast | undefined => {
 			daily[0].temp.max
 		);
 
-		const minTempConverted = MetricConverter.getTemp(minDailyTemp, userPreferredMetrics, 'short');
-		const maxTempConverted = MetricConverter.getTemp(maxDailyTemp, userPreferredMetrics, 'short');
+		const minTempConverted = MetricConverter.getTemp(minDailyTemp, metricType, 'short');
+		const maxTempConverted = MetricConverter.getTemp(maxDailyTemp, metricType, 'short');
 
 		const dailyTempCoords: IDailyTempCoords[] = [];
 
 		const dailyValues: IDailyType[] = daily.map((day) => {
 			// Convert the minimum and maximum temperatures of the day to the user's preferred units
-			const dayMinTemp = MetricConverter.getTemp(day.temp.min, userPreferredMetrics, 'short');
-			const dayMaxTemp = MetricConverter.getTemp(day.temp.max, userPreferredMetrics, 'short');
+			const dayMinTemp = MetricConverter.getTemp(day.temp.min, metricType, 'short');
+			const dayMaxTemp = MetricConverter.getTemp(day.temp.max, metricType, 'short');
 
 			// Get the weekday abbreviation for the current day
 			const weekDay = new TimeService(day.dt, timezone).getWeekday('short').result();
@@ -615,7 +615,7 @@ export const useGetDailyForecast = (): IDailyForecast | undefined => {
 			dailyValues,
 			colors,
 		};
-	}, [weatherData?.daily, userPreferredMetrics]);
+	}, [weatherData?.daily, metricType]);
 };
 
 /**
@@ -632,7 +632,7 @@ export const useGetDailyForecast = (): IDailyForecast | undefined => {
 
 export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
 	const { weatherData } = useWeatherData();
-	const userPreferredMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.daily) return undefined;
@@ -660,7 +660,7 @@ export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
 		weatherData?.daily?.[0]?.temp?.day,
 		weatherData?.daily?.[0]?.humidity,
 		weatherData?.timezone,
-		userPreferredMetrics,
+		metricType,
 	]);
 };
 
@@ -681,14 +681,14 @@ export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
 
 export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay | undefined => {
 	const { weatherData } = useWeatherData();
-	const userMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.daily) return undefined;
 		const dayForecast = weatherData.daily[dayIndex];
 		return {
-			tempMax: MetricConverter.getTemp(dayForecast.temp.max, userMetrics, 'full'),
-			tempMin: MetricConverter.getTemp(dayForecast.temp.min, userMetrics, 'full'),
+			tempMax: MetricConverter.getTemp(dayForecast.temp.max, metricType, 'full'),
+			tempMin: MetricConverter.getTemp(dayForecast.temp.min, metricType, 'full'),
 			weatherIcon: dayForecast.weather[0].icon,
 			weatherCondition: dayForecast.weather[0].main,
 		};
@@ -697,7 +697,7 @@ export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay
 		weatherData?.daily?.[dayIndex]?.temp?.max,
 		weatherData?.daily?.[dayIndex]?.temp?.min,
 		weatherData?.daily?.[dayIndex]?.weather[0]?.main,
-		userMetrics,
+		metricType,
 	]);
 };
 
@@ -718,7 +718,7 @@ export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay
  */
 export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
 	const { weatherData } = useWeatherData();
-	const userMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.daily[dayIndex]) return undefined;
@@ -733,7 +733,7 @@ export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
 
 		const temperatureScaleService = new PopupWeatherScaleService(
 			temperaturesByTimeOfDay,
-			userMetrics,
+			metricType,
 			dayIndex
 		);
 
@@ -745,7 +745,7 @@ export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
 			interactiveHoverArea: temperatureScaleService.getHoverRect(),
 		};
 	}, [
-		userMetrics,
+		metricType,
 		weatherData?.daily?.[dayIndex]?.temp?.max,
 		weatherData?.daily?.[dayIndex]?.temp?.min,
 		dayIndex,
@@ -773,7 +773,7 @@ export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
  */
 export const useGetDailyForecastDetails = (dayIndex: number): IDailyForecastDetails | undefined => {
 	const { weatherData } = useWeatherData();
-	const userMetrics = useUserMetrics();
+	const { metricType } = useMetric();
 
 	return useMemo(() => {
 		if (!weatherData?.daily[dayIndex] || !weatherData?.daily) return undefined;
@@ -784,9 +784,9 @@ export const useGetDailyForecastDetails = (dayIndex: number): IDailyForecastDeta
 			uvi: forecastDetails.uvi,
 			wind: {
 				direction: getWindDirection(forecastDetails.wind_deg),
-				speed: MetricConverter.getSpeed(forecastDetails.wind_speed, userMetrics, true),
+				speed: MetricConverter.getSpeed(forecastDetails.wind_speed, metricType, true),
 				gust: forecastDetails.wind_gust
-					? MetricConverter.getSpeed(forecastDetails.wind_gust, userMetrics, true)
+					? MetricConverter.getSpeed(forecastDetails.wind_gust, metricType, true)
 					: undefined,
 			},
 			pressure: forecastDetails.pressure,
@@ -800,7 +800,7 @@ export const useGetDailyForecastDetails = (dayIndex: number): IDailyForecastDeta
 			summary: forecastDetails.summary,
 		};
 	}, [
-		userMetrics,
+		metricType,
 		weatherData?.daily?.[dayIndex]?.uvi,
 		weatherData?.daily?.[dayIndex].wind_deg,
 		weatherData?.daily?.[dayIndex].wind_gust,
