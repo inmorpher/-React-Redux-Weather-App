@@ -9,6 +9,7 @@ import {
 	MetricReturnType,
 	MetricValue,
 } from '../utils/services/converter/metric.converter';
+import { PopupWeatherScaleService } from '../utils/services/curves/popup.weather.service';
 import { getTempritureScale } from '../utils/services/definitions/daily.temp.definition';
 import { getDailyScaleCoords } from '../utils/services/definitions/daily.temp.scale';
 import {
@@ -27,6 +28,7 @@ import {
 	IDailyCalendar,
 	IDailyForecast,
 	IDailyForecastForDay,
+	IDailyScale,
 	IFeelsLikeInfo,
 	IHourlyForecast,
 	IHumidityInfo,
@@ -623,6 +625,7 @@ export const useGetDailyForecast = (): IDailyForecast | undefined => {
  *   - fullDateString: A formatted string of the full date (e.g., "Mon 01, Jan 2023")
  *   Returns undefined if daily weather data is not available.
  */
+
 export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
 	const { weatherData } = useWeatherData();
 	const userPreferredMetrics = useUserMetrics();
@@ -671,6 +674,7 @@ export const useGetDailyCalendar = (): IDailyCalendar[] | undefined => {
  *   - weatherIcon: Icon code representing the weather condition
  *   - weatherCondition: Main weather condition description
  */
+
 export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay | undefined => {
 	const { weatherData } = useWeatherData();
 	const userMetrics = useUserMetrics();
@@ -690,5 +694,56 @@ export const useGetDailyWeatherForDay = (dayIndex: number): IDailyForecastForDay
 		weatherData?.daily?.[dayIndex]?.temp?.min,
 		weatherData?.daily?.[dayIndex]?.weather[0]?.main,
 		userMetrics,
+	]);
+};
+
+/**
+ * A custom hook that generates daily temperature scale data for a specific day.
+ *
+ * This hook processes weather data to create a detailed temperature scale,
+ * including temperature curves, scale values, descriptions, and interactive elements.
+ *
+ * @param {number} dayIndex - The index of the day for which to generate the scale (0 is today, 1 is tomorrow, etc.)
+ * @returns {IDailyScale | undefined} An object containing:
+ *   - temperatureCurve: Data for drawing the temperature curve
+ *   - temperatureScale: Scale values for the temperature graph
+ *   - scaleDescriptions: Textual descriptions for different parts of the scale
+ *   - expandedTemperatureData: Detailed temperature data for different times of the day
+ *   - interactiveHoverArea: Data for creating an interactive hover area on the graph
+ *   Returns undefined if daily weather data is not available.
+ */
+export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
+	const { weatherData } = useWeatherData();
+	const userMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.daily) return undefined;
+		const dailyForecast = weatherData.daily;
+		const temperaturesByTimeOfDay = dailyForecast.map((day, index) => ({
+			night: day.temp.night,
+			day: day.temp.day,
+			eve: day.temp.eve,
+			morn: day.temp.morn,
+			nextNight: dailyForecast[index + 1]?.temp.night ?? day.temp.night,
+		}));
+
+		const temperatureScaleService = new PopupWeatherScaleService(
+			temperaturesByTimeOfDay,
+			userMetrics,
+			dayIndex
+		);
+
+		return {
+			temperatureCurve: temperatureScaleService.drawCurve(),
+			temperatureScale: temperatureScaleService.getScale(),
+			scaleDescriptions: temperatureScaleService.getDescription(),
+			expandedTemperatureData: temperatureScaleService.getExpandedValues(),
+			interactiveHoverArea: temperatureScaleService.getHoverRect(),
+		};
+	}, [
+		userMetrics,
+		weatherData?.daily?.[dayIndex]?.temp?.max,
+		weatherData?.daily?.[dayIndex]?.temp?.min,
+		dayIndex,
 	]);
 };

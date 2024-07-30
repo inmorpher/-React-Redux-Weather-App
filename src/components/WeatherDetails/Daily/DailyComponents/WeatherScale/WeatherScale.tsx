@@ -1,25 +1,29 @@
 import { useRef } from 'react';
-import { useDaily } from '../../../../../hooks/useDaily';
-import { useFetchState } from '../../../../../hooks/useFetchState';
+import { useSelectedDayIndex } from '../../../../../hooks/useDaily';
 
 import React from 'react';
-import { selectDailyPopupScale } from '../../../../../store/slices/weatherApiSlice';
-import Skeleton from '../../../../UI/SkeletonLoader/Skeleton';
+import { useGetDailyScale } from '../../../../../context/WeatherData.context';
+import { IDailyScale } from '../../../../../context/WeatherData.types';
+import withLoading from '../../../../UI/WithLoading';
 import DailyWeatherScale from './DailyWeatherScale';
 import WeatherScalePointer from './WeatherScalePointer';
 
-const WeatherScale = () => {
-	const { dailyState } = useDaily();
-	const {
-		status: { isError, isLoading, isSuccess },
-		data: data2,
-	} = useFetchState(selectDailyPopupScale, dailyState.item);
-
-	if (isLoading) return <Skeleton />;
-
-	if (isError || !isSuccess || !data2) return null;
-
-	const { scale, curve, desc, data } = data2;
+/**
+ * Renders a weather scale component with temperature curve, scale, and descriptions.
+ *
+ * @param {Object} props - The component props.
+ * @param {IDailyScale} props.data - The daily scale data.
+ * @param {Object} props.data.temperatureCurve - The temperature curve data.
+ * @param {Array} props.data.temperatureScale - The temperature scale data.
+ * @param {Array} props.data.scaleDescriptions - The scale descriptions data.
+ * @param {Array} props.data.expandedTemperatureData - The expanded temperature data.
+ * @returns {JSX.Element} The rendered WeatherScale component.
+ */
+const WeatherScale = ({
+	data: { temperatureCurve, temperatureScale, scaleDescriptions, expandedTemperatureData },
+}: {
+	data: IDailyScale;
+}) => {
 	const curveRef = useRef<SVGPathElement>(null);
 
 	return (
@@ -28,7 +32,7 @@ const WeatherScale = () => {
 				viewBox='0 0 320 160'
 				className='bg-weather-gradient w-[90%] rounded-lg'
 			>
-				{scale.map((item, index) => (
+				{temperatureScale.map((item, index) => (
 					<React.Fragment key={'PopupLayout' + index}>
 						<DailyWeatherScale.Line
 							key={'PopupScaleLine' + index}
@@ -58,21 +62,21 @@ const WeatherScale = () => {
 
 						<DailyWeatherScale.Text
 							key={'PopupText' + index}
-							x={desc[index].x}
-							y={desc[index].y}
+							x={scaleDescriptions[index].x}
+							y={scaleDescriptions[index].y}
 							fill='#fff'
 							fontSize='.4rem'
 							fontWeight='300'
 							dominantBaseline='top'
 							textAnchor='middle'
 						>
-							{desc[index].value}
+							{scaleDescriptions[index].value}
 						</DailyWeatherScale.Text>
 						<DailyWeatherScale.Line
 							key={'popupHorizontalLine' + index}
-							x1={desc[index].x}
+							x1={scaleDescriptions[index].x}
 							y1={30}
-							x2={desc[index].x}
+							x2={scaleDescriptions[index].x}
 							y2={140}
 							stroke='white'
 							strokeWidth={0.1}
@@ -82,17 +86,17 @@ const WeatherScale = () => {
 
 				<DailyWeatherScale.Curve
 					ref={curveRef}
-					d={curve.mainCurve}
+					d={temperatureCurve.mainCurve}
 					stroke='#fff'
 					fill='none'
 					strokeWidth={2.5}
 					strokeLinecap='round'
 					strokeLinejoin='round'
 				/>
-				<WeatherScalePointer curve={curveRef} data={data} />
+				<WeatherScalePointer curve={curveRef} data={expandedTemperatureData} />
 			</DailyWeatherScale.SVGWrapper>
 		</DailyWeatherScale>
 	);
 };
 
-export default WeatherScale;
+export default withLoading(WeatherScale, () => useGetDailyScale(useSelectedDayIndex()));

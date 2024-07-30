@@ -1,7 +1,12 @@
 import { IDailyType } from '../store/slices/weatherApiSlice';
 import { DailyWeather, MinutelyWeather } from '../store/weather.type';
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
-import { HourlyWeatherData } from '../utils/services/curves/types';
+import {
+	CurveType,
+	HourlyWeatherData,
+	PopupHoverRect,
+	ScaleCoords,
+} from '../utils/services/curves/types';
 import { TempColorsDefinition } from '../utils/services/definitions/daily.temp.definition';
 import { UserUnits } from './User.context';
 
@@ -185,4 +190,33 @@ export interface IDailyForecastForDay {
 	tempMin: MetricReturnType;
 	weatherIcon: string;
 	weatherCondition: string;
+}
+
+/**
+ * Represents the scale and data for a daily weather chart.
+ * @interface IDailyScale
+ * @property {CurveType} curve - The type of curve used in the chart.
+ * @property {ScaleCoords[]} scale - An array of scale coordinates used for chart rendering.
+ * @property {Object[]} description - An array of description objects for chart annotations.
+ * @property {number} description[].x - The x-coordinate of the description.
+ * @property {number} description[].y - The y-coordinate of the description.
+ * @property {string} description[].value - The text value of the description.
+ * @property {Object[]} data - An array of data points for the chart.
+ * @property {number} data[].value - The numeric value of the data point.
+ * @property {string} data[].units - The units of measurement for the value.
+ * @property {PopupHoverRect} hoverRect - The coordinates and dimensions for the hover rectangle in the chart.
+ */
+export interface IDailyScale {
+	temperatureCurve: CurveType;
+	temperatureScale: ScaleCoords[];
+	scaleDescriptions: {
+		x: number;
+		y: number;
+		value: string;
+	}[];
+	expandedTemperatureData: {
+		value: number;
+		units: string;
+	}[];
+	interactiveHoverArea: PopupHoverRect;
 }
