@@ -99,4 +99,6 @@ const WeatherScale = ({
 	);
 };
 
-export default withLoading(WeatherScale, () => useGetDailyScale(useSelectedDayIndex()));
+export default withLoading<{}, IDailyScale>(WeatherScale, () =>
+	useGetDailyScale(useSelectedDayIndex())
+);

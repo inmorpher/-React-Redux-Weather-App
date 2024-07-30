@@ -27,6 +27,7 @@ import { useUserMetrics } from './User.context';
 import {
 	IDailyCalendar,
 	IDailyForecast,
+	IDailyForecastDetails,
 	IDailyForecastForDay,
 	IDailyScale,
 	IFeelsLikeInfo,
@@ -89,11 +90,14 @@ export const useWeatherData = () => {
 	if (!context) {
 		throw new Error('useWeatherData must be used within a WeatherProvider');
 	}
-	return {
-		weatherData: context.weatherData,
-		status: context.status,
-		error: context.error,
-	};
+	return useMemo(
+		() => ({
+			weatherData: context.weatherData,
+			status: context.status,
+			error: context.error,
+		}),
+		[context.weatherData?.city, context.status, context.error]
+	);
 };
 
 /**
@@ -717,7 +721,7 @@ export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
 	const userMetrics = useUserMetrics();
 
 	return useMemo(() => {
-		if (!weatherData?.daily) return undefined;
+		if (!weatherData?.daily[dayIndex]) return undefined;
 		const dailyForecast = weatherData.daily;
 		const temperaturesByTimeOfDay = dailyForecast.map((day, index) => ({
 			night: day.temp.night,
@@ -745,5 +749,67 @@ export const useGetDailyScale = (dayIndex: number): IDailyScale | undefined => {
 		weatherData?.daily?.[dayIndex]?.temp?.max,
 		weatherData?.daily?.[dayIndex]?.temp?.min,
 		dayIndex,
+	]);
+};
+
+/**
+ * A custom hook that retrieves detailed weather forecast information for a specific day.
+ *
+ * This hook processes weather data to provide comprehensive forecast details including
+ * UV index, wind information, pressure, precipitation, humidity, cloud coverage, and a summary.
+ *
+ * @param {number} dayIndex - The index of the day for which to retrieve the forecast details.
+ *                            0 represents today, 1 represents tomorrow, and so on.
+ *
+ * @returns {IDailyForecastDetails | undefined} An object containing detailed forecast information:
+ *   - uvi: UV index for the day
+ *   - wind: Object containing wind direction, speed, and gust (if available)
+ *   - pressure: Atmospheric pressure
+ *   - precipitation: Object with probability of precipitation, snow, and rain amounts
+ *   - humidity: Humidity percentage
+ *   - clouds: Cloud coverage percentage
+ *   - summary: Textual summary of the day's weather
+ *   Returns undefined if the weather data for the specified day is not available.
+ */
+export const useGetDailyForecastDetails = (dayIndex: number): IDailyForecastDetails | undefined => {
+	const { weatherData } = useWeatherData();
+	const userMetrics = useUserMetrics();
+
+	return useMemo(() => {
+		if (!weatherData?.daily[dayIndex] || !weatherData?.daily) return undefined;
+
+		const forecastDetails = weatherData.daily[dayIndex];
+
+		return {
+			uvi: forecastDetails.uvi,
+			wind: {
+				direction: getWindDirection(forecastDetails.wind_deg),
+				speed: MetricConverter.getSpeed(forecastDetails.wind_speed, userMetrics, true),
+				gust: forecastDetails.wind_gust
+					? MetricConverter.getSpeed(forecastDetails.wind_gust, userMetrics, true)
+					: undefined,
+			},
+			pressure: forecastDetails.pressure,
+			precipitation: {
+				pop: forecastDetails.pop * 100,
+				snow: forecastDetails.snow,
+				rain: forecastDetails.rain,
+			},
+			humidity: forecastDetails.humidity,
+			clouds: forecastDetails.clouds,
+			summary: forecastDetails.summary,
+		};
+	}, [
+		userMetrics,
+		weatherData?.daily?.[dayIndex]?.uvi,
+		weatherData?.daily?.[dayIndex].wind_deg,
+		weatherData?.daily?.[dayIndex].wind_gust,
+		weatherData?.daily?.[dayIndex].wind_speed,
+		weatherData?.daily?.[dayIndex].pressure,
+		weatherData?.daily?.[dayIndex].pop,
+		weatherData?.daily?.[dayIndex].snow,
+		weatherData?.daily?.[dayIndex].rain,
+		weatherData?.daily?.[dayIndex].humidity,
+		weatherData?.daily?.[dayIndex].summary,
 	]);
 };

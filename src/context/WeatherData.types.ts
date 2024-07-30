@@ -220,3 +220,37 @@ export interface IDailyScale {
 	}[];
 	interactiveHoverArea: PopupHoverRect;
 }
+
+/**
+ * Represents detailed information for a daily weather forecast.
+ * @property {number} uvi - The UV index for the day.
+ * @property {Object} wind - Wind-related information.
+ * @property {string} wind.direction - The direction of the wind.
+ * @property {MetricReturnType} wind.speed - The speed of the wind.
+ * @property {MetricReturnType | undefined} wind.gust - The wind gust speed, if available.
+ * @property {number} pressure - The atmospheric pressure in hPa (hectopascals).
+ * @property {Object} precipitation - Precipitation-related information.
+ * @property {number} precipitation.pop - Probability of precipitation, as a percentage.
+ * @property {number | undefined} precipitation.snow - Amount of snowfall in mm, if applicable.
+ * @property {number | undefined} precipitation.rain - Amount of rainfall in mm, if applicable.
+ * @property {number} humidity - The relative humidity as a percentage.
+ * @property {number} clouds - The percentage of cloud cover.
+ * @property {string} summary - A brief summary of the day's weather conditions.
+ */
+export interface IDailyForecastDetails {
+	uvi: number;
+	wind: {
+		direction: string;
+		speed: MetricReturnType;
+		gust: MetricReturnType | undefined;
+	};
+	pressure: number;
+	precipitation: {
+		pop: number;
+		snow: number | undefined;
+		rain: number | undefined;
+	};
+	humidity: number;
+	clouds: number;
+	summary: string;
+}
