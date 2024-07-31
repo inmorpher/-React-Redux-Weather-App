@@ -20,7 +20,11 @@ export interface IWindIconProps {
  * @param {string} props.literal - The text representation of the wind direction or speed.
  * @returns A React functional component that renders an SVG wind icon and a text label.
  */
-const WindIcon = ({ deg, literal }: IWindIconProps) => {
+import { memo } from 'react';
+
+const WindIcon = memo(({ deg, literal }: IWindIconProps) => {
+	console.log('with Memo');
+
 	return (
 		<div className='flex flex-1 items-end gap-4'>
 			<svg
@@ -44,6 +48,6 @@ const WindIcon = ({ deg, literal }: IWindIconProps) => {
 			<span className='text-[2.5rem] leading-[2.5rem]'>{literal}</span>
 		</div>
 	);
-};
+});
 
 export default WindIcon;

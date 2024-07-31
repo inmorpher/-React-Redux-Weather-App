@@ -32,4 +32,4 @@ Visibility.Wrapper = Wrapper;
 Visibility.Text = SpanText;
 Visibility.Icon = VisibilityIcon;
 
-export default withLoading(Visibility, useGetVisibilityInfo);
+export default withLoading<{}, IVisibilityReturn>(Visibility, useGetVisibilityInfo);

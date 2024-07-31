@@ -38,6 +38,7 @@ interface ThemeContextType extends IUserTheme {
  * Constant representing the current version of the theme data structure.
  */
 const THEME_VERSION = 1 as const;
+
 const themeDefine = (): ThemeMode => {
 	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };

@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { UserTheme, UserUnits } from '../../store/slices/userSlice';
+import { MetricType } from '../../context/Metric.context';
+import { ThemeMode } from '../../context/Theme.context';
 
 const togglerVariants = {
 	iconLight: '/icons/static/t_light.svg',
@@ -11,8 +12,8 @@ const togglerVariants = {
 
 interface ITogglerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	variant: 'metric' | 'theme';
-	theme?: UserTheme;
-	units?: UserUnits;
+	theme?: ThemeMode;
+	units?: MetricType;
 }
 
 const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
@@ -45,7 +46,7 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 			<div
 				className={twMerge(
 					'before:bg-weather-bg-900 before: relative flex h-full w-full justify-between before:absolute before:top-1/2 before:h-6 before:w-6 before:-translate-y-1/2  before:rounded-xl before:shadow-basic before:transition-all ',
-					iconLayout.current === 'left' ? ' before:-left-[2px]' : 'before:right-0',
+					iconLayout.current === 'left' ? ' before:-left-[2px]' : 'before:right-0'
 				)}
 			>
 				<img
@@ -53,7 +54,7 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 					alt='light theme icon'
 					className={twMerge(
 						`relative w-5 scale-100 transition-transform`,
-						iconLayout.current === 'right' && 'scale-50 opacity-50',
+						iconLayout.current === 'right' && 'scale-50 opacity-50'
 					)}
 				/>
 				<img
@@ -61,7 +62,7 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 					alt='light theme icon'
 					className={twMerge(
 						`relative mr-[2px] w-4 scale-50 opacity-50 transition-transform`,
-						iconLayout.current === 'right' && 'scale-100 opacity-100',
+						iconLayout.current === 'right' && 'scale-100 opacity-100'
 					)}
 				/>
 			</div>

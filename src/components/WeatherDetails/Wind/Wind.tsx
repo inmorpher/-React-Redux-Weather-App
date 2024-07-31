@@ -29,4 +29,4 @@ Wind.Wrapper = Wrapper;
 Wind.Icon = WindIcon;
 Wind.SpeedDetails = WindSpeedDetails;
 
-export default withLoading(Wind, useGetWindInfo);
+export default withLoading<{}, IWindInfo>(Wind, useGetWindInfo);

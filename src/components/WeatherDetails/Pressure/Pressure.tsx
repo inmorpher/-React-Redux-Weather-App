@@ -30,4 +30,4 @@ const Pressure = ({ data: { coords, angle, pressure } }: { data: IPressureDefini
 Pressure.Wrapper = Wrapper;
 Pressure.Indicator = PressureIndicator;
 
-export default withLoading(Pressure, useGetPressureInfo);
+export default withLoading<{}, IPressureDefinition>(Pressure, useGetPressureInfo);

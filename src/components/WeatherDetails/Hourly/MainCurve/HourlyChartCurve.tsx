@@ -1,3 +1,5 @@
+import withMemo from '../../../UI/WithMemo';
+
 /**
  * Interface for the properties of the HourlyChartCurve component.
  */
@@ -16,7 +18,6 @@ export interface IChartCurveProps {
  * @returns {JSX.Element | null} The SVG group element containing the path, or null if no curvePath is provided.
  */
 const HourlyChartCurve = ({ curvePath }: IChartCurveProps): JSX.Element | null => {
-	if (!curvePath) return null;
 	return (
 		<g data-tag='chart-curve'>
 			<path
@@ -27,9 +28,8 @@ const HourlyChartCurve = ({ curvePath }: IChartCurveProps): JSX.Element | null =
 				d={curvePath}
 				strokeWidth={5}
 			/>
-			1
 		</g>
 	);
 };
 
-export default HourlyChartCurve;
+export default withMemo(HourlyChartCurve);

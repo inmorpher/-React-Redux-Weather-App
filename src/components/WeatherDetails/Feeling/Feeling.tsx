@@ -34,4 +34,4 @@ Feeling.Wrapper = Wrapper;
 Feeling.Icon = FeelingIcon;
 Feeling.Content = FeelingContent;
 
-export default withLoading(Feeling, useGetFeelsLikeInfo);
+export default withLoading<{}, IFeelsLikeInfo>(Feeling, useGetFeelsLikeInfo);

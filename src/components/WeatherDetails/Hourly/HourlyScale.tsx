@@ -16,14 +16,11 @@ export interface IHourlyScaleProps {
  */
 const Scale = ({ scaleMarks }: IHourlyScaleProps) => {
 	if (!scaleMarks || !scaleMarks.length) return null;
+	console.log(scaleMarks);
+
 	return (
 		<div className='absolute left-0 w-[30px] before:absolute before:top-1/2 before:h-[60%] before:w-full before:translate-y-[-50%] before:rounded-r-xl before:bg-primary-color-900 before:shadow-basic before:dark:bg-primary-color-dark-900'>
-			<svg
-				xmlns='http://www.w3.org/2000/svg'
-				viewBox='0 0 30 300'
-				width={30}
-				className='relative'
-			>
+			<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 300' width={30} className='relative'>
 				{scaleMarks.map((item, index) => {
 					return (
 						<text

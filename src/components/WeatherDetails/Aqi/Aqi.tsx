@@ -44,4 +44,4 @@ Aqi.Wrapper = Wrapper;
 Aqi.Text = SpanText;
 Aqi.SVGScale = SvgScale;
 
-export default withLoading(Aqi, useGetAqi);
+export default withLoading<{}, number>(Aqi, useGetAqi);

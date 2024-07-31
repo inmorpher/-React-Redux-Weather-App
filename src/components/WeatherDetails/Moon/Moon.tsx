@@ -34,4 +34,4 @@ Moon.Wrapper = Wrapper;
 Moon.Icon = MoonIcon;
 Moon.Content = MoonContent;
 
-export default withLoading(Moon, useGetMoonPosition);
+export default withLoading<{}, IMoonPosition>(Moon, useGetMoonPosition);

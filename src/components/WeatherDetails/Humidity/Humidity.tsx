@@ -35,4 +35,4 @@ Humidity.Wrapper = Wrapper;
 Humidity.Icon = HumidityIcon;
 Humidity.Text = SpanText;
 
-export default withLoading(Humidity, useGetHumidityInfo);
+export default withLoading<{}, IHumidityInfo>(Humidity, useGetHumidityInfo);

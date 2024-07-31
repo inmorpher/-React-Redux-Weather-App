@@ -50,4 +50,4 @@ Precipitation.TimeLine = TimeLineComponent;
 Precipitation.Axis = AxisComponent;
 Precipitation.Curve = CurveComponent;
 
-export default withLoading(Precipitation, useGetPrecipitationInfo);
+export default withLoading<{}, IPrecipitationInfo>(Precipitation, useGetPrecipitationInfo);

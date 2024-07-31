@@ -32,4 +32,4 @@ const Uv = ({ data: uvi }: { data: number }) => {
 Uv.Wrapper = Wrapper;
 Uv.Content = UVContent;
 
-export default withLoading(Uv, useGetUvi);
+export default withLoading<{}, number>(Uv, useGetUvi);

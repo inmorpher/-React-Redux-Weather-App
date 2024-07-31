@@ -14,7 +14,7 @@ import MainWeatherIcon from './MainWeatherIcon';
  * @returns {JSX.Element | null} The main weather information as a JSX element,
  * or null if there is an error or the data is not available.
  */
-const MainWeather = ({
+export const MainWeather = ({
 	data: { temperature, condition, minTemperature, maxTemperature, cloudCoverage },
 }: {
 	data: IMainWeather;

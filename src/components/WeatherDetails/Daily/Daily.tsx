@@ -36,4 +36,4 @@ const Daily = ({ data: { dailyValues, colors } }: { data: IDailyForecast }) => {
 	);
 };
 
-export default withLoading(Daily, useGetDailyForecast);
+export default withLoading<{}, IDailyForecast>(Daily, useGetDailyForecast);

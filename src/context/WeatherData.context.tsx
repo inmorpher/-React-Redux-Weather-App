@@ -131,7 +131,7 @@ export const useGetCityName = (): UseGetCityInfoReturn => {
 			cityName: city,
 			countryName: countryCode || country,
 			stateName: state || '',
-			latitude: lat ?? 0,
+			latitude: lat,
 			longitude: lon,
 			localTime: currentTime,
 		};
@@ -529,7 +529,7 @@ export const useGetHourlyForecast = (): IHourlyForecast | undefined => {
 			timezone: weatherData.timezone,
 			userPreferredMetrics: metricType,
 		};
-	}, [weatherData?.hourly]);
+	}, [weatherData?.hourly, metricType]);
 };
 
 /**

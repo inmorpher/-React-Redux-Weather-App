@@ -29,4 +29,4 @@ Sun.Wrapper = Wrapper;
 Sun.PositionIcon = SunPositionIcon;
 Sun.Timings = SunTimings;
 
-export default withLoading(Sun, useGetSunPosition);
+export default withLoading<{}, ISunPosition>(Sun, useGetSunPosition);
