@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
 		element: <Search />,
 	},
 	{
-		path: `/${ROUTES.WEATHER}/:city?/:state?/:country?/:location?`,
+		path: `/${ROUTES.WEATHER}/:city?/:state?/:country?/`,
 		element: (
 			<UserProvider>
 				<WeatherProvider>

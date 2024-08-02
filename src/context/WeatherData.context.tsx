@@ -81,7 +81,8 @@ export const WeatherProvider = ({ children }: { children: ReactNode }) => {
 	} = useQuery({
 		enabled: !!locationString || (!!queryLatitude && !!queryLongitude),
 		queryKey: ['weather', locationString, queryLatitude, queryLongitude],
-		queryFn: async () => fetchWeather(locationString),
+		queryFn: async () =>
+			fetchWeather(locationString || { lat: queryLatitude!, lon: queryLongitude! }),
 		refetchInterval: 1000 * 60 * 5, // 5 minutes
 		staleTime: 1000 * 60 * 5, // 5 minutes
 	});

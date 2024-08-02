@@ -1,22 +1,31 @@
 import axios from 'axios';
-import { IGetWeatherArgs } from '../store/slices/weatherApiSlice';
+
 import { IWeatherData } from '../store/weather.type';
+
+export type IGetWeatherArgs = string | { lat: number | string; lon: number | string };
 
 const url = `${import.meta.env.VITE_SERVER_URL}`;
 
-export const fetchCityData = async (city: string) => {
-	const response = await fetch(`${url}/city?q=${city}`);
-	return await response.json();
-};
+/**
+ * Fetches weather data from the server based on the provided arguments.
+ *
+ * @param args - The search criteria for weather data. Can be either:
+ *               - A string representing the name of a location.
+ *               - An object with 'lat' and 'lon' properties representing latitude and longitude.
+ *
+ * @returns A promise that resolves to the weather data (IWeatherData).
+ *
+ * @throws Will throw an error if the API request fails.
+ */
 export const fetchWeather = async (args: IGetWeatherArgs): Promise<IWeatherData> => {
-	console.log(url, 'Server URL');
-	const response = await axios.get(`${url}/search/ByName`, {
-		params:
-			args instanceof Object
-				? args
-				: {
-						q: args,
-					},
-	});
-	return response.data;
+	const isString = typeof args === 'string';
+	const endpoint = `${url}/search/${isString ? 'byName' : 'byGeo'}`;
+	const params = isString ? { q: args } : args;
+	try {
+		const response = await axios.get(endpoint, { params });
+		return response.data;
+	} catch (error) {
+		console.error('Error fetching weather data:', error);
+		throw error;
+	}
 };
