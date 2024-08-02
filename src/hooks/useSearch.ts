@@ -4,23 +4,8 @@ import { autocompleteSearch } from '../api';
 import { ROUTES } from '../router/routes.const';
 import { constructUrl } from '../utils/constructUrl';
 import { debounce } from '../utils/debounce';
-//TODO: add documentation
-type UseSearchReturn = {
-	ref: React.MutableRefObject<HTMLInputElement | null>;
 
-	searchState: SearchState;
-
-	onSubmitHandler: (event: FormEvent<HTMLFormElement>) => void;
-	onTypeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
-	onListItemClickHandler: (
-		event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-		listItem: IGeocodingResponse
-	) => void;
-	testKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-	onGeolocationSearchHandler: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-};
-
-export interface IGeocodingResponse {
+export interface GeocodingResponse {
 	lat: string;
 	lon: string;
 	city: string;
@@ -30,124 +15,129 @@ export interface IGeocodingResponse {
 	stateCode: string;
 }
 
-interface SearchState {
-	list: IGeocodingResponseIndexed[] | [];
-	activeItem: number;
+export interface SearchState {
+	results: GeocodingResponse[];
+	selectedIndex: number;
 }
-
-export interface IGeocodingResponseIndexed extends IGeocodingResponse {
-	active?: boolean;
-}
-
-export const useSearch = (): UseSearchReturn => {
-	const ref = useRef<HTMLInputElement | null>(null);
-
+/**
+ * A custom React hook for handling search functionality with autocomplete and geolocation features.
+ *
+ * This hook manages the search state, handles user interactions (input changes, key navigation,
+ * list item clicks), performs autocomplete searches, and provides geolocation search capabilities.
+ *
+ * @returns An object containing:
+ *   - inputRef: A ref for the search input element
+ *   - searchState: The current state of the search (results and selected index)
+ *   - handleSubmit: Function to handle form submission
+ *   - handleInputChange: Function to handle input changes
+ *   - handleListItemClick: Function to handle clicks on search result items
+ *   - handleKeyNavigation: Function to handle keyboard navigation of search results
+ *   - handleGeolocationSearch: Function to perform a geolocation-based search
+ */
+export const useSearch = () => {
+	const inputRef = useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
-	const [searchState, setSearchState] = useState<SearchState>({ list: [], activeItem: 0 });
+	const [searchState, setSearchState] = useState<SearchState>({ results: [], selectedIndex: 0 });
 
-	const [geoCoords, setGeoCoords] = useState<{ lat: number; lon: number } | null>(null);
-
-	// const { data, error, isLoading } = useGetByGeoQuery(geoCoords ?? { lat: 0, lon: 0 }, {
-	// 	skip: !geoCoords,
-	// });
-	// console.log('useSearch', { data, error, isLoading });
-	const autocomplete = useCallback(async (query: string) => {
-		const response = await autocompleteSearch(query);
-		setSearchState({
-			list: response,
-			activeItem: 0,
-		});
+	const performAutocomplete = useCallback(async (query: string) => {
+		const results = await autocompleteSearch(query);
+		setSearchState({ results, selectedIndex: 0 });
 	}, []);
 
-	const debouncedAutocomplete = useMemo(() => debounce(autocomplete, 300), [autocomplete]);
+	const debouncedAutocomplete = useMemo(
+		() => debounce(performAutocomplete, 300),
+		[performAutocomplete]
+	);
 
-	const onSubmitHandler = async (event: FormEvent<HTMLFormElement>) => {
+	/**
+	 * Handles form submission by preventing the default behavior.
+	 * @param event - The form submission event
+	 */
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 	};
 
-	const onListItemClickHandler = (
+	/**
+	 * Handles clicks on search result items.
+	 * @param event - The mouse event (can be null for keyboard navigation)
+	 * @param item - The selected GeocodingResponse item
+	 */
+	const handleListItemClick = (
 		event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-		listItem: IGeocodingResponse
+		item: GeocodingResponse
 	) => {
 		event?.preventDefault();
-		const { city, state, countryCode } = listItem;
-		const param = constructUrl(
+		const { city, state, countryCode } = item;
+		const url = constructUrl(
 			{ location: ROUTES.WEATHER, city, state, countryCode },
 			undefined,
 			undefined,
 			true
 		);
-		if (ref.current) {
-			ref.current.value = '';
-		}
-		setSearchState({
-			list: [],
-			activeItem: 0,
-		});
-		navigate(param);
+		if (inputRef.current) inputRef.current.value = '';
+		setSearchState({ results: [], selectedIndex: 0 });
+		navigate(url);
 	};
 
-	const onGeolocationSearchHandler = async () => {
-		console.log(geoCoords);
-
-		const getGeolocation = (): Promise<GeolocationPosition> =>
-			new Promise((resolve, reject) => {
+	/**
+	 * Handles geolocation-based search.
+	 * @param event - The mouse event triggering the geolocation search
+	 */
+	const handleGeolocationSearch = async (
+		event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => {
+		event.preventDefault();
+		try {
+			const position = await new Promise<GeolocationPosition>((resolve, reject) => {
 				navigator.geolocation.getCurrentPosition(resolve, reject);
 			});
-
-		try {
-			const position = await getGeolocation();
 			const { latitude, longitude } = position.coords;
-
-			setGeoCoords({ lat: latitude, lon: longitude });
-			navigate('/weather?location=' + [latitude, longitude].join(','));
+			navigate(`/${ROUTES.WEATHER}?lat=${latitude}&lon=${longitude}`, { replace: true });
 		} catch (error) {
-			console.log(error);
+			console.error('Geolocation error:', error);
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (geoCoords) {
-	// 		console.log('fetching weather data by geolocation');
-	// 		useGetByGeoQuery(geoCoords);
-	// 	}
-	// }, [geoCoords]);
-
-	const onTypeHandler = async (event: ChangeEvent<HTMLInputElement>) => {
-		if (!event.target.value || event.target.value.length < 3) {
-			setSearchState({ list: [], activeItem: 0 });
+	/**
+	 * Handles changes in the search input field.
+	 * @param event - The input change event
+	 */
+	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const query = event.target.value;
+		if (!query || query.length < 3) {
+			setSearchState({ results: [], selectedIndex: 0 });
 			return;
 		}
-		debouncedAutocomplete(event.target.value);
+		debouncedAutocomplete(query);
 	};
-	const testKeydown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-		if (searchState.list.length === 0) return;
 
-		let newIndex = searchState.activeItem;
+	/**
+	 * Handles keyboard navigation of search results.
+	 * @param event - The keyboard event
+	 */
+	const handleKeyNavigation = (event: React.KeyboardEvent<HTMLDivElement>) => {
+		const { results, selectedIndex } = searchState;
+		if (results.length === 0) return;
+
 		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 			event.preventDefault();
-			newIndex =
+			const newIndex =
 				event.key === 'ArrowDown'
-					? (searchState.activeItem + 1) % searchState.list.length
-					: (searchState.activeItem - 1 + searchState.list.length) % searchState.list.length;
+					? (selectedIndex + 1) % results.length
+					: (selectedIndex - 1 + results.length) % results.length;
+			setSearchState((prevState) => ({ ...prevState, selectedIndex: newIndex }));
 		} else if (event.key === 'Enter') {
-			setSearchState({ list: [], activeItem: 0 });
-			onListItemClickHandler(null, searchState.list[searchState.activeItem]);
-			return;
+			handleListItemClick(null, results[selectedIndex]);
 		}
-
-		setSearchState((prevState) => ({ ...prevState, activeItem: newIndex }));
 	};
 
 	return {
-		ref,
-
-		onSubmitHandler,
-		onTypeHandler,
-
-		onListItemClickHandler,
-		testKeydown,
-		onGeolocationSearchHandler,
+		inputRef,
 		searchState,
+		handleSubmit,
+		handleInputChange,
+		handleListItemClick,
+		handleKeyNavigation,
+		handleGeolocationSearch,
 	};
 };
