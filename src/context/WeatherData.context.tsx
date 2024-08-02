@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, ReactNode, useContext, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { fetchWeather } from '../api/weatherApi';
+import { ROUTES } from '../router';
 import { IDailyTempCoords, IDailyType } from '../store/slices/weatherApiSlice';
 import { IWeatherData } from '../store/weather.type';
 import {
@@ -52,6 +53,25 @@ const WeatherContext = createContext<WeatherContextProps | undefined>(undefined)
 
 export const WeatherProvider = ({ children }: { children: ReactNode }) => {
 	const URLParams = useParams();
+	const [searchParams] = useSearchParams();
+	const navigator = useNavigate();
+	const location = useLocation();
+	const URLLatitude = searchParams.get('lat');
+	const URLLongitude = searchParams.get('lon');
+
+	useEffect(() => {
+		if (
+			location.pathname === `/${ROUTES.WEATHER}` &&
+			!URLParams.city &&
+			!URLParams.state &&
+			!URLParams.country &&
+			(!URLLatitude || !URLLongitude)
+		) {
+			navigator('/', { replace: true });
+		} else if ((URLLatitude && !URLLongitude) || (!URLLatitude && URLLongitude)) {
+			navigator('/', { replace: true });
+		}
+	}, [URLParams, URLLatitude, URLLongitude, navigator, location]);
 
 	const urlParams = Object.values(URLParams).join(',');
 	const {
@@ -59,8 +79,8 @@ export const WeatherProvider = ({ children }: { children: ReactNode }) => {
 		error,
 		data: weatherData,
 	} = useQuery({
-		enabled: !!urlParams,
-		queryKey: ['weather', urlParams],
+		enabled: !!urlParams || (!!URLLatitude && !!URLLongitude),
+		queryKey: ['weather', urlParams, URLLatitude, URLLongitude],
 		queryFn: async () => fetchWeather(urlParams),
 		refetchInterval: 1000 * 60 * 5, // 15 minutes
 		staleTime: 1000 * 60 * 5, // 5 minutes
