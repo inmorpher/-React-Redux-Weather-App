@@ -52,37 +52,37 @@ interface WeatherContextProps {
 const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
 
 export const WeatherProvider = ({ children }: { children: ReactNode }) => {
-	const URLParams = useParams();
+	const routeParams = useParams();
 	const [searchParams] = useSearchParams();
-	const navigator = useNavigate();
+	const navigate = useNavigate();
 	const location = useLocation();
-	const URLLatitude = searchParams.get('lat');
-	const URLLongitude = searchParams.get('lon');
+	const queryLatitude = searchParams.get('lat');
+	const queryLongitude = searchParams.get('lon');
 
 	useEffect(() => {
 		if (
 			location.pathname === `/${ROUTES.WEATHER}` &&
-			!URLParams.city &&
-			!URLParams.state &&
-			!URLParams.country &&
-			(!URLLatitude || !URLLongitude)
+			!routeParams.city &&
+			!routeParams.state &&
+			!routeParams.country &&
+			(!queryLatitude || !queryLongitude)
 		) {
-			navigator('/', { replace: true });
-		} else if ((URLLatitude && !URLLongitude) || (!URLLatitude && URLLongitude)) {
-			navigator('/', { replace: true });
+			navigate('/', { replace: true });
+		} else if ((queryLatitude && !queryLongitude) || (!queryLatitude && queryLongitude)) {
+			navigate('/', { replace: true });
 		}
-	}, [URLParams, URLLatitude, URLLongitude, navigator, location]);
+	}, [routeParams, queryLatitude, queryLongitude, navigate, location]);
 
-	const urlParams = Object.values(URLParams).join(',');
+	const locationString = Object.values(routeParams).join(',');
 	const {
 		status,
 		error,
 		data: weatherData,
 	} = useQuery({
-		enabled: !!urlParams || (!!URLLatitude && !!URLLongitude),
-		queryKey: ['weather', urlParams, URLLatitude, URLLongitude],
-		queryFn: async () => fetchWeather(urlParams),
-		refetchInterval: 1000 * 60 * 5, // 15 minutes
+		enabled: !!locationString || (!!queryLatitude && !!queryLongitude),
+		queryKey: ['weather', locationString, queryLatitude, queryLongitude],
+		queryFn: async () => fetchWeather(locationString),
+		refetchInterval: 1000 * 60 * 5, // 5 minutes
 		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 
