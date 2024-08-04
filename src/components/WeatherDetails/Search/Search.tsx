@@ -12,7 +12,7 @@ import SearchList from './SearchList';
  *
  * @returns {JSX.Element} A JSX element representing the Search component.
  */
-const Search = () => {
+const Search = ({ home }: { home?: boolean }) => {
 	const {
 		inputRef,
 		searchState,
@@ -23,7 +23,11 @@ const Search = () => {
 		handleGeolocationSearch,
 	} = useSearch();
 	return (
-		<Search.Wrapper className='relative w-full' onKeyDown={handleKeyNavigation} tabIndex={0}>
+		<Search.Wrapper
+			className={`relative ${home ? 'w-[inherit]' : 'w-full'}`}
+			onKeyDown={handleKeyNavigation}
+			tabIndex={0}
+		>
 			<SearchForm handleSubmit={handleSubmit}>
 				<SearchForm.Button handleGeolocationSearch={handleGeolocationSearch} />
 				<SearchForm.Input handleInputChange={handleInputChange} inputRef={inputRef} />

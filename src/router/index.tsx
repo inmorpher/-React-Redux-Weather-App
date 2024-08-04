@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Search from '../components/WeatherDetails/Search/Search';
 import { UserProvider } from '../context/User.context';
 import { WeatherProvider } from '../context/WeatherData.context';
 import WeatherPage from '../pages/Weather/WeatherPage';
+import HomePage from '../pages/home';
 
 export const ROUTES = {
 	HOME: '/',
@@ -27,7 +27,13 @@ export const router = createBrowserRouter([
 	{
 		index: true,
 		path: ROUTES.HOME,
-		element: <Search />,
+		element: (
+			<UserProvider>
+				<WeatherProvider>
+					<HomePage />
+				</WeatherProvider>
+			</UserProvider>
+		),
 	},
 	{
 		path: `/${ROUTES.WEATHER}/:city?/:state?/:country?/`,
