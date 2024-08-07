@@ -1,6 +1,7 @@
 import Button from '../../UI/Button';
 
 import { useCityList } from '../../../context/CityList.context';
+import Wrapper from '../../UI/Global/Wrapper';
 import UserCityListItem from './UserCityListItem';
 
 const UserCityList = () => {
@@ -8,9 +9,9 @@ const UserCityList = () => {
 
 	//TODO: try to use memo for items
 	return (
-		<div className='relative flex flex-col items-center justify-center'>
+		<UserCityList.Wrapper className='relative flex flex-col items-center justify-center'>
 			{cityList.length > 0 && (
-				<Button
+				<UserCityList.Button
 					size='medium'
 					variant='edit'
 					className={`self-end ${showDeleteBtn ? 'active' : ''}`}
@@ -31,8 +32,11 @@ const UserCityList = () => {
 					<li>Your city list is empty.</li>
 				)}
 			</ul>
-		</div>
+		</UserCityList.Wrapper>
 	);
 };
+
+UserCityList.Wrapper = Wrapper;
+UserCityList.Button = Button;
 
 export default UserCityList;

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { IDailyType } from '../../../../store/slices/weatherApiSlice';
+import { IDailyType } from '../../../../predi/slices/weatherApiSlice';
 import DailyListItem from './DailyListItem';
 
 export interface IDailyListProps {
@@ -20,11 +20,7 @@ const DailyList = memo(({ dailyValues }: IDailyListProps): JSX.Element => {
 	return (
 		<ul className='m-auto flex h-full flex-col justify-between overflow-hidden rounded-b-lg'>
 			{dailyValues.map((daily, index) => (
-				<DailyListItem
-					index={index}
-					daily={daily}
-					key={'dailyListItem' + daily.weekDay + index}
-				/>
+				<DailyListItem index={index} daily={daily} key={'dailyListItem' + daily.weekDay + index} />
 			))}
 		</ul>
 	);

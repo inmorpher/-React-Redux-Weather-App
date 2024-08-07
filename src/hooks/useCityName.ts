@@ -1,10 +1,9 @@
 import { useCityList } from '../context/CityList.context';
-import { useUser } from '../context/User.context';
 import { useGetCityName } from '../context/WeatherData.context';
 
 export const useCityName = () => {
 	const cityInfo = useGetCityName();
-	const { dispatch: contextDispatch } = useUser();
+
 	const { addCity } = useCityList();
 
 	const handleAddCity = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -19,10 +18,6 @@ export const useCityName = () => {
 			lon: cityInfo.longitude,
 		};
 
-		contextDispatch({
-			type: 'ADD_CITY',
-			payload: cityData,
-		});
 		addCity(cityData);
 	};
 

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { IWeatherData } from '../store/weather.type';
 import { debounce } from '../utils/debounce';
+import { IWeatherData } from './weather.type';
 
 const SERVER = import.meta.env.VITE_SERVER_URL;
 const PORT = import.meta.env.VITE_SERVER_PORT;

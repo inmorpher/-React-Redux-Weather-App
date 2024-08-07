@@ -1,4 +1,4 @@
-import { IDailyTempCoords } from '../../../../store/slices/weatherApiSlice';
+import { IDailyTempCoords } from '../../../../predi/slices/weatherApiSlice';
 
 /**
  * Interface for the properties of the DailyListItemGradientTempLine component.
@@ -37,15 +37,7 @@ const DailyListItemGradientTempLine = ({
 			className='w-4/5'
 		>
 			{/* Background line */}
-			<line
-				x1='0'
-				y1='4'
-				x2='135'
-				y2='4'
-				stroke='#ADADAD'
-				strokeWidth='2'
-				strokeLinecap='round'
-			/>
+			<line x1='0' y1='4' x2='135' y2='4' stroke='#ADADAD' strokeWidth='2' strokeLinecap='round' />
 			{/* Gradient temperature line */}
 			<line
 				x1={dailyTempCoords[dayIndex].x1}

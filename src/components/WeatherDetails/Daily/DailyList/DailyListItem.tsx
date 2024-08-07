@@ -1,4 +1,4 @@
-import { IDailyType } from '../../../../store/slices/weatherApiSlice';
+import { IDailyType } from '../../../../predi/slices/weatherApiSlice';
 import StaticWeatherIcon from '../../../UI/StaticWeatherIcon';
 import DailyListItemContainer from './DailyListItemContainer';
 import DailyListItemGradientTempLine from './DailyListItemGradientTempLine';
@@ -27,10 +27,7 @@ const DailyListItem = ({
 			<DailyListItem.Weekday dayIndex={index} dailyWeekday={weekDay} />
 			<div className='flex w-3/5 items-center'>
 				<DailyListItemTemps temp={dayMinTemp} />
-				<DailyListItem.GradientTempLine
-					dayIndex={index}
-					dailyTempCoords={dailyTempCoords}
-				/>
+				<DailyListItem.GradientTempLine dayIndex={index} dailyTempCoords={dailyTempCoords} />
 				<DailyListItemTemps temp={dayMaxTemp} />
 			</div>
 			<div className='flex w-1/5 justify-end'>

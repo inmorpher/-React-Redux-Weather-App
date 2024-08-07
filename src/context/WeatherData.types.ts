@@ -1,5 +1,5 @@
-import { IDailyType } from '../store/slices/weatherApiSlice';
-import { DailyWeather, MinutelyWeather } from '../store/weather.type';
+import { DailyWeather, MinutelyWeather } from '../api/weather.type';
+import { IDailyType } from '../predi/slices/weatherApiSlice';
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
 import {
 	CurveType,

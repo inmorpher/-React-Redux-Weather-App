@@ -1,3 +1,5 @@
+import { MetricReturnType } from '../utils/services/converter/metric.converter';
+
 /**
  * Represents comprehensive weather data for a specific location.
  * @interface IWeatherData
@@ -213,3 +215,18 @@ export type WeatherTemp = {
 	eve: number;
 	morn: number;
 };
+
+export interface IDailyTempCoords {
+	x1: number;
+	x2: number;
+}
+export interface IDailyType {
+	dayMinTemp: MetricReturnType;
+	dayMaxTemp: MetricReturnType;
+	weekDay: string;
+	dayWeatherIcon: string;
+	dailyTempCoords: {
+		x1: number;
+		x2: number;
+	}[];
+}

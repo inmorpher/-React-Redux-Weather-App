@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IWeatherData } from '../store/weather.type';
+import { IWeatherData } from './weather.type';
 
 export type IGetWeatherArgs = string | { lat: number | string; lon: number | string };
 

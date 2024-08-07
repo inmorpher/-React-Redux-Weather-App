@@ -1,4 +1,4 @@
-import { UserUnits } from '../../../store/slices/userSlice';
+import { UserUnits } from '../../../predi/slices/userSlice';
 import { MetricConverter } from '../converter/metric.converter';
 import { TimeService } from '../time/time.service';
 import { SVGChart } from './svgChart.abstract';
@@ -117,9 +117,7 @@ export class HourlyChart extends SVGChart<HourlyWeatherData[]> {
 	*/
 	getTimeLine(): Array<TimeLineCoords> {
 		return this.dataCoords.map((item, index) => ({
-			time: new TimeService(this.data[index].dt, this.timezone)
-				.getTime('hours', true)
-				.result(),
+			time: new TimeService(this.data[index].dt, this.timezone).getTime('hours', true).result(),
 			x: item.x,
 			y: 12,
 		}));

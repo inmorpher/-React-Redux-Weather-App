@@ -1,4 +1,4 @@
-import { UserUnits } from '../../../store/slices/userSlice';
+import { UserUnits } from '../../../predi/slices/userSlice';
 import { MetricConverter, MetricReturnType } from '../converter/metric.converter';
 import { SVGChart } from './svgChart.abstract';
 import { PopupHoverRect, PopupWeatherScale, ScaleCoords, TimeLineCoords } from './types';
@@ -74,7 +74,7 @@ export class PopupWeatherScaleService extends SVGChart<Array<PopupWeatherScale>>
 		const data = MetricConverter.getTemps(
 			Object.values(this.data[this.dayNumber]),
 			this.metric,
-			'full',
+			'full'
 		);
 		const result = [];
 

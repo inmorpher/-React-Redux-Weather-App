@@ -1,5 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { UserProvider } from '../context/User.context';
 import { WeatherProvider } from '../context/WeatherData.context';
 import WeatherPage from '../pages/Weather/WeatherPage';
 import HomePage from '../pages/home';
@@ -27,22 +26,14 @@ export const router = createBrowserRouter([
 	{
 		index: true,
 		path: ROUTES.HOME,
-		element: (
-			<UserProvider>
-				<WeatherProvider>
-					<HomePage />
-				</WeatherProvider>
-			</UserProvider>
-		),
+		element: <HomePage />,
 	},
 	{
 		path: `/${ROUTES.WEATHER}/:city?/:state?/:country?/`,
 		element: (
-			<UserProvider>
-				<WeatherProvider>
-					<WeatherPage />
-				</WeatherProvider>
-			</UserProvider>
+			<WeatherProvider>
+				<WeatherPage />
+			</WeatherProvider>
 		),
 		errorElement: <div>Error</div>,
 	},

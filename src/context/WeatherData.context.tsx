@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { IDailyTempCoords, IDailyType, IWeatherData } from '../api/weather.type';
 import { fetchWeather } from '../api/weatherApi';
 import { ROUTES } from '../router';
-import { IDailyTempCoords, IDailyType } from '../store/slices/weatherApiSlice';
-import { IWeatherData } from '../store/weather.type';
 import {
 	MetricConverter,
 	MetricReturnType,
