@@ -26,7 +26,11 @@ export const router = createBrowserRouter([
 	{
 		index: true,
 		path: ROUTES.HOME,
-		element: <HomePage />,
+		element: (
+			<WeatherProvider>
+				<HomePage />
+			</WeatherProvider>
+		),
 	},
 	{
 		path: `/${ROUTES.WEATHER}/:city?/:state?/:country?/`,

@@ -1,4 +1,4 @@
-import { UserUnits } from '../../../predi/slices/userSlice';
+import { MetricType } from '../../../context/Metric.context';
 import { MetricConverter } from '../converter/metric.converter';
 import { TimeService } from '../time/time.service';
 import { SVGChart } from './svgChart.abstract';
@@ -15,11 +15,11 @@ import {
 export class HourlyChart extends SVGChart<HourlyWeatherData[]> {
 	private minVal = 0;
 	private maxVal = 0;
-	private metric: UserUnits;
+	private metric: MetricType;
 	private chartTop: number;
 	private rectCoords: Array<RectCoords> = [];
 	private rectBottom = 270;
-	constructor(data: HourlyWeatherData[], timezone: string, metric: UserUnits) {
+	constructor(data: HourlyWeatherData[], timezone: string, metric: MetricType) {
 		super(data, 3000, 300);
 		this.metric = metric;
 

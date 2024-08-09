@@ -8,7 +8,7 @@ import withLoading from '../UI/WithLoading';
  *
  * @returns {JSX.Element} A React component that renders the city name, time, and an add button.
  */
-const CityName = () => {
+export const CityName = () => {
 	const { formattedCityName, localTime, handleAddCity } = useCityName();
 
 	return (

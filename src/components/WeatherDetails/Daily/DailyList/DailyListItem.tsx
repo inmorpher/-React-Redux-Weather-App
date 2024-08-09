@@ -1,4 +1,4 @@
-import { IDailyType } from '../../../../predi/slices/weatherApiSlice';
+import { IDailyType } from '../../../../api/weather.type';
 import StaticWeatherIcon from '../../../UI/StaticWeatherIcon';
 import DailyListItemContainer from './DailyListItemContainer';
 import DailyListItemGradientTempLine from './DailyListItemGradientTempLine';

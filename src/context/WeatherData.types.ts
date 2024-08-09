@@ -1,5 +1,5 @@
-import { DailyWeather, MinutelyWeather } from '../api/weather.type';
-import { IDailyType } from '../predi/slices/weatherApiSlice';
+import { DailyWeather, IDailyType, MinutelyWeather } from '../api/weather.type';
+
 import { MetricReturnType } from '../utils/services/converter/metric.converter';
 import {
 	CurveType,
@@ -8,7 +8,7 @@ import {
 	ScaleCoords,
 } from '../utils/services/curves/types';
 import { TempColorsDefinition } from '../utils/services/definitions/daily.temp.definition';
-import { UserUnits } from './User.context';
+import { MetricType } from './Metric.context';
 
 /**
  * Represents information about a city.
@@ -150,7 +150,7 @@ export interface IFeelsLikeInfo {
 export interface IHourlyForecast {
 	hourlyForecast: HourlyWeatherData[];
 	timezone: string;
-	userPreferredMetrics: UserUnits;
+	userPreferredMetrics: MetricType;
 }
 
 /**

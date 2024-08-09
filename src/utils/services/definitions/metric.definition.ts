@@ -1,4 +1,4 @@
-import { UserUnits } from '../../../predi/slices/userSlice';
+import { MetricType } from '../../../context/Metric.context';
 
-export const getMetricTempriture = (value: number, metric: UserUnits) =>
+export const getMetricTempriture = (value: number, metric: MetricType) =>
 	metric === 'metric' ? Math.round(value - 273.15) : Math.round(((value - 273.15) * 9) / 5 + 32);

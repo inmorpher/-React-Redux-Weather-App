@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { IDailyType } from '../../../../predi/slices/weatherApiSlice';
+import { IDailyType } from '../../../../api/weather.type';
 import DailyListItem from './DailyListItem';
 
 export interface IDailyListProps {

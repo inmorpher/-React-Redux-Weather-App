@@ -1,10 +1,11 @@
 import axios from 'axios';
 
+import { ROUTES } from '../router/routes.const';
 import { IWeatherData } from './weather.type';
 
 export type IGetWeatherArgs = string | { lat: number | string; lon: number | string };
 
-const url = `${import.meta.env.VITE_SERVER_URL}`;
+const url = ROUTES.URL;
 
 /**
  * Fetches weather data from the server based on the provided arguments.

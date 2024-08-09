@@ -1,4 +1,4 @@
-import { IDailyTempCoords } from '../../../../predi/slices/weatherApiSlice';
+import { IDailyTempCoords } from '../../../../api/weather.type';
 
 /**
  * Interface for the properties of the DailyListItemGradientTempLine component.

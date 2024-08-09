@@ -1,4 +1,4 @@
-import { UserUnits } from '../../../predi/slices/userSlice';
+import { MetricType } from '../../../context/Metric.context';
 import { MetricConverter, MetricReturnType } from '../converter/metric.converter';
 import { SVGChart } from './svgChart.abstract';
 import { PopupHoverRect, PopupWeatherScale, ScaleCoords, TimeLineCoords } from './types';
@@ -11,7 +11,7 @@ export class PopupWeatherScaleService extends SVGChart<Array<PopupWeatherScale>>
 	private flatData = this.data.flatMap((item) => Object.values(item));
 	private scaleCoords: Array<ScaleCoords> = [];
 	private expandedData: MetricReturnType[] = [];
-	constructor(data: Array<PopupWeatherScale>, metric: UserUnits, dayNumber: number) {
+	constructor(data: Array<PopupWeatherScale>, metric: MetricType, dayNumber: number) {
 		super(data, 300, 150);
 		this.curveParams.height = 120 * 0.75;
 		this.curveParams.width = 300;
