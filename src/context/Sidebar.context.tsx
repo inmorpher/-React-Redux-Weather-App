@@ -10,6 +10,7 @@ export type SidebarContextType = {
 	setSidebarVisibility: (isOpenMobile: boolean, force?: boolean) => void;
 	handleTouchStart: (event: React.TouchEvent<HTMLDivElement>) => void;
 	handleTouchMove: (event: React.TouchEvent<HTMLDivElement>) => void;
+	closeSideBarOnListItemClick: (event: React.MouseEvent<HTMLLIElement>) => void;
 };
 
 export const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -28,7 +29,6 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 	 */
 	const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
 		const touchDown = event.changedTouches[0].clientY;
-		console.log(touchDown);
 		setTouchStart(touchDown);
 	};
 
@@ -43,13 +43,14 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 			return;
 		}
 
-		const currentTouch = event.changedTouches[0].clientY;
-		const diff = currentTouch - touchStart;
+		const currentTouch = event.changedTouches[0].clientX;
+		// const diff = currentTouch - touchStart;
+		const diff = touchStart - currentTouch;
 
-		if (diff > 35) {
-			// setIsOpenMobile(false);
+		if (diff > 45) {
 			toggleSideBar();
 		}
+
 		setTouchStart(currentTouch);
 	};
 
@@ -85,6 +86,11 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 	 * Effect to handle window resize events.
 	 * Closes the sidebar and removes the 'overflow-hidden' class from the body if the window width is >= 768px.
 	 */
+
+	const closeSideBarOnListItemClick = useCallback(() => {
+		setIsOpenMobile(false);
+		console.log('click');
+	}, []);
 	useLayoutEffect(() => {
 		const mediaQuery = window.matchMedia('(min-width: 768px)');
 		const handleResize = () => {
@@ -107,6 +113,7 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 				setSidebarVisibility,
 				handleTouchStart,
 				handleTouchMove,
+				closeSideBarOnListItemClick,
 			}}
 		>
 			{children}

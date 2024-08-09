@@ -1,13 +1,15 @@
+import { HTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import { useCityList } from '../../../context/CityList.context';
 import { useGetCityName } from '../../../context/WeatherData.context';
+import { useSidebarContext } from '../../../hooks/useSidebarContext';
 import { ROUTES } from '../../../router/routes.const';
 import { constructUrl } from '../../../utils/constructUrl';
 import Button from '../../UI/Button';
 import withMemo from '../../UI/WithMemo';
 
-interface IUserCityListItemProps {
+interface IUserCityListItemProps extends HTMLAttributes<HTMLLIElement> {
 	city: string;
 	country: string;
 	state: string;
@@ -43,12 +45,15 @@ const UserCityListItem = ({
 		deleteCity({ city, country, state, lat, lon });
 	};
 
+	const { closeSideBarOnListItemClick } = useSidebarContext();
+
 	return (
 		<li
 			className={twMerge(
 				'bg-weather-bg-500 flex h-10 text-xl hover:bg-primary-color-900 sm:text-base hover:dark:bg-primary-color-dark-900 [&.active]:bg-primary-color-900 [&.active]:dark:bg-primary-color-dark-900',
 				match && 'active'
 			)}
+			onClick={(event) => closeSideBarOnListItemClick(event)}
 		>
 			<Link to={urlString} className='flex flex-grow items-center justify-between gap-2 px-2'>
 				<p className='w-[80%] overflow-hidden text-ellipsis whitespace-nowrap'>
