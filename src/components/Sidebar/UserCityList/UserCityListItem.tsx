@@ -49,15 +49,17 @@ const UserCityListItem = ({
 
 	return (
 		<li
-			className={twMerge(
-				'bg-weather-bg-500 flex h-10 text-xl hover:bg-primary-color-900 sm:text-base hover:dark:bg-primary-color-dark-900 [&.active]:bg-primary-color-900 [&.active]:dark:bg-primary-color-dark-900',
-				match && 'active'
-			)}
+			className={`bg-weather-bg-500 flex h-10 text-xl hover:bg-primary-color-900 sm:text-base hover:dark:bg-primary-color-dark-900 [&.active]:bg-primary-color-900 [&.active]:dark:bg-primary-color-dark-900 ${match ? 'active' : ''}`}
 			onClick={(event) => closeSideBarOnListItemClick(event)}
+			role='listitem'
 		>
-			<Link to={urlString} className='flex flex-grow items-center justify-between gap-2 px-2'>
+			<Link
+				to={urlString}
+				className='flex flex-grow items-center justify-between gap-2 px-2'
+				role='link'
+			>
 				<p className='w-[80%] overflow-hidden text-ellipsis whitespace-nowrap'>
-					<span className=' capitalize'>{city}, </span>
+					<span className='capitalize'>{city}, </span>
 					{state ? <span className='capitalize'>{state}, </span> : ''}
 					<span className='uppercase'>{country}</span>
 				</p>
