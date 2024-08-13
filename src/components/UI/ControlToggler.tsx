@@ -51,7 +51,7 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 			>
 				<img
 					src={firstIcon}
-					alt='light theme icon'
+					alt={variant === 'theme' ? 'light theme icon' : 'Fahrenheit icon'}
 					className={twMerge(
 						`relative w-5 scale-100 transition-transform`,
 						iconLayout.current === 'right' && 'scale-50 opacity-50'
@@ -59,7 +59,7 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 				/>
 				<img
 					src={secondIcon}
-					alt='light theme icon'
+					alt={variant === 'theme' ? 'dark theme icon' : 'Celsius icon'}
 					className={twMerge(
 						`relative mr-[2px] w-4 scale-50 opacity-50 transition-transform`,
 						iconLayout.current === 'right' && 'scale-100 opacity-100'

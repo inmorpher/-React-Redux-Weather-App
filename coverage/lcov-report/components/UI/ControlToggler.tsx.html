@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.77% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/18</span>
+                <span class='fraction'>15/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">86.36% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>19/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.77% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/18</span>
+                <span class='fraction'>15/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -155,28 +155,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,29 +227,29 @@ interface ITogglerProps extends ButtonHTMLAttributes&lt;HTMLButtonElement&gt; {
 	units?: MetricType;
 }
 &nbsp;
-const ControlToggler = <span class="fstat-no" title="function not covered" >({</span> variant, theme, units, ...props }: ITogglerProps) =&gt; {
-	const iconLayout = <span class="cstat-no" title="statement not covered" >useRef&lt;'left' | 'right'&gt;('left');</span>
+const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) =&gt; {
+	const iconLayout = useRef&lt;'left' | 'right'&gt;('left');
 	const firstIcon =
-<span class="cstat-no" title="statement not covered" >		variant === 'theme' ? togglerVariants.iconLight : togglerVariants.iconFahrenheit;</span>
-	const secondIcon = <span class="cstat-no" title="statement not covered" >variant === 'theme' ? togglerVariants.iconDark : togglerVariants.iconCelsius;</span>
+		variant === 'theme' ? togglerVariants.iconLight : togglerVariants.iconFahrenheit;
+	const secondIcon = variant === 'theme' ? togglerVariants.iconDark : togglerVariants.iconCelsius;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	if (variant === 'theme') {</span>
-<span class="cstat-no" title="statement not covered" >		if (theme === 'light') {</span>
-<span class="cstat-no" title="statement not covered" >			iconLayout.current = 'left';</span>
-		} else {
+	if (variant === 'theme') {
+		if (theme === 'light') {
+			iconLayout.current = 'left';
+		} else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >			iconLayout.current = 'right';</span>
 		}
-	} else <span class="cstat-no" title="statement not covered" >if (variant === 'metric') {</span>
-<span class="cstat-no" title="statement not covered" >		if (units === 'imperial') {</span>
+	} else if (variant === 'metric') {
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (units === 'imperial') {
 <span class="cstat-no" title="statement not covered" >			iconLayout.current = 'left';</span>
 		} else {
-<span class="cstat-no" title="statement not covered" >			iconLayout.current = 'right';</span>
+			iconLayout.current = 'right';
 		}
-	} else {
+	} else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >		iconLayout.current = 'left';</span>
 	}
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	return (</span>
+	return (
 		&lt;button
 			{...props}
 			className='before:bg-weather-bg-500 relative w-10 before:absolute before:left-0 before:top-1/2 before:h-[18px] before:w-full before:-translate-y-1/2 before:rounded-full'
@@ -262,7 +262,7 @@ const ControlToggler = <span class="fstat-no" title="function not covered" >({</
 			&gt;
 				&lt;img
 					src={firstIcon}
-					alt='light theme icon'
+					alt={variant === 'theme' ? 'light theme icon' : 'Fahrenheit icon'}
 					className={twMerge(
 						`relative w-5 scale-100 transition-transform`,
 						iconLayout.current === 'right' &amp;&amp; 'scale-50 opacity-50'
@@ -270,7 +270,7 @@ const ControlToggler = <span class="fstat-no" title="function not covered" >({</
 				/&gt;
 				&lt;img
 					src={secondIcon}
-					alt='light theme icon'
+					alt={variant === 'theme' ? 'dark theme icon' : 'Celsius icon'}
 					className={twMerge(
 						`relative mr-[2px] w-4 scale-50 opacity-50 transition-transform`,
 						iconLayout.current === 'right' &amp;&amp; 'scale-100 opacity-100'
@@ -289,7 +289,7 @@ export default ControlToggler;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-13T21:09:49.630Z
+                at 2024-08-13T22:14:59.455Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
