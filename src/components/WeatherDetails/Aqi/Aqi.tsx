@@ -13,7 +13,7 @@ import withLoading from '../../UI/WithLoading';
  *
  * @returns {JSX.Element | null} The rendered component or null if there's an error or no data.
  */
-const Aqi = ({ data: aqi }: { data: number }) => {
+export const Aqi = ({ data: aqi }: { data: number }) => {
 	const aqiScale = getSvgScale(ScaleType.aqi, aqi);
 
 	return (

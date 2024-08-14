@@ -1,19 +1,19 @@
 {
 	"compilerOptions": {
-		"target": "esnext",
+		"target": "ESNext",
 		"useDefineForClassFields": true,
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
+		"module": "NodeNext",
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		/* Bundler mode */
-		"moduleResolution": "bundler",
+		"moduleResolution": "NodeNext",
 		"allowImportingTsExtensions": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
 		"jsx": "react-jsx",
-		"types": ["jest", "node"],
+		"types": ["vitest", "node"],
 		/* Linting */
 		"strict": true,
 		"noUnusedLocals": true,

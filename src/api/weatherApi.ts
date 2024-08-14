@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { ROUTES } from '../router/routes.const';
-import { IWeatherData } from './weather.type';
+import { ROUTES } from '../router/routes.const.ts';
+import { IWeatherData } from './weather.type.ts';
 
 export type IGetWeatherArgs = string | { lat: number | string; lon: number | string };
 

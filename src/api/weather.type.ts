@@ -1,4 +1,4 @@
-import { MetricReturnType } from '../utils/services/converter/metric.converter';
+import { MetricReturnType } from '../utils/services/converter/metric.converter.ts';
 
 /**
  * Represents comprehensive weather data for a specific location.
