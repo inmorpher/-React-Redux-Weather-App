@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { IDailyType } from '../../../../api/weather.type';
 import DailyListItem from './DailyListItem';
 
@@ -16,14 +15,23 @@ export interface IDailyListProps {
  * @param {IDailyType[]} props.dailyValues - An array of daily weather data to be displayed.
  * @returns {JSX.Element} The rendered list of daily weather items.
  */
-const DailyList = memo(({ dailyValues }: IDailyListProps): JSX.Element => {
+const DailyList = ({ dailyValues }: IDailyListProps): JSX.Element => {
 	return (
 		<ul className='m-auto flex h-full flex-col justify-between overflow-hidden rounded-b-lg'>
-			{dailyValues.map((daily, index) => (
-				<DailyListItem index={index} daily={daily} key={'dailyListItem' + daily.weekDay + index} />
-			))}
+			{Array.isArray(dailyValues) && dailyValues.length > 0
+				? dailyValues.map(
+						(daily, index) =>
+							daily !== null && (
+								<DailyListItem
+									index={index}
+									daily={daily}
+									key={'dailyListItem' + daily.weekDay + index}
+								/>
+							)
+					)
+				: 'List is unavailable. Please try again later.'}
 		</ul>
 	);
-});
+};
 
 export default DailyList;

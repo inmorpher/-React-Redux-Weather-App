@@ -21,37 +21,43 @@ const HourlyPrecipitationDescription = ({
 	if (!precipitationDescription || !precipitationDescription.length) return null;
 
 	return (
-		<g data-tag='precipitation-description'>
-			{precipitationDescription.map((item, index) => {
-				return (
-					<text key={'weather__desc' + index} x={item.popX} y={item.popY + 10}>
-						<tspan
-							x={item.popX}
-							fill='#90e0ef'
-							fontSize='.6rem'
-							textAnchor='middle'
-							fontWeight='700'
-							letterSpacing='1'
-						>
-							{item.pop}
-						</tspan>
-						{item.rain && (
+		<svg>
+			<g data-tag='precipitation-description'>
+				{precipitationDescription.map((item, index) => {
+					return (
+						<text key={'weather__desc' + index} x={item.popX} y={item.popY + 10}>
 							<tspan
 								x={item.popX}
-								dy='-10'
 								fill='#90e0ef'
 								fontSize='.6rem'
 								textAnchor='middle'
 								fontWeight='700'
 								letterSpacing='1'
+								role='definition'
+								aria-label='possibility of precipitation'
 							>
-								{item.rain + 'mm'}
+								{item.pop}
 							</tspan>
-						)}
-					</text>
-				);
-			})}
-		</g>
+							{item.rain && (
+								<tspan
+									x={item.popX}
+									dy='-10'
+									fill='#90e0ef'
+									fontSize='.6rem'
+									textAnchor='middle'
+									fontWeight='700'
+									letterSpacing='1'
+									role='definition'
+									aria-label='rain definition'
+								>
+									{item.rain + 'mm'}
+								</tspan>
+							)}
+						</text>
+					);
+				})}
+			</g>
+		</svg>
 	);
 };
 

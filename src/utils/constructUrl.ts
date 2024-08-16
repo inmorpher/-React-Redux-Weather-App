@@ -11,8 +11,10 @@ export const constructUrl = (
 	basePathParams: Record<string, string | undefined>,
 	queryParams?: Record<string, string | undefined>,
 	hash?: string,
-	absolute = false,
+	absolute = false
 ) => {
+	const isQueryParams = queryParams && Object.keys(queryParams).length > 0;
+
 	// Construct the base path
 	const basePath = Object.values(basePathParams)
 		.filter((param) => param !== undefined && param.length !== 0)
@@ -21,14 +23,12 @@ export const constructUrl = (
 		.toLowerCase();
 
 	// Construct the query string
-	const queryString = queryParams
+
+	const queryString = isQueryParams
 		? '?' +
 			Object.entries(queryParams)
 				.filter(([, value]) => value !== undefined && value.length !== 0)
-				.map(
-					([key, value]) =>
-						`${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`,
-				)
+				.map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
 				.join('&')
 		: '';
 

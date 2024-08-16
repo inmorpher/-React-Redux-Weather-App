@@ -1,9 +1,9 @@
+import { string, z } from 'zod';
 import { useGetDailyForecastDetails } from '../../../../context/WeatherData.context';
-import { IDailyForecastDetails } from '../../../../context/WeatherData.types';
+
 import { useSelectedDayIndex } from '../../../../hooks/useDaily';
 import SpanText from '../../../UI/Global/SpanText';
 import Wrapper from '../../../UI/Global/Wrapper';
-import withLoading from '../../../UI/WithLoading';
 
 /**
  * Renders detailed daily weather information.
@@ -25,77 +25,99 @@ import withLoading from '../../../UI/WithLoading';
  *
  * @returns {JSX.Element} A React component displaying detailed weather information.
  */
-const DailyWeatherDetails = ({
-	data: {
-		uvi,
-		humidity,
-		precipitation,
-		wind: { gust, speed },
-		pressure,
-		clouds,
-		summary,
-	},
-}: {
-	data: IDailyForecastDetails;
-}) => {
+
+const DailyWeatherDetailsSchema = z.object({
+	uvi: z.number().optional(),
+	humidity: z.number().optional(),
+	precipitation: z.object({
+		pop: z.number(),
+		rain: z.number().optional(),
+		snow: z.number().optional(),
+	}),
+	wind: z.object({
+		gust: z
+			.object({
+				value: z.number(),
+				units: z.string(),
+			})
+			.optional(),
+		speed: z.object({
+			value: z.number(),
+			units: z.string(),
+		}),
+		direction: z.string(),
+	}),
+	pressure: z.number().optional(),
+	clouds: z.number().optional(),
+	summary: z.string().optional(),
+});
+const DailyWeatherDetails = () => {
+	const selectedDayIndex = useSelectedDayIndex();
+	const rawWeatherDetails = useGetDailyForecastDetails(selectedDayIndex) || {};
+	const parsedWeatherDetails = DailyWeatherDetailsSchema.safeParse(rawWeatherDetails);
+	const { uvi, humidity, precipitation, wind, pressure, clouds, summary } =
+		parsedWeatherDetails.data || {};
 	return (
 		<DailyWeatherDetails.Wrapper className='flex flex-col justify-center divide-y px-5'>
 			<DailyWeatherDetails.Wrapper className='flex h-12 w-full items-center justify-between'>
 				<DailyWeatherDetails.Text as='p' className='w-1/2'>
 					uvi:
-					<DailyWeatherDetails.Text className='block px-3 text-center'>
-						{Math.round(uvi)}
+					<DailyWeatherDetails.Text className='block px-3 text-center' data-testid='daily-uvi'>
+						{uvi !== undefined ? Math.round(uvi) : 'N/A'}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
-				<DailyWeatherDetails.Text as='p' className='w-1/2'>
+				<DailyWeatherDetails.Text as='p' className='w-1/2' data-testid='daily-humidity'>
 					humidity:
-					<span className='block px-3 text-center'>{humidity}%</span>
+					<span className='block px-3 text-center'>
+						{humidity !== undefined ? humidity + '%' : 'N/A'}
+					</span>
 				</DailyWeatherDetails.Text>
 			</DailyWeatherDetails.Wrapper>
 			<DailyWeatherDetails.Wrapper className='flex h-12 w-full items-center justify-between'>
-				<DailyWeatherDetails.Text as='p' className='w-1/2'>
+				<DailyWeatherDetails.Text as='p' className='w-1/2' data-testid='daily-pressure'>
 					pressure:
 					<DailyWeatherDetails.Text className='block px-3 text-center'>
-						{pressure}hpa
+						{pressure !== undefined ? Math.round(pressure) + 'hpa' : 'N/A'}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
-				<DailyWeatherDetails.Text as='p' className='w-1/2'>
+				<DailyWeatherDetails.Text as='p' className='w-1/2' data-testid='daily-clouds'>
 					clouds:
 					<DailyWeatherDetails.Text className='px-3 text-center'>
-						{clouds}%
+						{clouds !== undefined ? clouds + '%' : 'N/A'}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
 			</DailyWeatherDetails.Wrapper>
 			<DailyWeatherDetails.Wrapper className='flex w-full items-center justify-between'>
-				<DailyWeatherDetails.Text as='p' className='w-1/2'>
+				<DailyWeatherDetails.Text as='p' className='w-1/2' data-testid='daily-wind'>
 					wind:
 					<DailyWeatherDetails.Text className='block px-3 text-center'>
-						{speed.value}
-						{speed.units}
+						{wind?.speed?.value !== undefined ? wind?.speed.value : 'N/A'}
+						{wind?.speed?.value !== undefined && wind.speed.units}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
-				<DailyWeatherDetails.Text as='p' className='w-1/2'>
+				<DailyWeatherDetails.Text as='p' className='w-1/2' data-testid='daily-wind-gust'>
 					wind gust:
 					<DailyWeatherDetails.Text className='block px-3 text-center'>
-						{gust ? gust.value + gust.units : 'N/A'}
+						{wind?.gust ? wind.gust.value : 'N/A'}
+						{wind?.gust?.value !== undefined && wind.gust.units}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
 			</DailyWeatherDetails.Wrapper>
 			<DailyWeatherDetails.Wrapper className='flex w-full items-center justify-between'>
-				<DailyWeatherDetails.Text as='p' className='w-full'>
+				<DailyWeatherDetails.Text as='p' className='w-full' data-testid='daily-precipitation'>
 					precipitation:
 					<DailyWeatherDetails.Text className='block px-3 text-center'>
-						possibility: {precipitation.pop}%{'   '}
-						{precipitation.rain && `rain: ${precipitation.rain}mm/h`}
-						{precipitation.snow && `snow: ${precipitation.snow}mm/h`}
+						possibility: {precipitation?.pop !== undefined ? precipitation.pop : 'N/A'}
+						{precipitation?.rain !== undefined && `rain: ${precipitation.rain}mm/h`}
+						{precipitation?.snow !== undefined && `snow: ${precipitation.snow}mm/h`}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
 			</DailyWeatherDetails.Wrapper>
 			<DailyWeatherDetails.Wrapper className='flex w-full items-center justify-between'>
-				<DailyWeatherDetails.Text as='p' className='w-full'>
+				<DailyWeatherDetails.Text as='p' className='w-full' data-testid='daily-summary'>
 					summary:
 					<DailyWeatherDetails.Text className='block h-11 w-full whitespace-break-spaces break-words'>
-						{summary}
+						{typeof summary === 'string' && string.length > 0 ? summary : 'No summary available'}
 					</DailyWeatherDetails.Text>
 				</DailyWeatherDetails.Text>
 			</DailyWeatherDetails.Wrapper>
@@ -106,6 +128,4 @@ const DailyWeatherDetails = ({
 DailyWeatherDetails.Text = SpanText;
 DailyWeatherDetails.Wrapper = Wrapper;
 
-export default withLoading<{}, IDailyForecastDetails>(DailyWeatherDetails, () =>
-	useGetDailyForecastDetails(useSelectedDayIndex())
-);
+export default DailyWeatherDetails;

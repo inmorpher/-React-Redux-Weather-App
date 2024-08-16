@@ -12,7 +12,7 @@ import withMemo from '../../UI/WithMemo';
 interface IUserCityListItemProps extends HTMLAttributes<HTMLLIElement> {
 	city: string;
 	country: string;
-	state: string;
+	state?: string;
 	lat: string | number;
 	lon: string | number;
 	showDelete: boolean;
@@ -51,7 +51,6 @@ const UserCityListItem = ({
 		<li
 			className={`bg-weather-bg-500 flex h-10 text-xl hover:bg-primary-color-900 sm:text-base hover:dark:bg-primary-color-dark-900 [&.active]:bg-primary-color-900 [&.active]:dark:bg-primary-color-dark-900 ${match ? 'active' : ''}`}
 			onClick={(event) => closeSideBarOnListItemClick(event)}
-			role='listitem'
 		>
 			<Link
 				to={urlString}

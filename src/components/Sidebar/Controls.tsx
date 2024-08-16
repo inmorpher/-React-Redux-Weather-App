@@ -19,14 +19,25 @@ const Controls = () => {
 	const { toggleMetric, metricType } = useMetric();
 
 	return (
-		<Controls.Wrapper className='flex justify-center gap-10 text-sm' role='controls-wrapper'>
+		<Controls.Wrapper
+			className='flex justify-center gap-10 text-sm'
+			role='option'
+			aria-label='controls'
+		>
 			<Controls.Toggler
 				variant={'metric'}
 				onClick={toggleMetric}
 				units={metricType}
-				role='button-metric'
+				role='button'
+				aria-label='button-metric'
 			/>
-			<Controls.Toggler variant={'theme'} onClick={toggleTheme} theme={mode} role='button-theme' />
+			<Controls.Toggler
+				variant={'theme'}
+				onClick={toggleTheme}
+				theme={mode}
+				role='button'
+				aria-label='button-theme'
+			/>
 		</Controls.Wrapper>
 	);
 };

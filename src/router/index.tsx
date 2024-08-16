@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { WeatherProvider } from '../context/WeatherData.context';
+import WeatherProvider from '../context/WeatherData.context';
 import WeatherPage from '../pages/Weather/WeatherPage';
 import HomePage from '../pages/home';
 
@@ -22,7 +22,7 @@ export const ROUTES = {
  *   - Supports optional parameters for city, state, and country
  *   - Includes an error element for handling routing errors
  */
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
 	{
 		index: true,
 		path: ROUTES.HOME,
@@ -42,3 +42,5 @@ export const router = createBrowserRouter([
 		errorElement: <div>Error</div>,
 	},
 ]);
+
+export default router;

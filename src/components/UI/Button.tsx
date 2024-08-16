@@ -1,7 +1,7 @@
 import { cva, VariantProps } from 'class-variance-authority';
 
 import { ButtonHTMLAttributes, memo } from 'react';
-import { cn } from '../../utils/cn';
+import { cn } from '../../utils/cn.ts';
 
 const btnVariants = cva('bg-center bg-no-repeat transition-all hover:opacity-100', {
 	variants: {

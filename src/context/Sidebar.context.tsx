@@ -6,6 +6,7 @@ export type SidebarContextProps = {
 
 export type SidebarContextType = {
 	isOpenMobile: boolean;
+	touchStart: number | null;
 	toggleSideBar: () => void;
 	setSidebarVisibility: (isOpenMobile: boolean, force?: boolean) => void;
 	handleTouchStart: (event: React.TouchEvent<HTMLDivElement>) => void;
@@ -89,7 +90,7 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 
 	const closeSideBarOnListItemClick = useCallback(() => {
 		setIsOpenMobile(false);
-		console.log('click');
+		document.body.classList.remove('overflow-hidden');
 	}, []);
 	useLayoutEffect(() => {
 		const mediaQuery = window.matchMedia('(min-width: 768px)');
@@ -114,6 +115,7 @@ export const SidebarProvider: React.FC<SidebarContextProps> = ({ children }) => 
 				handleTouchStart,
 				handleTouchMove,
 				closeSideBarOnListItemClick,
+				touchStart,
 			}}
 		>
 			{children}

@@ -1,4 +1,4 @@
-import { ScaleReturn } from '../../../utils/services/definitions/svgScale.definition';
+import { ScaleReturn, ScaleType } from '../../../utils/services/definitions/svgScale.definition.ts';
 
 type SvgScaleProps = {
 	data: ScaleReturn;
@@ -34,26 +34,31 @@ const SvgScale: React.FC<SvgScaleProps> = ({ data, type }) => {
 		? Math.max(
 				0,
 				Math.min(
-					((data.values?.value - 1) * adjustedScaleLength) / (dataLength - 1),
-					adjustedScaleLength,
-				),
+					((data.values?.value !== undefined ? data.values.value - 1 : 0) * adjustedScaleLength) /
+						(dataLength - 1),
+					adjustedScaleLength
+				)
 			)
 		: 1;
 
 	return (
-		<svg viewBox='0 0 200 25' fill='none' xmlns='http://www.w3.org/2000/svg' width={'100%'}>
+		<svg
+			viewBox='0 0 200 25'
+			fill='none'
+			xmlns='http://www.w3.org/2000/svg'
+			width={'100%'}
+			role='img'
+			aria-label={type === 'aqi' ? 'Air Quality Index' : 'UV Index'}
+			data-type={type === 'aqi' ? ScaleType.aqi : ScaleType.uvi}
+		>
 			<defs>
-				<linearGradient
-					id={`${type}-gradient`}
-					x1='0'
-					x2='200'
-					gradientUnits='userSpaceOnUse'
-				>
-					{data.colors.map((color, index) => {
-						const range = 100 / data.colors.length + 1;
-						const stopOffset = Math.round(range * index) + '%';
-						return <stop key={type + color} offset={stopOffset} stopColor={color} />;
-					})}
+				<linearGradient id={`${type}-gradient`} x1='0' x2='200' gradientUnits='userSpaceOnUse'>
+					{data.colors?.length !== undefined &&
+						data.colors.map((color, index) => {
+							const range = data.colors ? 100 / data.colors.length + 1 : 0;
+							const stopOffset = Math.round(range * index) + '%';
+							return <stop key={type + color} offset={stopOffset} stopColor={color} />;
+						})}
 				</linearGradient>
 				<rect
 					id={`${type}-scale-indicator`}

@@ -27,6 +27,7 @@ const Search = ({ home }: { home?: boolean }) => {
 			className={`relative ${home ? 'w-[inherit]' : 'w-full'}`}
 			onKeyDown={handleKeyNavigation}
 			tabIndex={0}
+			role='combobox'
 		>
 			<SearchForm handleSubmit={handleSubmit}>
 				<SearchForm.Button handleGeolocationSearch={handleGeolocationSearch} />

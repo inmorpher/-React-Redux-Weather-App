@@ -27,16 +27,17 @@ const nightPath = 'M 5 5C 5 5 75 70 155 5'; // Path for the moon's trajectory du
 const SunPositionIcon = ({ isDay, pathRef, indicatorRef }: ISunPositionIconProps) => {
 	return (
 		<div className='flex flex-1 items-center gap-4'>
-			<svg viewBox='0 0 160 60' width='100%' height='50px' className='border-0 border-red-50'>
+			<svg
+				viewBox='0 0 160 60'
+				width='100%'
+				height='50px'
+				className='border-0 border-red-50'
+				role='img'
+				aria-label='sun position'
+				data-time={isDay ? 'day' : 'night'}
+			>
 				<defs>
-					<radialGradient
-						id='white-to-transparent'
-						cx='50%'
-						cy='50%'
-						r='50%'
-						fx='50%'
-						fy='50%'
-					>
+					<radialGradient id='white-to-transparent' cx='50%' cy='50%' r='50%' fx='50%' fy='50%'>
 						<stop offset='30%' stopColor='white' stopOpacity='1' />
 						<stop offset='100%' stopColor='white' stopOpacity='0' />
 					</radialGradient>

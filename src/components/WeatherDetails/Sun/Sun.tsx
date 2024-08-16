@@ -3,7 +3,7 @@ import { ISunPosition } from '../../../context/WeatherData.types';
 import { useSunPosition } from '../../../hooks/useSunPosition';
 import Wrapper from '../../UI/Global/Wrapper';
 import withLoading from '../../UI/WithLoading';
-import SunPositionIcon from './SunPostionIcon';
+import SunPositionIcon from './SunPositionIcon';
 import SunTimings from './SunTimings';
 
 /**
@@ -29,4 +29,6 @@ Sun.Wrapper = Wrapper;
 Sun.PositionIcon = SunPositionIcon;
 Sun.Timings = SunTimings;
 
-export default withLoading<{}, ISunPosition>(Sun, useGetSunPosition);
+const SunWithLoading = withLoading<{}, ISunPosition>(Sun, useGetSunPosition);
+export { Sun, SunWithLoading as SunWithLoadingComponent };
+export default SunWithLoading;

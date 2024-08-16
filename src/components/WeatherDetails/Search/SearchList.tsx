@@ -62,7 +62,7 @@ const SearchList: SearchLostComponentProps = ({ children }) => (
  * @returns {JSX.Element} A li element containing the item content.
  */
 const SearchListItem: React.FC<ISearchListItemProps> = ({ children }) => (
-	<li>{children && children}</li>
+	<li role='option'>{children && children}</li>
 );
 
 /**
@@ -90,6 +90,7 @@ const ListButton: React.FC<ISearchListButtonProps> = ({
 			index === selectedIndex ? 'bg-weather-bg-900' : ''
 		)}
 		onClick={(event) => handleItemClick(event, item)}
+		role='geolocation'
 	>
 		{children && children}
 	</Button>

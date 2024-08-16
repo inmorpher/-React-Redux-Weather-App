@@ -2,16 +2,16 @@
  * Represents the definition of scale data.
  */
 export type ScaleDataDefinition = {
-	value: number;
-	level: string;
-	color: string;
+	value?: number;
+	level?: string;
+	color?: string;
 };
 
 /**
  * Represents the return type of the getSvgScale function.
  */
 export type ScaleReturn = {
-	colors: Array<string>;
+	colors?: Array<string>;
 	values?: ScaleDataDefinition;
 };
 

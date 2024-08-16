@@ -8,8 +8,8 @@ import { MetricReturnType } from '../../../utils/services/converter/metric.conve
  * @property {MetricReturnType | null} gust - The wind gust speed, including value and units, if available.
  */
 export interface IWindSpeedDetailsProps {
-	speed: MetricReturnType;
-	gust: MetricReturnType | null;
+	speed?: MetricReturnType;
+	gust: MetricReturnType | null | undefined;
 }
 
 /**
@@ -22,10 +22,11 @@ export interface IWindSpeedDetailsProps {
  * @param {IWindSpeedDetailsProps} props - The properties for the component, including speed and gust.
  * @returns A React functional component displaying the wind speed and optional gust information.
  */
-const WindSpeedDetails = ({ speed, gust }: IWindSpeedDetailsProps) => {
+const WindSpeedDetails = (windDetails: IWindSpeedDetailsProps) => {
+	const { speed, gust } = windDetails || {};
 	return (
 		<div className='flex flex-1 flex-col justify-end text-center text-sm'>
-			{speed.value > 0 ? (
+			{speed?.value ? (
 				<span>
 					speed: {speed.value}
 					{speed.units}
@@ -33,7 +34,7 @@ const WindSpeedDetails = ({ speed, gust }: IWindSpeedDetailsProps) => {
 			) : (
 				<span>Calm condition</span>
 			)}
-			{gust && gust.value > 0 && (
+			{gust?.value && (
 				<span>
 					gust: {gust.value}
 					{gust.units}

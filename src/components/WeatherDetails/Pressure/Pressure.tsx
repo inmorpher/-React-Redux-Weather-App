@@ -20,8 +20,11 @@ const Pressure = ({ data: { coords, angle, pressure } }: { data: IPressureDefini
 			<Pressure.Wrapper className='flex items-center justify-center'>
 				<Pressure.Indicator coords={coords} angle={angle} />
 			</Pressure.Wrapper>
-			<Pressure.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
-				{pressure}hpa
+			<Pressure.Wrapper
+				className='flex flex-1 flex-col justify-end text-center text-sm'
+				role='presentation'
+			>
+				{pressure !== undefined ? `${pressure}hpa` : 'N/A'}
 			</Pressure.Wrapper>
 		</Pressure.Wrapper>
 	);
@@ -30,4 +33,7 @@ const Pressure = ({ data: { coords, angle, pressure } }: { data: IPressureDefini
 Pressure.Wrapper = Wrapper;
 Pressure.Indicator = PressureIndicator;
 
-export default withLoading<{}, IPressureDefinition>(Pressure, useGetPressureInfo);
+const PressureWithLoading = withLoading<{}, IPressureDefinition>(Pressure, useGetPressureInfo);
+export { Pressure, PressureWithLoading as PressureWithLoading };
+
+export default PressureWithLoading;

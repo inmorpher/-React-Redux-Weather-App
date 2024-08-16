@@ -67,10 +67,8 @@ export const useDaily = () => {
 		(event: React.KeyboardEvent<HTMLLIElement>, index: number) => {
 			if (event.key === 'Enter' && !dailyState.isOpen) {
 				onOpenPopup(index);
-				console.log('open');
 			} else if (event.key === 'Escape' && dailyState.isOpen) {
 				onCloseDetails();
-				console.log('close');
 			}
 		},
 		[dailyState.isOpen, onCloseDetails, onOpenPopup]

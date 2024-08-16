@@ -20,6 +20,7 @@ export const useSunPosition = (data: ISunPosition) => {
 	useLayoutEffect(() => {
 		if (!pathRef.current || !indicatorRef.current || !data) return;
 		const { cycleDuration, timeSinceCycleStart } = data;
+		if (!cycleDuration || !timeSinceCycleStart) return;
 		const length = pathRef.current.getTotalLength();
 		const point = pathRef.current.getPointAtLength((length * timeSinceCycleStart) / cycleDuration);
 

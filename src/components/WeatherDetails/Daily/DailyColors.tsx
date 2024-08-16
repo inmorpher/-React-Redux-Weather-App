@@ -12,27 +12,20 @@ interface DailyColorProps {
  * @param {TempColorsDefinition[]} props.colors - An array of color definitions used to create the gradient stops.
  * @returns {JSX.Element} An SVG element containing the linear gradient definition.
  */
-const DailyColors = ({ colors }: DailyColorProps): JSX.Element => {
+export const DailyColors = ({ colors }: DailyColorProps): JSX.Element => {
 	return (
 		<svg width={0} height={0} style={{ visibility: 'hidden' }}>
 			<defs>
-				<linearGradient
-					id='temp-color-scale'
-					x1='0'
-					x2='135'
-					gradientUnits='userSpaceOnUse'
-				>
-					{colors.map((color, index) => {
-						const offset = `${(index * 100) / (colors.length - 1)}%`;
-
-						return (
-							<stop
-								key={'temp-color' + index}
-								offset={offset}
-								stopColor={color.color}
-							/>
-						);
-					})}
+				<linearGradient id='temp-color-scale' x1='0' x2='135' gradientUnits='userSpaceOnUse'>
+					{Array.isArray(colors) &&
+						colors.length > 0 &&
+						colors.map((color, index) => {
+							if (color !== null) {
+								const offset = `${(index * 100) / (colors.length - 1)}%`;
+								return <stop key={'temp-color' + index} offset={offset} stopColor={color.color} />;
+							}
+							return null;
+						})}
 				</linearGradient>
 			</defs>
 		</svg>

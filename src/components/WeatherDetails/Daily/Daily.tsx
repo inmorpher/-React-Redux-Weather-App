@@ -20,6 +20,10 @@ import DailyList from './DailyList/DailyList';
 const Daily = ({ data: { dailyValues, colors } }: { data: IDailyForecast }) => {
 	const { containerRef, dailyDetailsRef, dailyListRef } = useDailyContext();
 
+	if (!Array.isArray(dailyValues)) {
+		console.error('dailyValues is missing or not an array');
+		return null;
+	}
 	return (
 		<DailyContainer containerRef={containerRef}>
 			<DailyColors colors={colors} />
@@ -35,5 +39,6 @@ const Daily = ({ data: { dailyValues, colors } }: { data: IDailyForecast }) => {
 		</DailyContainer>
 	);
 };
-
-export default withLoading<{}, IDailyForecast>(Daily, useGetDailyForecast);
+const DailyWithLoading = withLoading<{}, IDailyForecast>(Daily, useGetDailyForecast);
+export { Daily, DailyWithLoading };
+export default DailyWithLoading;

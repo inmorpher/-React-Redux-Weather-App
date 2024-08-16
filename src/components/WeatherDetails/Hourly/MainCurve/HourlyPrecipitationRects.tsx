@@ -14,23 +14,26 @@ export interface IPrecipitationRectsProps {
 const HourlyPrecipitationRects = ({ precipitationRectangles }: IPrecipitationRectsProps) => {
 	if (!precipitationRectangles || !precipitationRectangles?.length) return null;
 	return (
-		<g data-tag='precipitation-rects'>
-			{precipitationRectangles.map((item, index) => {
-				if (item.height === 0) return;
-				return (
-					<rect
-						key={item.x + index}
-						x={item.x - 10}
-						y={item.y + 10}
-						width={item.width}
-						height={item.height}
-						fill='url(#rectGrad)'
-						ry='5px'
-						rx='5px'
-					/>
-				);
-			})}
-		</g>
+		<svg data-testid='precipitation-rects'>
+			<g>
+				{precipitationRectangles.map((item, index) => {
+					if (item.height === 0) return;
+					return (
+						<rect
+							key={item.x + index}
+							x={item.x - 10}
+							y={item.y + 10}
+							width={item.width}
+							height={item.height}
+							fill='url(#rectGrad)'
+							ry='5px'
+							rx='5px'
+							data-testid={'rect'}
+						/>
+					);
+				})}
+			</g>
+		</svg>
 	);
 };
 

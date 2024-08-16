@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { MetricType } from '../../context/Metric.context';
-import { ThemeMode } from '../../context/Theme.context';
+import { MetricType } from '../../context/Metric.context.tsx';
+import { ThemeMode } from '../../context/Theme.context.tsx';
 
 const togglerVariants = {
 	iconLight: '/icons/static/t_light.svg',
@@ -34,8 +34,6 @@ const ControlToggler = ({ variant, theme, units, ...props }: ITogglerProps) => {
 		} else {
 			iconLayout.current = 'right';
 		}
-	} else {
-		iconLayout.current = 'left';
 	}
 
 	return (

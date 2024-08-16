@@ -1,6 +1,6 @@
 // Imports the CityName component from the Sidebar component collection.
-import CityName from '../../../components/Sidebar/CityName';
-import MainWeather from '../../../components/Sidebar/MainWeather';
+import CityNameWithLoading from '../../../components/Sidebar/CityName';
+import MainWeatherWithLoading from '../../../components/Sidebar/MainWeather';
 // Imports the MainWeather component from the Sidebar component collection.
 
 /**
@@ -14,8 +14,8 @@ import MainWeather from '../../../components/Sidebar/MainWeather';
 const HeaderWeatherContent = () => {
 	return (
 		<>
-			<CityName />
-			<MainWeather />
+			<CityNameWithLoading />
+			<MainWeatherWithLoading />
 		</>
 	);
 };

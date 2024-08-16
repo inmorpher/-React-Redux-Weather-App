@@ -46,6 +46,8 @@ const SearchForm: ISearchFormComponentProps = ({ handleSubmit, children }) => {
 		<form
 			className='bg-weather-gradient border-1 flex h-full w-full justify-center justify-self-end overflow-hidden rounded-md border-white transition-all md:w-full'
 			onSubmit={handleSubmit}
+			role='form'
+			aria-label='search form'
 		>
 			{children && children}
 		</form>
@@ -67,7 +69,8 @@ const SearchButton: React.FC<ISearchButtonProps> = ({ handleGeolocationSearch })
 		onClick={handleGeolocationSearch}
 		type='button'
 		className='aspect-square flex-shrink-0 bg-geolocation-btn bg-contain bg-center bg-no-repeat opacity-50 transition-opacity focus:outline-none hocus:opacity-100'
-		aria-label='Search by geolocation'
+		aria-label='geolocation'
+		role='button'
 	/>
 );
 
@@ -83,7 +86,7 @@ const SearchButton: React.FC<ISearchButtonProps> = ({ handleGeolocationSearch })
 const SearchInput: React.FC<ISearchInputProps> = ({ handleInputChange, inputRef }) => (
 	<input
 		type='search'
-		name='city'
+		name='searchbox'
 		autoComplete='off'
 		className='w-full border-b-2 border-transparent bg-transparent px-3 text-right text-white outline-none placeholder:text-white/[.5] focus:border-b-2 focus:border-b-white'
 		placeholder='type your city'

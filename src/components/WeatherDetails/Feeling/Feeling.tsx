@@ -13,10 +13,15 @@ import FeelingIcon from './FeelingIcon';
  * @param {IFeelsLikeInfo} props.data - The weather feeling data object.
  * @param {number} props.data.temperature - The actual temperature value.
  * @param {string} props.data.feelsLike - Description of how the temperature feels.
+ * olodoil
  * @returns {JSX.Element} A React component that displays the weather feeling information,
  * including an icon, temperature content, and a description of how it feels.
  */
-const Feeling = ({ data: { temperature, feelsLike } }: { data: IFeelsLikeInfo }) => {
+const Feeling = ({
+	data: { temperature, feelsLike } = { temperature: undefined, feelsLike: undefined },
+}: {
+	data?: IFeelsLikeInfo;
+}) => {
 	return (
 		<Feeling.Wrapper className='relative flex flex-1 flex-col'>
 			<Feeling.Wrapper className='flex flex-1 items-end gap-4'>
@@ -24,7 +29,7 @@ const Feeling = ({ data: { temperature, feelsLike } }: { data: IFeelsLikeInfo })
 				<Feeling.Content temp={temperature} />
 			</Feeling.Wrapper>
 			<Feeling.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
-				{feelsLike}
+				{feelsLike ? feelsLike : 'N/A'}
 			</Feeling.Wrapper>
 		</Feeling.Wrapper>
 	);
@@ -33,5 +38,8 @@ const Feeling = ({ data: { temperature, feelsLike } }: { data: IFeelsLikeInfo })
 Feeling.Wrapper = Wrapper;
 Feeling.Icon = FeelingIcon;
 Feeling.Content = FeelingContent;
+const FeelingWithLoading = withLoading<{}, IFeelsLikeInfo>(Feeling, useGetFeelsLikeInfo);
 
-export default withLoading<{}, IFeelsLikeInfo>(Feeling, useGetFeelsLikeInfo);
+export { Feeling, FeelingWithLoading as FeelingWithLoading };
+
+export default FeelingWithLoading;

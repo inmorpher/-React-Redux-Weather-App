@@ -1,7 +1,7 @@
 export interface ISunTimingsProps {
-	sunrise: string;
-	sunset: string;
-	isDay: boolean;
+	sunrise?: string;
+	sunset?: string;
+	isDay?: boolean;
 }
 
 /**
@@ -15,10 +15,10 @@ const SunTimings = ({ sunrise, sunset, isDay }: ISunTimingsProps) => {
 	return (
 		<div className={`flex justify-between pb-[0.13rem] ${!isDay && 'flex-row-reverse'}`}>
 			<span className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↑↑"]'>
-				{sunrise}
+				{sunrise ? sunrise : 'N/A'}
 			</span>
 			<span className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↓↓"]'>
-				{sunset}
+				{sunset ? sunset : 'N/A'}
 			</span>
 		</div>
 	);

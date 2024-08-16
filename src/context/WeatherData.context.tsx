@@ -18,6 +18,11 @@ import {
 } from '../utils/services/definitions/pressure.definition';
 import { sunDefinition } from '../utils/services/definitions/sunDefinition';
 import {
+	getSvgScale,
+	ScaleReturn,
+	ScaleType,
+} from '../utils/services/definitions/svgScale.definition';
+import {
 	getVisibilityValue,
 	IVisibilityReturn,
 } from '../utils/services/definitions/visibility.definition';
@@ -120,6 +125,8 @@ export const useWeatherData = () => {
 	);
 };
 
+export default WeatherProvider;
+
 /**
  * A custom hook that retrieves and formats city information from the weather data.
  *
@@ -191,12 +198,11 @@ export const useGetMainWeather = (): UseGetMainWeatherReturn => {
 
 	return useMemo(() => {
 		if (!weatherData?.current || !weatherData?.daily?.[0]) return undefined;
-		console.log(metricType);
 
 		const { current, daily } = weatherData;
 		const { temp: currentTemperature, weather: currentWeather, clouds } = current;
 		const todayForecast = daily[0];
-		console.log('Today forecast:');
+
 		return {
 			temperature: formatTemperature(currentTemperature, metricType),
 			condition: currentWeather[0]?.main ?? 'Unknown',
@@ -377,12 +383,13 @@ export const useGetPrecipitationInfo = (): IPrecipitationInfo | undefined => {
  *
  * @returns {number | undefined} The current UV index value, or undefined if not available.
  */
-export const useGetUvi = (): number | undefined => {
+export const useGetUvi = (): ScaleReturn | undefined => {
 	const { weatherData } = useWeatherData();
 
 	return useMemo(() => {
 		if (weatherData?.current && 'uvi' in weatherData.current) {
-			return weatherData.current.uvi;
+			// return weatherData.current.uvi;
+			return getSvgScale(ScaleType.uvi, weatherData.current.uvi);
 		}
 		return undefined;
 	}, [weatherData?.current?.uvi]);
@@ -396,13 +403,13 @@ export const useGetUvi = (): number | undefined => {
  *
  * @returns {Object | undefined} The current air pollution data, or undefined if not available.
  */
-export const useGetAqi = (): number | undefined => {
+export const useGetAqi = (): ScaleReturn | undefined => {
 	const { weatherData } = useWeatherData();
 
 	return useMemo(() => {
 		if (!weatherData?.current?.air_pollution) return undefined;
 
-		return weatherData.current.air_pollution;
+		return getSvgScale(ScaleType.aqi, weatherData.current.air_pollution);
 	}, [weatherData?.current?.air_pollution]);
 };
 

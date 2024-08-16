@@ -22,8 +22,10 @@ const Moon = ({ data: moon }: { data: IMoonPosition }) => {
 	return (
 		<Moon.Wrapper className='relative flex min-w-full flex-1 flex-col'>
 			<Moon.Wrapper className='flex  flex-1 items-center gap-4 pb-3'>
-				<Moon.Icon moonPhase={moonPhase} />
-				<Moon.Wrapper className='text-center text-sm'>{description}</Moon.Wrapper>
+				<Moon.Icon moonPhase={moonPhase} aria-label='moon phase icon' />
+				<Moon.Wrapper className='text-center text-sm'>
+					{description ? description : 'N/A'}
+				</Moon.Wrapper>
 			</Moon.Wrapper>
 			<Moon.Content moonRise={moonRise} moonSet={moonSet} />
 		</Moon.Wrapper>
@@ -34,4 +36,7 @@ Moon.Wrapper = Wrapper;
 Moon.Icon = MoonIcon;
 Moon.Content = MoonContent;
 
-export default withLoading<{}, IMoonPosition>(Moon, useGetMoonPosition);
+const MoonWithLoading = withLoading<{}, IMoonPosition>(Moon, useGetMoonPosition);
+
+export { Moon, MoonWithLoading as MoonWithLoading };
+export default MoonWithLoading;

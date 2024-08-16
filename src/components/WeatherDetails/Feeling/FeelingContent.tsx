@@ -5,7 +5,7 @@
  * @property {string} temp.units - The units of the temperature value (e.g., "C" for Celsius, "F" for Fahrenheit).
  */
 export interface IFeelingContentProps {
-	temp: { value: number; units: string };
+	temp?: { value: number; units: string };
 }
 
 /**
@@ -20,8 +20,8 @@ export interface IFeelingContentProps {
 const FeelingContent = ({ temp }: IFeelingContentProps) => {
 	return (
 		<span className='gap-4 text-[2rem] leading-[2.5rem]'>
-			{temp.value}
-			{temp.units}
+			{temp?.value ? temp.value : 'N/A'}
+			{temp?.units ? temp.units : 'N/A'}
 		</span>
 	);
 };

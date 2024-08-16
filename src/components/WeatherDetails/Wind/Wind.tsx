@@ -16,7 +16,8 @@ import WindSpeedDetails from './WindSpeedDetails';
  * @param {string} props.data.direction - The literal wind direction (e.g., "N", "SE").
  * @returns {JSX.Element} A React component displaying wind information.
  */
-const Wind = ({ data: { degree, speed, gust, direction } }: { data: IWindInfo }) => {
+const Wind = ({ data }: { data?: IWindInfo }) => {
+	const { degree, speed, gust, direction } = data || {};
 	return (
 		<Wind.Wrapper className='relative flex flex-1 flex-col'>
 			<Wind.Icon deg={degree} literal={direction} />
@@ -29,4 +30,7 @@ Wind.Wrapper = Wrapper;
 Wind.Icon = WindIcon;
 Wind.SpeedDetails = WindSpeedDetails;
 
-export default withLoading<{}, IWindInfo>(Wind, useGetWindInfo);
+const WindWithLoading = withLoading<{}, IWindInfo>(Wind, useGetWindInfo);
+export { Wind, WindWithLoading as WindWithLoading };
+
+export default WindWithLoading;

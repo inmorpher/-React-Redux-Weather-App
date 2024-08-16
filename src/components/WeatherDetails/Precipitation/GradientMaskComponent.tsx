@@ -16,7 +16,7 @@ type GradientMaskProps = {
  */
 const GradientMaskComponent = ({ colors }: GradientMaskProps) => {
 	return (
-		<defs>
+		<defs role='definition' aria-label='gradient-mask'>
 			<linearGradient
 				id='verticalGradient'
 				x1='0'
@@ -25,13 +25,15 @@ const GradientMaskComponent = ({ colors }: GradientMaskProps) => {
 				y2='0'
 				gradientUnits='userSpaceOnUse'
 			>
-				{colors.map((item, index) => {
-					const range = 100 / colors.length;
-					const stopOffset = Math.round(range * index) + '%';
-					return (
-						<stop key={item.color + index} offset={stopOffset} stopColor={item.color} />
-					);
-				})}
+				{Array.isArray(colors) &&
+					colors.length > 0 &&
+					colors.map((item, index) => {
+						const range = 100 / colors.length;
+						const stopOffset = Math.round(range * index) + '%';
+						return (
+							<stop key={`${item.color}-${index}`} offset={stopOffset} stopColor={item.color} />
+						);
+					})}
 			</linearGradient>
 			<linearGradient
 				id='backGradient'

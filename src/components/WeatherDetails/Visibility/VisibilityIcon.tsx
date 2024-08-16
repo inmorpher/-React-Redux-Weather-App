@@ -16,6 +16,8 @@ const VisibilityIcon = () => {
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
 			className='h-10 w-10'
+			role='img'
+			aria-label='visibility-icon'
 		>
 			<path
 				d='M41 20C41 26.6647 35.8147 32 29.5 32C23.1853 32 18 26.6647 18 20C18 13.3353 23.1853 8 29.5 8C35.8147 8 41 13.3353 41 20Z'

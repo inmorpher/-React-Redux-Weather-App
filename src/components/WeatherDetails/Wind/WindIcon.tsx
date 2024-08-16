@@ -4,8 +4,8 @@
  * @property {string} literal - The text representation of the wind direction or speed.
  */
 export interface IWindIconProps {
-	deg: string | number;
-	literal: string;
+	deg?: string | number;
+	literal?: string;
 }
 
 /**
@@ -22,9 +22,7 @@ export interface IWindIconProps {
  */
 import { memo } from 'react';
 
-const WindIcon = memo(({ deg, literal }: IWindIconProps) => {
-	console.log('with Memo');
-
+const WindIcon = memo(({ deg = 0, literal = 'N/A' }: IWindIconProps) => {
 	return (
 		<div className='flex flex-1 items-end gap-4'>
 			<svg
@@ -34,6 +32,8 @@ const WindIcon = memo(({ deg, literal }: IWindIconProps) => {
 				fill='none'
 				xmlns='http://www.w3.org/2000/svg'
 				className='h-10 w-10'
+				role='img'
+				aria-label='wind direction'
 			>
 				<circle cx='20' cy='20' r='19' stroke='white' strokeWidth='2' />
 				<path
@@ -43,6 +43,8 @@ const WindIcon = memo(({ deg, literal }: IWindIconProps) => {
 					strokeLinejoin='round'
 					transform={`rotate(${deg})`}
 					transform-origin='center'
+					role='contentinfo'
+					aria-label='direction'
 				/>
 			</svg>
 			<span className='text-[2.5rem] leading-[2.5rem]'>{literal}</span>

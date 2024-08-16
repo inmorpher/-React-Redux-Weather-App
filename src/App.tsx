@@ -7,7 +7,7 @@ import { DailyProvider } from './context/Daily.context';
 import { MetricProvider } from './context/Metric.context';
 import { SidebarProvider } from './context/Sidebar.context';
 import { ThemeProvider } from './context/Theme.context';
-import { router } from './router';
+import router from './router';
 
 const App: React.FC = () => {
 	const queryClient = new QueryClient();

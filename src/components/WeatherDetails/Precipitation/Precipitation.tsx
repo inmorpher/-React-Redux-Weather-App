@@ -6,7 +6,7 @@ import withLoading from '../../UI/WithLoading';
 import AxisComponent from './AxisComponent';
 import CurveComponent from './CurveComponent';
 import GradientMaskComponent from './GradientMaskComponent';
-import PrecipitationSVGContainer from './PrecipitationSVGContaienr';
+import PrecipitationSVGContainer from './PrecipitationSVGContainer';
 import TimeLineComponent from './TimeLineComponent';
 
 /**
@@ -19,8 +19,17 @@ import TimeLineComponent from './TimeLineComponent';
  * @returns {JSX.Element} A React component representing the precipitation chart.
  */
 const Precipitation = ({ data }: { data: IPrecipitationInfo }) => {
+	const precipitationData = usePrecipitation(data);
+
+	if (!data)
+		return (
+			<Precipitation.Wrapper className='relative flex  h-full w-full flex-shrink justify-center overflow-hidden'>
+				Precipitation data unavailable
+			</Precipitation.Wrapper>
+		);
+
 	const { wrapperRef, curve, gradientColors, timeLine, axis, dimension, hasPrecipitation } =
-		usePrecipitation(data);
+		precipitationData;
 
 	return (
 		<Precipitation.Wrapper
@@ -31,7 +40,7 @@ const Precipitation = ({ data }: { data: IPrecipitationInfo }) => {
 				<Precipitation.GradientMask colors={gradientColors} />
 				<Precipitation.TimeLine timeLine={timeLine} />
 				<Precipitation.Axis axis={axis} />
-				<Precipitation.Curve mainCurve={curve.mainCurve} backCurve={curve.backPathCurve} />
+				<Precipitation.Curve mainCurve={curve?.mainCurve} backCurve={curve?.backPathCurve} />
 			</Precipitation.Container>
 
 			{!hasPrecipitation && (
@@ -50,4 +59,9 @@ Precipitation.TimeLine = TimeLineComponent;
 Precipitation.Axis = AxisComponent;
 Precipitation.Curve = CurveComponent;
 
-export default withLoading<{}, IPrecipitationInfo>(Precipitation, useGetPrecipitationInfo);
+const PrecipitationWithLoading = withLoading<{}, IPrecipitationInfo>(
+	Precipitation,
+	useGetPrecipitationInfo
+);
+export { Precipitation, PrecipitationWithLoading as PrecipitationWithLoadingComponent };
+export default PrecipitationWithLoading;

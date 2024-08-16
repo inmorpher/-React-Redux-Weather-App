@@ -18,9 +18,13 @@ const DailyWeatherScale = ({ children }: { children: ReactNode }) => {
 
 export const SVGWrapper = (props: SVGProps<SVGSVGElement>) => <svg {...props} />;
 
-export const Line = (props: SVGLineElementAttributes<SVGLineElement>) => <line {...props} />;
+export const Line = (props: SVGLineElementAttributes<SVGLineElement>) => (
+	<line {...props} data-testid='weather-curve-line' />
+);
 
-export const Text = (props: SVGTextElementAttributes<SVGTextElement>) => <text {...props} />;
+export const Text = (props: SVGTextElementAttributes<SVGTextElement>) => (
+	<text {...props} data-testid='weather-curve-text' />
+);
 
 export const Curve = forwardRef<SVGPathElement, SVGProps<SVGPathElement>>((props, ref) => (
 	<path {...props} ref={ref} />

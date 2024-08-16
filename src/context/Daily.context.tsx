@@ -25,6 +25,7 @@ export interface DailyContextType {
 	containerRef: React.RefObject<HTMLDivElement>;
 	dailyListRef: React.RefObject<HTMLDivElement>;
 	dailyDetailsRef: React.RefObject<HTMLDivElement>;
+	scrollToggler: () => void;
 	hideDetails: () => void;
 	showDetails: (item: number) => void;
 	setIsActiveListener: (value: boolean) => void;
@@ -63,14 +64,14 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 		});
 	}, []);
 
-	const hideDetails = useCallback(() => {
+	const hideDetails = () => {
 		startTransition(() => {
-			setDailyState((prevState) => ({
-				...prevState,
+			setDailyState(() => ({
+				item: 0,
 				isOpen: false,
 			}));
 		});
-	}, []);
+	};
 
 	const scrollToggler = useCallback(() => {
 		if (containerRef.current && dailyListRef.current && dailyDetailsRef.current) {
@@ -109,6 +110,7 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 	const onCloseDetails = useCallback(() => {
 		if (containerRef.current) {
 			hideDetails();
+
 			containerRef.current?.scrollTo({
 				left: 0,
 				behavior: 'smooth',
@@ -126,10 +128,8 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 		(event: React.KeyboardEvent<HTMLLIElement>, index: number) => {
 			if (event.key === 'Enter' && !dailyState.isOpen) {
 				onOpenPopup(index);
-				console.log('open');
 			} else if (event.key === 'Escape' && dailyState.isOpen) {
 				onCloseDetails();
-				console.log('close');
 			}
 		},
 		[dailyState.isOpen, onCloseDetails, onOpenPopup]
@@ -150,6 +150,7 @@ export const DailyProvider: React.FC<DailyContextProps> = ({ children }) => {
 				onOpenPopup,
 				onPressKeys,
 				onCloseDetails,
+				scrollToggler,
 			}}
 		>
 			{children}

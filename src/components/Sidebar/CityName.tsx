@@ -8,25 +8,37 @@ import withLoading from '../UI/WithLoading';
  *
  * @returns {JSX.Element} A React component that renders the city name, time, and an add button.
  */
-export const CityName = () => {
-	const { formattedCityName, localTime, handleAddCity } = useCityName();
+const CityName = () => {
+	const { formattedCityName = '', localTime = '', handleAddCity = undefined } = useCityName() || {};
 
 	return (
 		<div className='flex w-1/2 items-center'>
-			<Button
-				size='medium'
-				variant='add'
-				onClick={handleAddCity}
-				aria-label='Add city to your list'
-			/>
+			{handleAddCity && (
+				<Button
+					size='medium'
+					variant='add'
+					onClick={handleAddCity ?? undefined}
+					aria-label='Add city to your list'
+				/>
+			)}
+
 			<div className='flex max-w-full flex-col overflow-hidden whitespace-nowrap'>
-				<p className='overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-3 sm:text-xl'>
-					{formattedCityName}
+				<p
+					className='overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-3 sm:text-xl'
+					aria-label='city name'
+				>
+					{formattedCityName || 'N/A'}
 				</p>
-				<p className='text-[0.6rem] font-light underline'>{localTime}</p>
+				<p className='text-[0.6rem] font-light underline' aria-label='local time'>
+					{localTime || 'N/A'}
+				</p>
 			</div>
 		</div>
 	);
 };
 
-export default withLoading(CityName);
+const CityNameWithLoading = withLoading(CityName);
+
+export { CityName, CityNameWithLoading as CityNameWithLoadingComponent };
+
+export default CityNameWithLoading;

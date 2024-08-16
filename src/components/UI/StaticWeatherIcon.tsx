@@ -12,7 +12,7 @@ type IconCode = {
  * Defines the variants and default variants for the icon component.
  * Variants include background style ('default' variant) and size ('medium' or 'small').
  */
-const iconVariants = cva('w-5 h-5', {
+export const iconVariants = cva('w-5 h-5', {
 	variants: {
 		variant: {
 			default: 'bg-none',
@@ -31,7 +31,7 @@ const iconVariants = cva('w-5 h-5', {
 /**
  * A record of icon codes mapped to their respective source and alternative text.
  */
-const iconCodes: Record<string, IconCode> = {
+export const iconCodes: Record<string, IconCode> = {
 	'01d': {
 		src: '/icons/static/conditions/01d.svg',
 		alt: 'clear sky',
@@ -143,6 +143,8 @@ const StaticWeatherIcon = ({
 			className={cn(iconVariants({ variant, size }), className)}
 			src={iconSrc}
 			alt={iconAlt}
+			role='img'
+			aria-label={iconAlt || 'weather icon'}
 		/>
 	);
 };

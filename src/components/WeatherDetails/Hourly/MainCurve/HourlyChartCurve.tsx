@@ -1,5 +1,4 @@
 import withMemo from '../../../UI/WithMemo';
-
 /**
  * Interface for the properties of the HourlyChartCurve component.
  */
@@ -19,16 +18,18 @@ export interface IChartCurveProps {
  */
 const HourlyChartCurve = ({ curvePath }: IChartCurveProps): JSX.Element | null => {
 	return (
-		<g data-tag='chart-curve'>
-			<path
-				fill='none'
-				strokeLinecap='round'
-				strokeLinejoin='round'
-				stroke='url(#chartStroke)'
-				d={curvePath}
-				strokeWidth={5}
-			/>
-		</g>
+		<svg data-testid='hourly-curve'>
+			<g>
+				<path
+					fill='none'
+					strokeLinecap='round'
+					strokeLinejoin='round'
+					stroke='url(#chartStroke)'
+					d={curvePath ?? ''}
+					strokeWidth={5}
+				/>
+			</g>
+		</svg>
 	);
 };
 

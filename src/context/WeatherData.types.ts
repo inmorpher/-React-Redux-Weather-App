@@ -87,7 +87,7 @@ export interface IWindInfo {
  */
 export interface IHumidityInfo {
 	humidity: number;
-	dewPoint: MetricReturnType;
+	dewPoint?: MetricReturnType;
 }
 
 /**
@@ -99,11 +99,11 @@ export interface IHumidityInfo {
  * @property {boolean} isDay - Indicates whether it is currently daytime (true) or nighttime (false)
  */
 export interface ISunPosition {
-	sunset: string;
-	sunrise: string;
-	cycleDuration: number;
-	timeSinceCycleStart: number;
-	isDay: boolean;
+	sunset?: string;
+	sunrise?: string;
+	cycleDuration?: number;
+	timeSinceCycleStart?: number;
+	isDay?: boolean;
 }
 
 /**
@@ -137,8 +137,8 @@ export interface IMoonPosition {
  * @property {string} feelsLike - A description of how the temperature feels, e.g., "Warmer", "Colder", "About the same"
  */
 export interface IFeelsLikeInfo {
-	temperature: MetricReturnType;
-	feelsLike: string;
+	temperature?: MetricReturnType;
+	feelsLike?: string;
 }
 /**
  * Represents hourly weather forecast information along with user preferences.

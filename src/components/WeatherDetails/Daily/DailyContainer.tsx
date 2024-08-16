@@ -24,7 +24,7 @@ const DailyContainer = ({ children, containerRef }: IDailyContainerProps): JSX.E
 			className='flex h-full w-full overflow-hidden whitespace-nowrap rounded-b-lg bg-primary-color-500 dark:bg-primary-color-dark-500'
 			ref={containerRef}
 		>
-			{children}
+			{children && children}
 		</div>
 	);
 };

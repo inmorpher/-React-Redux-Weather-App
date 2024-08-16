@@ -56,4 +56,7 @@ Hourly.ChartTimeLine = HourlyChartTimeLine;
 Hourly.WeatherDescription = HourlyWeatherDescription;
 Hourly.Underline = HourlyUnderline;
 
-export default withLoading<{}, IHourlyForecast>(Hourly, useGetHourlyForecast);
+const HourlyWithLoading = withLoading<{}, IHourlyForecast>(Hourly, useGetHourlyForecast);
+export { Hourly, HourlyWithLoading as HourlyWithLoadingComponent };
+
+export default HourlyWithLoading;

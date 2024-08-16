@@ -36,8 +36,9 @@ const PrecipitationSVGContainer = ({
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
-			viewBox={`0 0 ${dimension?.width} ${dimension?.height}`}
+			viewBox={`0 0 ${dimension?.width || 0} ${dimension?.height || 0}`}
 			className={` mx-auto transition-all ${!isPrecipitation && 'opacity-30'}`}
+			data-testid='precipitation-container'
 		>
 			{children && children}
 		</svg>

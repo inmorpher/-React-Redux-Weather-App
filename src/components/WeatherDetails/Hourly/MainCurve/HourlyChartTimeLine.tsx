@@ -5,7 +5,7 @@ export interface IChartTimeLineProps {
 	 * An array of TimeLineCoords objects or undefined.
 	 * Each object contains the coordinates and time information for the timeline.
 	 */
-	data: Array<TimeLineCoords> | undefined;
+	data: Array<TimeLineCoords>;
 }
 
 /**
@@ -17,25 +17,29 @@ export interface IChartTimeLineProps {
  * @returns {JSX.Element | null} A group of text elements representing the timeline, or null if no data is provided.
  */
 const HourlyChartTimeLine = ({ data }: IChartTimeLineProps) => {
-	if (!data) return null;
+	if (data === null || data === undefined || !data.length) return null;
+
 	return (
-		<g data-tag='chart-time-line'>
-			{data.map((item, index) => {
-				return (
-					<text
-						key={item.time + index}
-						x={item.x}
-						y={item.y}
-						textAnchor='middle'
-						fontSize='.8rem'
-						fill='#fff'
-						letterSpacing='.5'
-					>
-						{item.time}
-					</text>
-				);
-			})}
-		</g>
+		<svg>
+			<g data-tag='chart-time-line'>
+				{data.map((item, index) => {
+					return (
+						<text
+							key={item.time + index}
+							x={item.x !== undefined ? item.x : 0}
+							y={item.y !== undefined ? item.y : 0}
+							textAnchor='middle'
+							fontSize='.8rem'
+							fill='#fff'
+							letterSpacing='.5'
+							role='definition'
+						>
+							{item.time || ''}
+						</text>
+					);
+				})}
+			</g>
+		</svg>
 	);
 };
 

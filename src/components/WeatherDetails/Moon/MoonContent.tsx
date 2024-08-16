@@ -5,8 +5,8 @@
  * @property {string} moonset - The time when the moon sets.
  */
 export interface IMoonContentProps {
-	moonRise: string;
-	moonSet: string;
+	moonRise?: string;
+	moonSet?: string;
 }
 
 /**
@@ -20,12 +20,20 @@ const MoonContent = ({ moonRise, moonSet }: IMoonContentProps) => {
 	return (
 		<div className='flex justify-between '>
 			{/* Span element for displaying moonrise time with a custom before pseudo-element for styling */}
-			<span className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↑↑"]'>
-				{moonRise}
+			<span
+				className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↑↑"]'
+				role='status'
+				aria-label='moon-rise'
+			>
+				{moonRise ? moonRise : 'N/A'}
 			</span>
 			{/* Span element for displaying moonset time with a custom before pseudo-element for styling */}
-			<span className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↓↓"]'>
-				{moonSet}
+			<span
+				className='relative text-center text-xs before:absolute before:left-2/4 before:top-0 before:origin-center before:translate-x-[-50%] before:translate-y-[-100%] before:content-["↓↓"]'
+				role='status'
+				aria-label='moon-set'
+			>
+				{moonSet ? moonSet : 'N/A'}
 			</span>
 		</div>
 	);

@@ -1,10 +1,10 @@
+import { z } from 'zod';
 import { useGetDailyWeatherForDay } from '../../../../context/WeatherData.context';
-import { IDailyForecastForDay } from '../../../../context/WeatherData.types';
+
 import { useSelectedDayIndex } from '../../../../hooks/useDaily';
 import SpanText from '../../../UI/Global/SpanText';
 import Wrapper from '../../../UI/Global/Wrapper';
 import StaticWeatherIcon from '../../../UI/StaticWeatherIcon';
-import withLoading from '../../../UI/WithLoading';
 
 /**
  * WeatherCondition component displays the weather condition for a specific day.
@@ -18,37 +18,62 @@ import withLoading from '../../../UI/WithLoading';
  * @param {string} props.data.weatherIcon - The weather icon identifier.
  * @returns {JSX.Element} The rendered WeatherCondition component.
  */
-export const WeatherCondition = ({
-	data: { tempMax, tempMin, weatherCondition, weatherIcon },
-}: {
-	data: IDailyForecastForDay;
-}) => {
+
+const WeatherDataSchema = z.object({
+	tempMax: z.object({
+		value: z.string().or(z.number()).optional(),
+		units: z.string().optional(),
+	}),
+	tempMin: z.object({
+		value: z.string().or(z.number()).optional(),
+		units: z.string().optional(),
+	}),
+	weatherCondition: z.string().optional(),
+	weatherIcon: z.string().optional(),
+});
+const WeatherCondition = () => {
+	const selectedDayIndex = useSelectedDayIndex();
+	const forecastForDay = useGetDailyWeatherForDay(selectedDayIndex);
+
+	const parsedForecast = WeatherDataSchema.safeParse(forecastForDay);
+	const validForecast = parsedForecast.success ? parsedForecast.data : null;
+
 	return (
 		<WeatherCondition.Wrapper className='flex w-full justify-around'>
 			<WeatherCondition.Wrapper className='flex items-center'>
-				<WeatherCondition.Icon icon={weatherIcon} className='mr-2' size='medium' />
-				<WeatherCondition.Text className='text-base font-thin leading-4'>
-					{weatherCondition}
+				<WeatherCondition.Icon
+					icon={validForecast?.weatherIcon || ''}
+					className='mr-2'
+					size='medium'
+				/>
+				<WeatherCondition.Text
+					className='text-base font-thin leading-4'
+					aria-label='weather condition description'
+				>
+					{validForecast?.weatherCondition || 'N/A'}
 				</WeatherCondition.Text>
 			</WeatherCondition.Wrapper>
 			<WeatherCondition.Wrapper className='flex gap-2'>
-				<WeatherCondition.Text className='relative before:absolute before:left-[-5px] before:h-full before:w-1 before:bg-up-arrow-btn before:bg-center before:bg-no-repeat'>
-					{tempMax.value}
-					{tempMax.units}
+				<WeatherCondition.Text
+					className='relative before:absolute before:left-[-5px] before:h-full before:w-1 before:bg-up-arrow-btn before:bg-center before:bg-no-repeat'
+					aria-label='maximum temperature value'
+				>
+					{validForecast?.tempMax.value || 'N/A'}
+					{validForecast?.tempMax.value && validForecast.tempMax.units}
 				</WeatherCondition.Text>
-				<WeatherCondition.Text className='relative before:absolute before:left-[-5px] before:h-full before:w-1 before:bg-down-arrow-btn before:bg-center before:bg-no-repeat'>
-					{tempMin.value}
-					{tempMin.units}
+				<WeatherCondition.Text
+					className='relative before:absolute before:left-[-5px] before:h-full before:w-1 before:bg-down-arrow-btn before:bg-center before:bg-no-repeat'
+					aria-label='minimum temperature value'
+				>
+					{validForecast?.tempMin.value || 'N/A'}
+					{validForecast?.tempMin.value && validForecast.tempMin.units}
 				</WeatherCondition.Text>
 			</WeatherCondition.Wrapper>
 		</WeatherCondition.Wrapper>
 	);
 };
-
 WeatherCondition.Wrapper = Wrapper;
 WeatherCondition.Text = SpanText;
 WeatherCondition.Icon = StaticWeatherIcon;
 
-export default withLoading<{}, IDailyForecastForDay>(WeatherCondition, () =>
-	useGetDailyWeatherForDay(useSelectedDayIndex())
-);
+export default WeatherCondition;

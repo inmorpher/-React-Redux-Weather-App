@@ -50,6 +50,7 @@ export const MetricProvider = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
+export default MetricProvider;
 /**
  * useMetric is a custom hook that provides access to the metric context.
  * It throws an error if used outside of a MetricProvider.

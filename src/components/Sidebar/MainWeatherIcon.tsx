@@ -1,7 +1,5 @@
 import React, { Suspense } from 'react';
 import { useGetWeatherIconInfo } from '../../context/WeatherData.context';
-import { IWeatherIcon } from '../../context/WeatherData.types';
-import withLoading from '../UI/WithLoading';
 
 const SnowDynamicIcon = React.lazy(() => import('../Icons/SnowDynamicIcon'));
 const ClearCloudyDynamicIcon = React.lazy(() => import('../Icons/ClearCloudyDynamicIcon'));
@@ -27,31 +25,41 @@ export type MainWeatherIcon = {
  *
  * @returns {React.ReactElement} A div containing the appropriate weather icon component.
  */
-export const MainWeatherIcon = ({ data }: { data: IWeatherIcon }) => {
-	const { iconCode, timeOfDay } = data;
+const MainWeatherIcon = () => {
+	const icon = useGetWeatherIconInfo();
 
 	// Map of weather icon codes to their respective components
 	const iconComponents: MainWeatherIcon = {
-		'01': <ClearCloudyDynamicIcon iconCode={iconCode} timeOfDay={timeOfDay} />,
-		'02': <ClearCloudyDynamicIcon iconCode={iconCode} timeOfDay={timeOfDay} />,
-		'03': <CloudsDynamicIcon iconCode={iconCode} />,
-		'04': <CloudsDynamicIcon iconCode={iconCode} />,
-		'09': <PrecipitationDynamicIcon iconCode={iconCode} />,
-		'10': <PrecipitationDynamicIcon iconCode={iconCode} />,
-		'11': <PrecipitationDynamicIcon iconCode={iconCode} />,
+		'01': (
+			<ClearCloudyDynamicIcon
+				iconCode={icon?.iconCode ?? ''}
+				timeOfDay={icon?.timeOfDay ?? 'day'}
+			/>
+		),
+		'02': (
+			<ClearCloudyDynamicIcon
+				iconCode={icon?.iconCode ?? ''}
+				timeOfDay={icon?.timeOfDay ?? 'day'}
+			/>
+		),
+		'03': <CloudsDynamicIcon iconCode={icon?.iconCode ?? ''} />,
+		'04': <CloudsDynamicIcon iconCode={icon?.iconCode ?? ''} />,
+		'09': <PrecipitationDynamicIcon iconCode={icon?.iconCode ?? ''} />,
+		'10': <PrecipitationDynamicIcon iconCode={icon?.iconCode ?? ''} />,
+		'11': <PrecipitationDynamicIcon iconCode={icon?.iconCode ?? ''} />,
 		'13': <SnowDynamicIcon />,
 		'50': <MistDynamicIcon />,
 		default: 'N/A',
 	};
 
 	// Get the appropriate weather icon component based on the icon code and time of day
-	const WeatherIconElement = iconComponents[iconCode] || iconComponents['default'];
+	const WeatherIconElement = iconComponents[icon?.iconCode ?? 0] || iconComponents['default'];
 
 	return (
-		<div className='mx-2 h-10 w-10 '>
+		<div className='mx-2 h-10 w-10 ' data-testid='dynamic icon'>
 			<Suspense fallback={'loading'}>{WeatherIconElement}</Suspense>
 		</div>
 	);
 };
 
-export default withLoading<{}, IWeatherIcon>(MainWeatherIcon, useGetWeatherIconInfo);
+export default MainWeatherIcon;

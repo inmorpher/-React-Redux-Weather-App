@@ -5,7 +5,7 @@ export type PointerStateType = {
 	pointerTime: number | string | undefined;
 };
 
-type ActionType =
+export type ActionType =
 	| { type: 'SET_POINTER_COORDS'; payload: { x: number; y: number } }
 	| { type: 'SET_POINTER_TEMPRITURE'; payload: string | number | undefined }
 	| { type: 'SET_POINTER_TIME'; payload: number | string | undefined }
@@ -37,7 +37,13 @@ export const weatherScaleReduce = (
 		case 'SET_POINTER_TEMPRITURE':
 			return { ...state, pointerTempriture: action.payload };
 		case 'SET_POINTER_TIME':
-			return { ...state, pointerTime: action.payload?.toString().padStart(2, '0') + ':00' };
+			// return { ...state, pointerTime: action.payload?.toString().padStart(2, '0') + ':00' };
+			return {
+				...state,
+				pointerTime: action.payload?.toString()
+					? action.payload?.toString().padStart(2, '0') + ':00'
+					: undefined,
+			};
 		case 'SET_POINTER_VISIBILITY':
 			return { ...state, pointerVisibility: action.payload };
 		case 'SET_POINTER_VALUES':

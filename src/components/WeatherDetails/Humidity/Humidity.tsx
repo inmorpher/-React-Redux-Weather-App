@@ -13,12 +13,18 @@ import HumidityIcon from './HumidityIcon';
  * @component
  * @returns {JSX.Element | null} The rendered component or null if there is an error or no data.
  */
-const Humidity = ({ data: { humidity, dewPoint } }: { data: IHumidityInfo }) => {
+const Humidity = ({
+	data: { humidity, dewPoint } = { humidity: 0, dewPoint: undefined },
+}: {
+	data?: IHumidityInfo;
+}) => {
 	return (
 		<Humidity.Wrapper className='relative flex flex-1 flex-col'>
 			<Humidity.Wrapper className='flex flex-1 items-end gap-4 px-3'>
 				<Humidity.Icon />
-				<Humidity.Text className='text-[2.5rem] leading-[2.5rem]'>{humidity + '%'}</Humidity.Text>
+				<Humidity.Text className='text-[2.5rem] leading-[2.5rem]'>
+					{typeof humidity === 'number' ? humidity + '%' : 'N/A'}
+				</Humidity.Text>
 			</Humidity.Wrapper>
 			<Humidity.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
 				{dewPoint && (
@@ -35,4 +41,8 @@ Humidity.Wrapper = Wrapper;
 Humidity.Icon = HumidityIcon;
 Humidity.Text = SpanText;
 
-export default withLoading<{}, IHumidityInfo>(Humidity, useGetHumidityInfo);
+const HumidityWithLoading = withLoading<{}, IHumidityInfo>(Humidity, useGetHumidityInfo);
+
+export { Humidity, HumidityWithLoading as HumidityWithLoading };
+
+export default HumidityWithLoading;

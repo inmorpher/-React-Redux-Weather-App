@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WeatherScale > should handle the case when the selectedDayIndex is out of range 1`] = `
+<div>
+  <div
+    class="mt-2 flex justify-center"
+  >
+    <svg
+      class="bg-weather-gradient w-[90%] rounded-lg"
+      viewBox="0 0 320 160"
+    >
+      <path
+        d=""
+        data-testid="main-curve"
+        fill="none"
+        stroke="#fff"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2.5"
+      />
+      <g
+        data-popup="popup-pointer"
+      >
+        <rect
+          fill="none"
+          height="160"
+          pointer-events="all"
+          stroke="none"
+          width="320"
+          x="0"
+          y="0"
+        />
+      </g>
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`WeatherScale > should handle the case when useGetDailyScale returns undefined or null 1`] = `
+<div
+  class="mt-2 flex justify-center"
+>
+  <svg
+    class="bg-weather-gradient w-[90%] rounded-lg"
+    viewBox="0 0 320 160"
+  />
+</div>
+`;
+
+exports[`WeatherScale > should handle the case when useGetDailyScale returns undefined or null 2`] = `
+<div
+  class="mt-2 flex justify-center"
+>
+  <svg
+    class="bg-weather-gradient w-[90%] rounded-lg"
+    viewBox="0 0 320 160"
+  />
+</div>
+`;

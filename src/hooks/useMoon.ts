@@ -1,5 +1,11 @@
 import { IMoonPosition } from '../context/WeatherData.types';
 
+export interface IUseMoonReturn {
+	description: string;
+	moonRise: string;
+	moonSet: string;
+	moonPhase: number;
+}
 /**
  * Calculates and provides information about the moon's phase and position.
  *
@@ -14,9 +20,16 @@ import { IMoonPosition } from '../context/WeatherData.types';
  *   - moonSet: The formatted time of moonset.
  *   - moonPhase: A number representing the moon phase as a percentage (0 to 75).
  */
-export const useMoon = (moon: IMoonPosition) => {
-	const { moonPhase, formattedMoonRise, formattedMoonSet } = moon;
-
+export const useMoon = (moon?: IMoonPosition): IUseMoonReturn => {
+	// if (!moon) return { description: 'N/A', moonRise: 'N/A', moonSet: 'N/A', moonPhase: 0 };
+	const { moonPhase, formattedMoonRise, formattedMoonSet } = moon || {
+		description: 'N/A',
+		moonPhase: 1,
+		formattedMoonRise: '',
+		formattedMoonSet: '',
+	};
+	if (moonPhase === undefined || formattedMoonRise === undefined || formattedMoonSet === undefined)
+		return { description: 'N/A', moonRise: 'N/A', moonSet: 'N/A', moonPhase: 0 };
 	const moonPhaseDescriptions = {
 		0: 'new moon',
 		0.25: 'first quarter moon',

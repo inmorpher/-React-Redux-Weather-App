@@ -17,7 +17,13 @@ const HourlyWeatherDescription = ({ weatherDescription }: IWeatherDescriptionPro
 		<g data-tag='weather-description'>
 			{weatherDescription.map((item, index) => {
 				return (
-					<text key={'weatherDesc' + index} x={item.pX} y='95%'>
+					<text
+						key={'weatherDesc' + index}
+						x={item.pX}
+						y='95%'
+						role='presentation'
+						aria-label='weather-description'
+					>
 						{item.value.map((elem, i) => {
 							return (
 								<tspan

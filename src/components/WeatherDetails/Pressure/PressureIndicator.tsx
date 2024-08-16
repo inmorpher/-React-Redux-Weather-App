@@ -17,38 +17,51 @@ export interface IPressureIndicatorProps {
  */
 const PressureIndicator = ({ coords, angle }: IPressureIndicatorProps) => {
 	return (
-		<svg width='162px' height='108px' viewBox='0 0 160 100' xmlns='http://www.w3.org/2000/svg'>
-			{coords.map((line, index) => {
-				return (
-					<line
-						key={'pressure-line' + index}
-						x1={line.x1}
-						y1={line.y1}
-						x2={line.x2}
-						y2={line.y2}
-						stroke='white'
-						strokeLinecap='round'
-						strokeWidth='1'
-					/>
-				);
-			})}
-			<g
-				style={{
-					transform: `rotate(${angle}deg)`,
-					transformOrigin: `${80}px ${70}px`,
-				}}
-			>
-				<circle cx={`${80}px`} cy={`${70}px`} r={60} stroke='none' fill='none' />
-				<line
-					x1={80}
-					x2={80}
-					y1={5}
-					y2={30}
-					stroke='#53D7EF'
-					strokeWidth={4}
-					strokeLinecap='round'
-				/>
+		<svg
+			width='162px'
+			height='108px'
+			viewBox='0 0 160 100'
+			xmlns='http://www.w3.org/2000/svg'
+			role='img'
+			aria-label='pressure-icon'
+		>
+			<g aria-label='pressure-scale'>
+				{coords?.length > 0 &&
+					coords.map((line, index) => {
+						return (
+							<line
+								key={'pressure-line' + index}
+								x1={line.x1}
+								y1={line.y1}
+								x2={line.x2}
+								y2={line.y2}
+								stroke='white'
+								strokeLinecap='round'
+								strokeWidth='1'
+							/>
+						);
+					})}
 			</g>
+			{typeof angle === 'number' && coords?.length > 0 && (
+				<g
+					style={{
+						transform: `rotate(${angle}deg)`,
+						transformOrigin: `${80}px ${70}px`,
+					}}
+					aria-label='pressure-indicator'
+				>
+					<circle cx={`${80}px`} cy={`${70}px`} r={60} stroke='none' fill='none' />
+					<line
+						x1={80}
+						x2={80}
+						y1={5}
+						y2={30}
+						stroke='#53D7EF'
+						strokeWidth={4}
+						strokeLinecap='round'
+					/>
+				</g>
+			)}
 		</svg>
 	);
 };

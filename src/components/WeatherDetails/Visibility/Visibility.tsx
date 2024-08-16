@@ -19,10 +19,12 @@ const Visibility = ({ data: { distance, range } }: { data: IVisibilityReturn }) 
 		<Visibility.Wrapper className='relative flex flex-1 flex-col'>
 			<Visibility.Wrapper className='flex flex-1 items-end gap-4'>
 				<Visibility.Icon />
-				<Visibility.Text className='text-[2rem] leading-[2.5rem]'>{distance}</Visibility.Text>
+				<Visibility.Text className='text-[2rem] leading-[2.5rem]'>
+					{typeof distance === 'string' && distance.length > 0 ? distance : '0'}
+				</Visibility.Text>
 			</Visibility.Wrapper>
 			<Visibility.Wrapper className='flex flex-1 flex-col justify-end text-center text-sm'>
-				{range}
+				{typeof range === 'string' && range.length > 0 ? range : 'N/A'}
 			</Visibility.Wrapper>
 		</Visibility.Wrapper>
 	);
@@ -32,4 +34,7 @@ Visibility.Wrapper = Wrapper;
 Visibility.Text = SpanText;
 Visibility.Icon = VisibilityIcon;
 
-export default withLoading<{}, IVisibilityReturn>(Visibility, useGetVisibilityInfo);
+const VisibilityWithLoading = withLoading<{}, IVisibilityReturn>(Visibility, useGetVisibilityInfo);
+export { Visibility, VisibilityWithLoading };
+
+export default VisibilityWithLoading;
