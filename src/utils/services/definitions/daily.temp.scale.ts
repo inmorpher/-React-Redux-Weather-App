@@ -23,9 +23,12 @@ export const getDailyScaleCoords = (
 	lineWidth: number,
 	minTemp: number,
 	maxTemp: number,
-	value: number,
+	value: number
 ): number => {
-	const scaleStep = lineWidth / (maxTemp - minTemp);
+	if (minTemp === maxTemp) {
+		return 0;
+	}
 
-	return (value - minTemp) * scaleStep;
+	const relativePosition = (value - minTemp) / (maxTemp - minTemp);
+	return Math.round(relativePosition * lineWidth);
 };
