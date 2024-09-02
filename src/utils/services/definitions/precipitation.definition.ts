@@ -14,6 +14,19 @@ const precipitationRanges: Array<PrecipitationDesc> = [
 	{ min: 7.51, max: 50, color: precipitationColors[4] },
 ];
 
+/**
+ * Retrieves precipitation color ranges based on the given precipitation value.
+ *
+ * This function filters the predefined precipitation ranges and returns all ranges
+ * where the given value is greater than or equal to the minimum value of the range.
+ *
+ * @param value - The precipitation value in millimeters (mm) to compare against the ranges.
+ * @returns An array of PrecipitationDesc objects representing the matching precipitation ranges.
+ *          Each object contains the minimum and maximum values for the range and the associated color.
+ */
 export const getPrecipitationColors = (value: number) => {
+	if (typeof value !== 'number' || value === Infinity) {
+		return [];
+	}
 	return precipitationRanges.filter((range) => value >= range.min);
 };
