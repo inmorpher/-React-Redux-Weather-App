@@ -165,7 +165,8 @@ export class HourlyChart extends SVGChart<HourlyWeatherData[]> {
 	getPrecipitationDescription(): Array<PrecipitationRectDesc> {
 		return this.rectCoords.map((item, index) => {
 			const rain = this.data[index].rain;
-			const pop = Math.round(this.data[index].pop * 100) + '%';
+			const pop =
+				this.data[index].pop !== undefined ? Math.round(this.data[index].pop * 100) + '%' : 0 + '%';
 			return {
 				rain: rain ? rain['1h'] : undefined,
 				rainX: item.x,
