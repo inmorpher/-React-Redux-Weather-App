@@ -8,6 +8,7 @@ const MistDynamicIcon = () => {
 			className={classNames(styles.mist__dynamic__icon, globalStyles.transition)}
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
+			data-testid='mist-dynamic-icon'
 		>
 			<g className={styles.mist}>
 				<circle fill='#b8b9b9' cx='12.92' cy='23.82' r='6.56' />
