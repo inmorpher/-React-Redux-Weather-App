@@ -25,7 +25,7 @@ const PressureIndicator = ({ coords, angle }: IPressureIndicatorProps) => {
 			role='img'
 			aria-label='pressure-icon'
 		>
-			<g aria-label='pressure-scale'>
+			<g data-testid='pressure-scale'>
 				{coords?.length > 0 &&
 					coords.map((line, index) => {
 						return (
@@ -48,7 +48,7 @@ const PressureIndicator = ({ coords, angle }: IPressureIndicatorProps) => {
 						transform: `rotate(${angle}deg)`,
 						transformOrigin: `${80}px ${70}px`,
 					}}
-					aria-label='pressure-indicator'
+					data-testid='pressure-indicator'
 				>
 					<circle cx={`${80}px`} cy={`${70}px`} r={60} stroke='none' fill='none' />
 					<line

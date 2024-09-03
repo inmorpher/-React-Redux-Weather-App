@@ -19,11 +19,7 @@ const Controls = () => {
 	const { toggleMetric, metricType } = useMetric();
 
 	return (
-		<Controls.Wrapper
-			className='flex justify-center gap-10 text-sm'
-			role='option'
-			aria-label='controls'
-		>
+		<Controls.Wrapper className='flex justify-center gap-10 text-sm' aria-label='controls'>
 			<Controls.Toggler
 				variant={'metric'}
 				onClick={toggleMetric}

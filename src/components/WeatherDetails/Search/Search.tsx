@@ -28,6 +28,10 @@ const Search = ({ home }: { home?: boolean }) => {
 			onKeyDown={handleKeyNavigation}
 			tabIndex={0}
 			role='combobox'
+			aria-label='search field'
+			aria-expanded={searchState.results.length > 0}
+			aria-controls='search-list'
+			aria-autocomplete='list'
 		>
 			<SearchForm handleSubmit={handleSubmit}>
 				<SearchForm.Button handleGeolocationSearch={handleGeolocationSearch} />

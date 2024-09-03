@@ -56,7 +56,7 @@ describe('Humidity', () => {
 
 		const { getByRole } = render(<Humidity data={mockHumidityInfo} />);
 
-		const iconElement = getByRole('humidity-icon');
+		const iconElement = getByRole('img', { name: 'humidity-icon' });
 		expect(iconElement).toBeInTheDocument();
 	});
 

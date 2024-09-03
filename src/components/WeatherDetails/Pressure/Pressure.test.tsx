@@ -41,9 +41,9 @@ describe('Pressure', () => {
 			pressure: 1020,
 		};
 
-		const { getByLabelText } = render(<Pressure data={mockPressureData} />);
+		const { getByTestId } = render(<Pressure data={mockPressureData} />);
 
-		const indicatorElement = getByLabelText(/pressure-indicator/i);
+		const indicatorElement = getByTestId(/pressure-indicator/i);
 
 		expect(indicatorElement).toHaveStyle('transform: rotate(180deg)');
 	});
@@ -70,12 +70,12 @@ describe('Pressure', () => {
 			pressure: 1020,
 		};
 
-		const { getByLabelText } = render(<Pressure data={mockPressureData} />);
+		const { getByTestId } = render(<Pressure data={mockPressureData} />);
 
-		const scaleElement = getByLabelText('pressure-scale');
+		const scaleElement = getByTestId('pressure-scale');
 		let indicatorElement;
 		try {
-			indicatorElement = getByLabelText('pressure-indicator');
+			indicatorElement = getByTestId('pressure-indicator');
 		} catch (error) {
 			indicatorElement = null;
 		}

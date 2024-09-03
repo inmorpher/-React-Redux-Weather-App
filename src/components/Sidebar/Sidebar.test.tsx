@@ -39,7 +39,7 @@ describe('Sidebar', () => {
 			closeSideBarOnListItemClick: vi.fn(),
 		});
 
-		const { getByRole } = render(
+		const { getByRole, getByLabelText } = render(
 			<MetricProvider>
 				<ThemeProvider>
 					<CityListProvider>
@@ -62,7 +62,7 @@ describe('Sidebar', () => {
 		const UserCityList = getByRole('list', { name: /user-city-list/i });
 		expect(UserCityList).toBeInTheDocument();
 
-		const controlsElement = getByRole('option', { name: /controls/i });
+		const controlsElement = getByLabelText(/controls/i);
 		expect(controlsElement).toBeInTheDocument();
 	});
 
@@ -269,7 +269,7 @@ describe('Sidebar', () => {
 			closeSideBarOnListItemClick: vi.fn(),
 		});
 
-		const { getByRole } = render(
+		const { getByLabelText } = render(
 			<MetricProvider>
 				<ThemeProvider>
 					<CityListProvider>
@@ -279,7 +279,7 @@ describe('Sidebar', () => {
 			</MetricProvider>
 		);
 
-		const controlsElement = getByRole('option', { name: /controls/i });
+		const controlsElement = getByLabelText(/controls/i);
 		expect(controlsElement).toBeInTheDocument();
 	});
 
