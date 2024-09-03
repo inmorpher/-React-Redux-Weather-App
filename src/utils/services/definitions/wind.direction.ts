@@ -46,7 +46,8 @@ export const getWindDirection = (windValue: number, type: 'full' | 'short' = 'sh
 		},
 	];
 
-	const index = Math.round(windValue / 45) % 8;
+	const normalizedWindValue = ((windValue % 360) + 360) % 360;
+	const index = Math.floor(normalizedWindValue / 45) % 8;
 
 	return type === 'short' ? directions[index].short : directions[index].full;
 };
