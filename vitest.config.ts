@@ -22,6 +22,7 @@ export default defineConfig({
 				'**/*.test.tsx',
 				'**/*.d.ts',
 				'**/*.types.ts',
+				'**/*.type.ts',
 				'**/*.abstract.ts',
 				'**/src/service-worker.ts',
 				'**/src/setupTests.ts',

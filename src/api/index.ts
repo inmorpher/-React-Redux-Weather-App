@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 import { ROUTES } from '../router/routes.const';
-import { debounce } from '../utils/debounce';
 
 const SERVER = ROUTES.URL;
 
@@ -26,5 +25,3 @@ export const autocompleteSearch = async (query: string): Promise<IGeocodingRespo
 		return [];
 	}
 };
-
-export const debouncedAutocompleteSearch = debounce(autocompleteSearch, 300);
