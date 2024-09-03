@@ -14,7 +14,7 @@ export class PrecipitationService extends SVGChart<PrecipitationData[]> {
 	constructor(
 		data: Array<PrecipitationData>,
 		timezone: string,
-		dimension: { width: number; height: number },
+		dimension: { width: number; height: number }
 	) {
 		super(data, dimension.width, dimension.height);
 		this.alpha = 1;
@@ -58,9 +58,7 @@ export class PrecipitationService extends SVGChart<PrecipitationData[]> {
 			if (index % this.TIMELINE_INTERVAL === 0 || index === totalSteps) {
 				const timeLabel = index === 0 ? 'now' : `${index} min`;
 				this.timeLineCoords.push({
-					time: new TimeService(item.dt, this.timezone)
-						.getTime('hoursAndMinutes')
-						.result(),
+					time: new TimeService(item.dt, this.timezone).getTime('hoursAndMinutes').result(),
 					description: timeLabel,
 					x,
 					y: 12,
@@ -90,13 +88,11 @@ export class PrecipitationService extends SVGChart<PrecipitationData[]> {
 	getAxis(): Array<AxisType> {
 		const range = this.curveParams.height / this.maxScaleValue;
 
-		return Array.from({ length: this.AXIS_STEPS }, (_, i) => i * this.stepValue).map(
-			(value) => ({
-				y: this.chartHeight - range * value - 5,
-				value,
-				length: this.timeLineCoords[this.timeLineCoords.length - 1].x,
-			}),
-		);
+		return Array.from({ length: this.AXIS_STEPS }, (_, i) => i * this.stepValue).map((value) => ({
+			y: this.chartHeight - range * value - 5,
+			value,
+			length: this.timeLineCoords[this.timeLineCoords.length - 1].x,
+		}));
 	}
 
 	/**
@@ -112,7 +108,7 @@ export class PrecipitationService extends SVGChart<PrecipitationData[]> {
 	findMaxPrecipitation(precipitation: Array<{ dt: number; precipitation: number }>) {
 		const maxPrecipitation = precipitation.reduce(
 			(max, item) => Math.max(max, item.precipitation),
-			0,
+			0
 		);
 
 		if (maxPrecipitation < this.MIN_PRECIPITATION) {
