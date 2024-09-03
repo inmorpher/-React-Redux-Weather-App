@@ -8,6 +8,7 @@ interface IWeatherIconsProps {
 }
 
 const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => {
+	if (iconCode === undefined || iconCode === null || timeOfDay === undefined) return null;
 	const sunShape = (
 		<>
 			<defs>
@@ -16,7 +17,7 @@ const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => 
 					<stop offset='47%' stopColor='#ffff' stopOpacity={0} />
 				</radialGradient>
 			</defs>
-			<g className={styles.sun}>
+			<g className={styles.sun} data-testid='sun-shape'>
 				<circle className={styles.sun__shine} cx='25' cy='25' fill='url(#myGradient)' />
 				<circle className={styles.sun__disk} cx='25' cy='25' fill='#fff' />
 			</g>
@@ -24,7 +25,7 @@ const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => 
 	);
 
 	const moonShape = (
-		<g className={styles.moon__icon}>
+		<g className={styles.moon__icon} data-testid='moon-shape'>
 			<path
 				className={styles.moon__icon__shape}
 				fill='#fff'
@@ -40,7 +41,7 @@ const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => 
 	);
 
 	const cloudsShape = (
-		<g className={styles.clouds__icon}>
+		<g className={styles.clouds__icon} data-testid='cloud-shape'>
 			<path
 				fill='#f7f7f7'
 				d='M38.42,34.42c0,2.16-1.89,3.92-4.23,3.92H12.64c-3.83,0-6.92-3.17-6.92-7.03s3.1-7,6.92-7c.42,0,.84,.03,1.23,.11-.03-.13-.03-.29-.03-.43,0-3.54,2.83-6.44,6.3-6.44s6.33,2.87,6.33,6.42c0,.21,0,.4-.03,.61,.63-.4,1.39-.61,2.21-.61,2.47,0,4.46,2.02,4.46,4.52,0,.88-.24,1.68-.68,2.37,.52-.24,1.1-.37,1.74-.37,2.33,0,4.23,1.76,4.23,3.92l.03,.03h0Z'
@@ -60,9 +61,11 @@ const ClearCloudyDynamicIcon = ({ timeOfDay, iconCode }: IWeatherIconsProps) => 
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
 			className={classNames(styles.clear__cloudy__dynamic__icon, globalStyles.transition)}
+			role='img'
+			aria-label={timeOfDay === 'day' ? 'Sun Icon' : 'Moon Icon'}
 		>
-			{timeOfDay == 'night' ? moonShape : sunShape}
-			{iconCode == '02' && cloudsShape}
+			{timeOfDay === 'night' ? moonShape : sunShape}
+			{iconCode === '02' && cloudsShape}
 		</svg>
 	);
 };
