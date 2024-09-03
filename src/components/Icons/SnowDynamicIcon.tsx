@@ -18,6 +18,7 @@ const SnowDynamicIcon = () => {
 			className={classNames(styles.snow__dynamic__icon, globalStyles.transition)}
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
+			data-testid='snow-dynamic-icon'
 		>
 			<g className={styles.snow__flakes}>
 				{snowFlakes &&
