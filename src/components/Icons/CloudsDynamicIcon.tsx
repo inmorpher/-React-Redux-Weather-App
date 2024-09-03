@@ -12,6 +12,7 @@ const CloudsDynamicIcon = ({ iconCode }: ICloudsParticlesProps) => {
 			className={classNames(styles.clouds__dynamic__icon, globalStyles.transition)}
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 50 50'
+			data-testid='clouds-dynamic-icon'
 		>
 			<g className={styles.clouds}>
 				<path
