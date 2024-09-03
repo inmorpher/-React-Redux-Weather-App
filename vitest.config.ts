@@ -18,6 +18,7 @@ export default defineConfig({
 		],
 		coverage: {
 			exclude: [
+				'**/src/hooks/**',
 				'**/*.test.ts',
 				'**/*.test.tsx',
 				'**/*.d.ts',
