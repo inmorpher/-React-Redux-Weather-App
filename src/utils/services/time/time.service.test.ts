@@ -127,4 +127,10 @@ describe('TimeService', () => {
 		const formattedYear = timeService.getYear('numeric').result();
 		expect(formattedYear).toBe('2023');
 	});
+
+	test('should return an empty string when no methods are chained', () => {
+		const timeService = new TimeService();
+		const result = timeService.result();
+		expect(result).toBe('');
+	});
 });
