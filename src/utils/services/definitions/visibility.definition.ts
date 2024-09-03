@@ -36,10 +36,12 @@ const visibilityRanges: Array<VisibilityRange> = [
  * @returns An object of type `ReturnVisibility` containing the visibility range and formatted distance.
  */
 export const getVisibilityValue = (value: number): IVisibilityReturn => {
-	const range = visibilityRanges.find((range) => value >= range.min && value <= range.max);
+	const range =
+		visibilityRanges.find((range) => value >= range.min && value <= range.max) ||
+		visibilityRanges[0];
 	const distance = value >= 1000 ? parseFloat((value / 1000).toFixed(1)) + 'km' : value + 'm';
 	return {
-		range: range ? range.value : 'not available',
+		range: range.value,
 		distance,
 	};
 };
